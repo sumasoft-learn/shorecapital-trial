@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+   {% load static %}
+   <head>
+      {% block head %}
+        {% include "head.html" %}
+      {% endblock %}
+      
+      <!-- Data table Style -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" type="text/css">
+   </head>        
+   <body class="active bg-light">
+      {% block nav %}
+        {% include "nav.html" %}
+      {% endblock %}
+      
+      <div class="d-flex">
+         {% block sidebar %}
+           {% include "sidebar.html" %}
+         {% endblock %}
+         
+         
+         <!-- Main Section -->
+         <main class="">
+            
+            <!-- Section Menu -->
+            <div class="row"> 
+               <!-- Content -->
+               <div class="col-12 px-3 py-2">
+
+                        <!-- Section Header -->
+                        <div class="d-flex justify-content-between section-header">
+                           <span class="section-title">User List</span>
+                           <span>
+                              <a class="btn btn-sm btn-primary" href="/user/create/"><i class="fas fa-plus mr-2"></i>Create User</a>
+                           </span>
+                        </div>
+                        <!-- ./Section Header -->
+
+                        <!-- Tabs Section Body -->
+                        <div class="card mt-2">
+                           <div class="card-body">
+                              <div class="p-2">
+                                 <table id="user_lists" class="display">
+                                    <thead>
+                                       <tr>
+                                          <th>Sno.</th>
+                                          <th>User ID</th>
+                                          <th>User Name</th>
+                                          <th>Active</th>
+                                          <th> Created By</th>
+                                          <th>Created Date</th>
+                                          <th>Actions</th>
+                                          <th>Change Password</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                          {% for user in user_list%}
+                                           <tr>
+                                             <td>
+                                               {{ forloop.counter }}
+                                             </td>
+                                             <td>
+                                               {{user.user_id}}
+                                             </td>
+                                             <td>
+                                               {{user.user_name}}
+                                             </td>
+                                             <td>
+                                               {{user.is_active}}
+                                             </td>
+                                             <td>
+                                               {{user.created_by}}
+                                             </td>
+                                             <td>
+                                               {{user.created_date}}
+                                             </td>
+                                             
+                                               <td>
+                                                 <a href="/user/edit/{{user.id}}" title="Edit" class="btn btn-sm btn-success">
+                                                   Edit
+                                                 </a>
+                                               </td>
+                                               <td>
+                                                <a href="{% url 'change_password' user_id=user.id %}" title="chane password" class="btn btn-sm btn-success">
+                                                  change password
+                                                </a>
+                                              </td>
+                                             
+                                           </tr>
+                                           {% endfor %}
+                                    </tbody>
+                                 </table>                 
+                              </div>
+                           </div>
+                        </div>
+                        <!-- ./Tabs Section Body -->                                 
+               </div>
+               <!-- ./Content -->
+            </div>
+            
+   
+         {% block footer %}
+            {% include "footer.html" %}
+         {% endblock %}
+          
+         <!-- Data Table Bootstrap JS -->
+         <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+         <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js "></script>  
+         
+         <!-- Custom Script -->
+         <script>
+            $(document).ready(function(){
+               var trIndex = null;
+               $('#user_lists').DataTable({
+                  searching: true,
+                  responsive: true,
+                  "autoWidth": false,
+               });
+            });
+         </script>
+    
+      </body>
+   </html>
+                 <!-- <div class="d-flex pb-3 justify-content-between">
+                           <span class="text-danger"> </span><span class=" ">
+                              <div class="form-check form-check-inline adv">
+                                 <input class="form-check-input mr-3" type="checkbox" id=" " value="option1">
+                                 <label class="form-check-label" for="inlineCheckbox1">Advanced Search</label>
+                              </div>
+                              <div class="form-check form-check-inline adv">
+                                 <input class="form-check-input mr-3" type="checkbox" id="inlineCheckbox2"
+                                    value="option2">
+                                 <label class="form-check-label" for="inlineCheckbox2">Contact Search</label>
+                              </div>
+                           </span>
+
+                        </div> -->

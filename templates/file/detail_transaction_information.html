@@ -1,0 +1,130 @@
+<!-- DETAILS OF TRANSACTION  -->
+{% if div_id == 'details_transaction-details' %}
+<div class="tab-pane fade active show" id="details_transaction-details" role="tabpanel" aria-labelledby="details_transaction_list">
+{% else %}
+<div class="tab-pane fade" id="details_transaction-details" role="tabpanel" aria-labelledby="details_transaction_list">
+
+{% endif %}
+	<!-- Section Header -->
+	<div class="d-flex justify-content-between section-header"> <span class="section-title">Details of Transaction</span> </div>
+	<!-- ./Section Header -->
+	<!-- Tabs Section Body -->
+	<div class="card mt-2">
+		<div class="card-body tab-overflow">
+                  <div class="p-2">
+                        <form method="POST" action="" id='id_detail_transaction_form'>
+                              {% for i in detail_transaction %}
+                                    <input type="hidden" name='transaction_ids' value="{{ i.id }}">
+                              {% endfor %}
+					<div class="">
+						<table class="status-table">
+							<tbody>
+								<tr>
+                                                      <td>Purchase price</td>
+                                                      <td>
+                                                            <input type="text" class="form-control" name="purchase_price" value="{{detail_transaction.0.value}}"> 
+                                                      </td>
+								</tr>
+								<tr>
+									<td>Alterations, improvements, repairs</td>
+									<td>
+										<input type="text" class="form-control" name="alteration_improvement" value="{{detail_transaction.1.value}}"> </td>
+								</tr>
+								<tr>
+									<td>Land (if acquired separately)</td>
+									<td>
+										<input type="text" class="form-control" name="land" value="{{detail_transaction.2.value}}"> </td>
+								</tr>
+								<tr>
+									<td>Refinance (incl. debts to be paid off)</td>
+									<td>
+										<input type="text" class="form-control" name="refinance" value="{{detail_transaction.3.value}}"> </td>
+								</tr>
+								<tr>
+									<td>Estimated prepaid items</td>
+									<td>
+										<input type="text" class="form-control" name="estimate_prepaid_items" value="{{detail_transaction.4.value}}"> </td>
+								</tr>
+								<tr>
+									<td>Estimated closing costs</td>
+									<td>
+										<input type="text" class="form-control" name="estimate_closing_costs" value="{{detail_transaction.5.value}}"> </td>
+								</tr>
+								<tr>
+									<td>PMI, MIP, Funding Fee</td>
+									<td>
+										<input type="text" class="form-control" name="pmi_mip" value="{{detail_transaction.6.value}}"> </td>
+								</tr>
+								<tr>
+									<td>Discount (if Borrower will pay)</td>
+									<td>
+										<input type="text" class="form-control" name="discount" value="{{detail_transaction.7.value}}"> </td>
+                                                </tr>
+                                                <tr>
+									<td>Subordinate financing</td>
+									<td>
+										<input type="text" class="form-control" name="subordinate_financing" value="{{detail_transaction.8.value}}"> </td>
+                                                </tr>
+                                                <tr>
+									<td>PMI, MIP, Funding Fee financed</td>
+									<td>
+										<input type="text" class="form-control" name="pmi_mip_funded" value="{{detail_transaction.9.value}}"> </td>
+								</tr>
+								<tr>
+									<td>Total costs (add items a through h)</td>
+									<td>
+										<input type="text" class="form-control" name="total_cost" value="{{detail_transaction.10.value}}"> </td>
+                                                </tr>
+                                                <tr>
+									<td>Borrower's closing costs paid by Seller</td>
+									<td>
+										<input type="text" class="form-control" name="borrower_closing_seller" value="{{detail_transaction.11.value}}"> </td>
+								</tr>
+								<tr>
+									<td>Loan amount (exclude PMI, MIP,Funding Fee financed)</td>
+									<td>
+										<input type="text" class="form-control" name="loan_amount_exluded_pmi" value="{{detail_transaction.12.value}}"> </td>
+								</tr>
+								
+								<tr>
+									<td>Loan amount (add m & n)</td>
+									<td><input type="text" class="form-control" name="loan_amount_add" value="{{detail_transaction.13.value}}"></td>
+								</tr>
+								<tr>
+									<td>Cash from/to Borrower (subtract j, k, l &o from i)</td>
+									<td><input type="text" class="form-control" name="cash_from_borower" value="{{detail_transaction.14.value}}"></td>
+								</tr>
+							</tbody>
+						</table>
+                              </div>
+                              <div class="row mt-3">
+                                    <div class="col-md-12">
+                                       <div class="text-center">
+                                          <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+                                          <button type="submit" class="btn btn-success btn-sm" id="id_submit_detail_transaction"><i class="far fa-check-circle mr-2"></i>Save</button>
+                                       </div>
+                                    </div>
+                              </div>
+				</form>
+			</div> 
+			<!-- ./ -->
+		</div>
+	</div>
+	<!-- ./Tabs Section Body -->
+</div>
+<!-- ./DETAILS OF TRANSACTION  -->
+<script>
+      var token = '{{csrf_token}}';
+      $("#id_detail_transaction_form").on('submit', function (e) {
+         e.preventDefault();
+         $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "{% url 'detail_transaction_details' file_master.id %}",
+            data: $('#id_detail_transaction_form').serialize(),
+            success: function (response) {
+               window.location.href=window.location.href;
+            }
+         });
+      });
+</script>

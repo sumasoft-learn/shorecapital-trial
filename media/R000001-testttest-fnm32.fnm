@@ -1,0 +1,65 @@
+EH       Shore Capital Corporation           1        
+TH T100099-0021        
+TPI 1.0001                              N
+0001  3.20 W
+00ANN
+01A01                                                                                                              R000001              160000.00  0.00036005                                                                                                                                                                
+02A609 Plumer Street                                 Costa Mesa                         CA92627    1  F1                                                                                    
+02B  16                                                                                1Unmarried man                                               1        
+02Ctest t test                                                 
+02CAndre Lujan                                                 
+03ABW         test                               t                                  test                                                  U0 N                 testuser999@shorecapital.net                                                    
+03ABW         Andre                                                                 Lujan                                                 U0 N                 andre@shorecapital.net                                                          
+05H         226         444.44
+05H         201           0.00
+05H         214           0.00
+05H         206           0.00
+05H         222           0.00
+05H         223           0.00
+05H         202           0.00
+05I         20        6700.00
+05I         08           0.00
+05I         10           0.00
+05I         17           0.00
+05I         09           0.00
+05I         20        4500.00
+05I         08           0.00
+05I         10           0.00
+05I         17           0.00
+05I         09           0.00
+06C         03 chase                                                                                                               99999999                            130000.00                                                                                          
+06C         03                                                                                                                                                              0.00                                                                                          
+07A800000.00                                    0.00           0.00           0.00           0.00           0.00           0.00           0.00           0.00           
+08A         NNNNNNNNN01YN101
+08A         NNNNNNNNN01YN101
+09A                 
+09A                 
+10A         N4                              I
+10A         N4                              I
+10BI                                                                              Shore Capital Corporation                                                                                                                              
+00070 3.20 
+99BNF1      800000.00       01                                                                                                                 CA
+ADSLoanOriginatorID                                                                     
+ADSLoanOriginationCompanyID                                                             
+ADSHMDARaceCollectedBasedOnVisual              :N                                       
+ADSHMDAGenderCollectedBasedOnVisual            :N                                       
+ADSHMDAEthnicityCollectedBasedOnVisual         :N                                       
+ADSHMDAEthnicityRefusalIndicator               :N                                       
+ADSHMDARaceRefusalIndicator                    :N                                       
+ADSHMDAGenderRefusalIndicator                  :N                                       
+ADSHMDAGenderType                              :InformationNotProvidedUnknown           
+ADSHMDAEthnicityType                           :InformationNotProvidedByApplicantInMIT  
+ADSHMDARaceCollectedBasedOnVisual              :N                                       
+ADSHMDAGenderCollectedBasedOnVisual            :N                                       
+ADSHMDAEthnicityCollectedBasedOnVisual         :N                                       
+ADSHMDAEthnicityRefusalIndicator               :N                                       
+ADSHMDARaceRefusalIndicator                    :N                                       
+ADSHMDAGenderRefusalIndicator                  :N                                       
+ADSHMDAGenderType                              :InformationNotProvidedUnknown           
+ADSHMDAEthnicityType                           :InformationNotProvidedByApplicantInMIT  
+00011 3.20 
+LNC1 02                 N                                N                                 
+PID                                                  
+PCH360N01N   
+TT 1        
+ET 1        

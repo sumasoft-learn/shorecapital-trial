@@ -1,0 +1,1242 @@
+import hashlib
+from datetime import datetime
+import zipfile
+
+import requests
+from django.conf import settings
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core import serializers
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
+import os
+from django.http import JsonResponse
+from django_drf_filepond.models import TemporaryUpload
+from django.contrib import messages
+
+from company.models import CompanyMaster
+from role.models import RoleMaster,RoleFeatureMap
+from file.models import (
+    CompensationPayerTypeMaster, FileCoBorrower,
+    FileEscrowMap, FileHoa, FileListingBuyer, FileMaster,
+    FilePassword, FilePropertyMap, FileTitleMap,
+    ImpoundMaster, LoanPurposeMaster, LoanStatusMaster,
+    OccupancyMaster, PasswordTypeMaster,
+    PropertyTypeMaster, RateTypeMaster, StateMaster,
+    TermMaster, BorrowerEmploymentDetails, BorrowerAdditionalEmploymentDetails,
+    CoBorrowerAdditionalEmploymentDetails, CoBorrowerEmploymentDetails,
+    DeclarationMap,DetailsTransactionMap, FileLiabilities, FileAssets,
+    FileMortage, FileExpensesCoBorrower, FileExpensesBorrower
+)
+from group.models import GroupMaster
+from role.models import RoleMaster
+from user.models import UserMaster, UserRoleMap
+from datetime import datetime
+from .forms import FileForm,UpdateFileForm
+from .forms import DocumentUpload, DateTrackerForm
+from .models import DocumentsTypeMaster, DocumentsType, DateTracker,LoanSubStatusMaster, TaxTranscriptMaster, ClosingDisclosureMaster, AppraisalOrderedMaster
+from login.forms import DashboardFileForm
+from .models import FileNoteMap
+from role.models import RoleFeatureMap,FeatureMaster
+from group.models import UserGroupMap
+# Create your views here.
+# Login Request
+
+def date_convertion(date_formate):
+    """
+    Converting the date format to on single formate.
+    """
+    try:
+        if len(date_formate)>1:
+            convert_date = datetime.strptime(date_formate, '%Y%m%d')
+            date_of_birth = convert_date.strftime("%m/%d/%Y")
+            dob = datetime.strptime(date_of_birth, "%m/%d/%Y").date()
+            return dob
+        return None
+    except Exception:
+        return None
+
+
+def create(request):
+    if(request.session.has_key('company_id') == False):
+        return HttpResponseRedirect('/')
+    Boolen_field = {
+        'Yes': True,
+        'No': False
+    }
+    company_id = request.session.get('company_id')
+    company_obj = CompanyMaster.objects.get(id=company_id)
+    user_id = request.session.get('user_id')
+    user_obj = UserMaster.objects.get(id=user_id)
+    role_id = request.session.get('role_id')
+    if role_id != None:
+        role_obj = RoleMaster.objects.get(id=role_id)
+        role_feature = RoleFeatureMap.objects.filter(role_id=role_obj).values_list('feature_id', flat=True)
+        role_feature = list(role_feature)
+    else:
+        role_feature = [] 
+
+    loan_officers_list = []
+    loan_officers = RoleMaster.objects.filter(company_id=company_id, role_type='Loan officer')
+    for officers in loan_officers:
+        user_role = UserRoleMap.objects.filter(role_id=officers.id)
+        for role in user_role:
+            users = UserMaster.objects.filter(id=role.user_id.id)
+            for i in users:
+                loan_officers_list.append(i)
+
+    assign_processor_list = UserRoleMap.objects.filter(role_id__role_type='Loan Processor', role_id__company_id=company_obj)
+    
+
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = FileForm(request.POST, request)
+        if form.is_valid():
+            # File Master
+            filepound_files = request.POST.getlist('filepond')
+            status_id = request.POST['status']
+            status_obj = LoanStatusMaster.objects.get(id=status_id)
+            brokerage = request.POST['brokerage']
+            loan_officer_id = None
+            if 'lo_name' in request.POST:
+                loan_officer_id = request.POST['lo_name']
+            loan_officer__obj = None
+            if loan_officer_id:
+                loan_officer__obj = UserMaster.objects.get(id=loan_officer_id)
+
+            lo_direct = request.POST['lo_direct']
+            lo_email = request.POST['lo_email']
+            lender = request.POST['lender']
+            ae_name = request.POST['ae_name']
+            ae_direct = request.POST['ae_direct']
+            ae_email = request.POST['ae_email']
+            ae_company_id = request.POST['ae_company_id']
+            processor_id = request.POST['assigned_name']
+            tax_transcript = request.POST['tax_transcript']
+            sub_status_id = []
+            if 'sub_status_id' in request.POST:
+                sub_status_id = request.POST['sub_status_id']
+            closing_disclosure = request.POST['closing_disclosure']
+            cd_date = request.POST['cd_date']
+            appraisal_ordered = request.POST['appraisal_ordered']
+            ad_date = request.POST['ad_date']
+            tt_date = request.POST['tt_date']
+            note = request.POST['note']
+            recieved_date = request.POST['recieved_date']
+
+            if len(sub_status_id)==0:
+                    sub_status_obj = None
+            else:
+                sub_status_obj = LoanSubStatusMaster.objects.get(id=sub_status_id)
+            if len(tax_transcript)==0:
+                tax_transcript_obj = None
+            else:
+                tax_transcript_obj = TaxTranscriptMaster.objects.get(id=tax_transcript)
+            if len(closing_disclosure)>0:
+                closing_disclosure_obj = ClosingDisclosureMaster.objects.get(id=closing_disclosure)
+            else:
+                closing_disclosure_obj = None
+            if len(appraisal_ordered)>0:
+                appraisal_ordered_obj = AppraisalOrderedMaster.objects.get(id=appraisal_ordered)
+            else:
+                appraisal_ordered_obj = None
+            
+            if len(tt_date)==0:
+                tt_date = None
+            if len(cd_date) == 0:
+                cd_date = None
+            if len(ad_date) == 0:
+                ad_date = None
+            if len(recieved_date)==0:
+                recieved_date = None
+
+            estimate_close_date = None
+            if 'est_closure_date' in request.POST:
+                estimate_close_date = request.POST['est_closure_date']
+            
+            nmls_id = request.POST['nmls_id']
+            charge_processing_fee = request.POST['charge_processing_fee']
+            lo_fax = request.POST['lo_fax']
+            ae_fax = request.POST['ae_fax']
+            program_code = request.POST['program_code']
+            customer_id = request.POST['customer_id']
+            url = request.POST['url']
+            loan_purpose_obj = None
+            if 'loan_purpose' in request.POST:
+                loan_purpose = request.POST['loan_purpose']
+                try:
+                    loan_purpose_obj = LoanPurposeMaster.objects.get(id=loan_purpose)
+                except ValueError:
+                    pass
+            loan_amount = request.POST['loan_amount']
+            loan_number = request.POST['loan_number']
+            appraised_value = request.POST['appraised_value']
+            ltv = request.POST['ltv']
+            property_type_obj = None
+            if 'property_type' in request.POST:
+                property_type = request.POST['property_type']
+                try:
+                    property_type_obj = PropertyTypeMaster.objects.get(
+                        id=property_type)
+                except ValueError:
+                    pass
+            rate = request.POST['rate']
+            lock_expiration_date = None
+            if 'lock_expiration_date' in request.POST and len(request.POST['lock_expiration_date']) >1:
+                lock_expiration_date = request.POST['lock_expiration_date']
+
+            
+            impound_obj = None
+            if 'impound' in request.POST:
+                impound = request.POST['impound']
+                try:
+                    impound_obj = ImpoundMaster.objects.get(id=impound)
+                except ValueError:
+                    pass
+
+            compensation_payer_type_obj = None
+            if 'compensation_payer_type' in request.POST:
+                compensation_payer_type = request.POST['compensation_payer_type']
+                try:
+                    compensation_payer_type_obj = CompensationPayerTypeMaster.objects.get(
+                        id=compensation_payer_type)
+                except ValueError:
+                    pass
+
+            lender_pd_comp = request.POST['lender_pd_comp']
+            subordination = None
+            piw = None
+            cltv = None
+            rate_type_obj = None
+            term_obj = None
+            occupancy_master_obj = None
+            if 'subordination' in request.POST:
+                subordination = request.POST['subordination']
+
+            if 'piw' in request.POST:
+                piw = request.POST['piw']
+
+            if 'cltv' in request.POST:
+                cltv = request.POST['cltv']
+
+            if 'rate_type' in request.POST:
+                rate_type = request.POST['rate_type']
+                try:
+                    rate_type_obj = RateTypeMaster.objects.get(id=rate_type)
+                except ValueError:
+                    pass
+
+            if 'term' in request.POST:
+                term = request.POST['term']
+                try:
+                    term_obj = TermMaster.objects.get(id=term)
+                except ValueError:
+                    pass
+
+            if 'occupancy_master' in request.POST:
+                try:
+                    occupancy_master = request.POST['occupancy_master']
+                    try:
+                        occupancy_master_obj = OccupancyMaster.objects.get(id=term)
+                    except ValueError:
+                        pass
+                except ValueError:
+                    pass
+
+            borrower_ysp = request.POST['borrower_ysp']
+            bwr_pd_comp = request.POST['bwr_pd_comp']
+            property_address = request.POST['property_address']
+            borrower_name = request.POST['borrower_name']
+            borrower_phone = request.POST['borrower_phone']
+            borrower_email = request.POST['borrower_email']
+            loan_amount_2 = request.POST['loan_amount_2']
+            deliver_disclosures = None
+            deliver_disclosures_type = None
+            request_conditions_stips_from = None
+            charge_credit_report = None
+            charge_appraisal = None
+            file_float = None
+            if 'deliver_disclosures' in request.POST:
+                deliver_disclosures = request.POST['deliver_disclosures']
+           
+            if 'deliver_disclosures_type' in request.POST:
+                deliver_disclosures_type = request.POST['deliver_disclosures_type']
+            
+            if 'request_conditions_stips_from' in request.POST:
+                request_conditions_stips_from = request.POST['request_conditions_stips_from']
+            
+            if 'charge_credit_report' in request.POST:
+                charge_credit_report = request.POST['charge_credit_report']
+            
+            if 'charge_appraisal' in request.POST:
+                charge_appraisal = request.POST['charge_appraisal']
+            
+            if 'float' in request.POST:
+                file_float = request.POST['float']
+            else:
+                file_float = None
+            if 'va_base_loan' in request.POST:
+                va_base_loan = request.POST['va_base_loan']
+            else:
+                va_base_loan = None
+            if 'va_base_ff' in request.POST:
+                va_base_ff = request.POST['va_base_ff']
+            else:
+                va_base_ff = None
+            if 'fha_base_loan' in request.POST:
+                fha_base_loan = request.POST['fha_base_loan']
+            else:
+                fha_base_loan = None
+            if 'fha_base_mip' in request.POST:
+                fha_base_mip = request.POST['fha_base_mip']
+            else:
+                fha_base_mip = None
+            
+            if 'reverse_status' in request.POST:
+                reverse_status = request.POST['reverse_status']
+            else:
+                reverse_status = None
+            
+            if len(processor_id) > 0:
+                try:
+                    user_processor_obj = UserMaster.objects.get(id=processor_id)
+                except Exception:
+                    user_processor_obj = None
+
+                if user_processor_obj:
+                    try:
+                        user_group_id = UserGroupMap.objects.get(user_id=user_processor_obj)
+                        user_group_id = user_group_id.group_id
+                    except Exception:
+                        user_group_id = None
+                else:
+                    user_group_id = None
+            else:
+                user_processor_obj = None
+                user_group_id = None
+
+            if 'transaction_info' not in request.session:
+                file_master_file_name = str(borrower_name).split(' ')[-1]
+            else:
+                file_master_file_name = None
+
+            filemaster = FileMaster.objects.create(
+                va_base_loan=va_base_loan,
+                va_base_ff=va_base_ff,
+                fha_base_loan=fha_base_loan,
+                fha_base_mip=fha_base_mip,
+                status_id=status_obj,
+                brokerage=brokerage,
+                loan_officer_id=loan_officer__obj,
+                assigned_group_id = user_group_id,
+                assigned_user_id = user_processor_obj,
+                loan_officer_direct=lo_direct,
+                loan_officer_email=lo_email,
+                lender=lender,
+                ae_name=ae_name,
+                ae_direct=ae_direct,
+                ae_email=ae_email,
+                ae_company_id=ae_company_id,
+                company_id=company_obj,
+                est_closure_date=estimate_close_date,
+                nmls_id=nmls_id,
+                loan_officer_fax=lo_fax,
+                charging_processing_fees=charge_processing_fee,
+                ae_fax=ae_fax,
+                program_code=program_code,
+                customer_id=customer_id,
+                url=url,
+                loan_number=loan_number,
+                loan_amount=loan_amount,
+                appraisal_value=appraised_value,
+                ltv=ltv,
+                rate=rate,
+                float=file_float,
+                lock_expiration_date=lock_expiration_date,
+                loan_purpose_id=loan_purpose_obj,
+                reverse_status=reverse_status,
+                property_type=property_type_obj,
+                impound=impound_obj,
+                compensation_pay_type=compensation_payer_type_obj,
+                lender_pd_comp=lender_pd_comp,
+                subordination=subordination,
+                sub_status_id=sub_status_obj,
+				tax_transcript=tax_transcript_obj,
+				closing_disclosure=closing_disclosure_obj,
+				appraisal_ordered=appraisal_ordered_obj,
+				note=note,
+                recieved_date=recieved_date,
+				appraisal_ordered_date=ad_date,
+				closing_disclosure_date=cd_date,
+				tax_transcript_date=tt_date,
+                piw=piw,
+                cltv=cltv,
+                term=term_obj,
+                rate_type=rate_type_obj,
+                occupancy=occupancy_master_obj,
+                borrower_ysp=borrower_ysp,
+                borrower_pwd_comp=bwr_pd_comp,
+                loan_amount_2=loan_amount_2,
+                borrower_name=borrower_name,
+                borrower_phone=borrower_phone,
+                borrower_email=borrower_email,
+                charge_appraisal=charge_appraisal,
+                delievery_disclosure=deliver_disclosures,
+                delievery_disclosure_type=deliver_disclosures_type,
+                req_condition_stip_from=request_conditions_stips_from,
+                charge_credit_report=charge_credit_report,
+                created_by=user_obj,
+                file_id=file_master_file_name
+            )
+            filemaster.save()
+            
+            if len(note)>0:
+                FileNoteMap.objects.create(
+                    file_id=filemaster,
+                    note = note,
+                    created_by=user_obj
+                )
+            
+            if 'transaction_info' in request.session:
+                transaction_info = request.session['transaction_info']
+                filemaster = FileMaster.objects.get(id=filemaster.id)
+                filemaster.agency_case_number = transaction_info.get("Agency Case Number")
+                filemaster.mortgage_applied = transaction_info.get("Mortgage Applied For")
+                filemaster.lender_case_number = transaction_info.get("Case Number")
+                filemaster.no_of_units = transaction_info.get("No. of Units")
+                filemaster.year_built = transaction_info.get("Year Built")
+                # filemaster.refinance_cost = transaction_info.get("Year Built")
+                # filemaster.refinance_amount = transaction_info.get("Year Built")
+                filemaster.refinance_original_cost = transaction_info.get("Original Cost (Construction or Refinance)")
+                filemaster.refinance_describe_improvements = transaction_info.get("Describe Improvements")
+                filemaster.refinance_purpose = transaction_info.get("Purpose of Refinance")
+                filemaster.refinance_lot_year = transaction_info.get("Year Lot Acquired (Construction) or Year Acquired (Refinance)")
+                filemaster.construction_original_cost = transaction_info.get("Original Cost (Construction or Refinance)")
+                filemaster.construction_lot_year = transaction_info.get("Year Lot Acquired (Construction) or Year Acquired (Refinance)")
+                filemaster.save()
+
+                for details in transaction_info.get('Applicant'):
+                    if details.get("Applicant / Co-Applicant Indicator") == "BW":
+                        # Convert the Date of Birth to date formate
+                        bw_dob = date_convertion(details.get('Date of Birth'))
+
+                        # Get the Particualr Borrower deatils using SSN number
+                        bw_details = transaction_info.get(details.get('SSN'))
+
+                        try:
+                            state = StateMaster.objects.get(is_active='Y',fnm_state_value=bw_details.get('Residence State'))
+                            state = state.id
+                        except StateMaster.DoesNotExist:
+                            state = None
+
+                        # save the all the details in backend with out showing in the webpage
+                        filemaster = FileMaster.objects.get(id=filemaster.id)
+                        filemaster.file_id = details.get('Applicant Last Name')
+                        filemaster.borrower_first_name = details.get('Applicant First Name')
+                        filemaster.borrower_middle_name = details.get('Applicant Middle Name')
+                        filemaster.borrower_last_name = details.get('Applicant Last Name')
+                        filemaster.borrower_dependents = details.get('Dependents (no.)')
+                        filemaster.borrower_social_security_number = details.get('SSN')
+                        filemaster.borrower_date_of_birth = bw_dob
+                        filemaster.borrower_years_in_school = str(details.get('Yrs. School'))
+                        filemaster.borrower_marital_status = details.get('Marital Status')
+                        filemaster.borrower_street = bw_details.get('Residence Street Address')
+                        filemaster.borrower_city = bw_details.get('Residence City')
+                        filemaster.borrower_state = state
+                        filemaster.borrower_zip = bw_details.get('Residence Zip Code')
+                        filemaster.borrower_country = bw_details.get('Country')
+                        filemaster.borrower_address_type = bw_details.get('Own/Rent/Living Rent Free')
+                        filemaster.borrower_years_in_address = bw_details.get('No. Yrs.')
+                        filemaster.save()
+
+                        try:
+                            state = StateMaster.objects.get(is_active='Y',fnm_state_value=bw_details.get('Employer State'))
+                            state = state.id
+                        except StateMaster.DoesNotExist:
+                            state = None
+
+                        bw_emp_details = BorrowerEmploymentDetails.objects.create(
+                            file_id=filemaster,
+                            employer_name=bw_details.get('Employer Name'),
+                            employer_street_address=bw_details.get('Employer Street Address'),
+                            employer_city=bw_details.get('Employer City'),
+                            employer_zip=bw_details.get('Employer Zip Code'),
+                            employer_state=state,
+                            self_employed=Boolen_field.get(bw_details.get('Self Employed')),
+                            no_of_years_in_this_job=bw_details.get('Yrs. on this job'),
+                            yrs_employed_in_this_line_of_work_profession=bw_details.get('Yrs. employed in this line of work/profession'),
+                            position_title_type_of_business=bw_details.get('Position / Title / Type of Business'),
+                            business_phone=bw_details.get('Business Phone', None),
+                        )
+                        bw_emp_details.save()
+
+                        assets_details = FileAssets.objects.create(
+                            file_id=filemaster,
+                            file_assets=bw_details.get('Asset Description'),
+                            file_cash_or_description_market_value=bw_details.get('Cash or Market Value'),
+                            file_acct_no=bw_details.get('Acct. no.'),
+                        )
+
+                        liabilities_details = FileLiabilities.objects.create(
+                            file_id=filemaster,
+                            file_liabilities_name = bw_details.get('Creditor Name'),
+                            file_liabilities_street_address = bw_details.get('Creditor Street Address'),
+                            file_liabilities_city = bw_details.get('Creditor City'),
+                            file_liabilities_state = bw_details.get('Creditor State'),
+                            file_liabilities_zip = bw_details.get('Creditor Zip Code'),
+                            file_monthly_payment = bw_details.get('Monthly Payment Amount'),
+                            file_months_left_to_pay = bw_details.get('Months Left to Pay'),
+                            file_unpaid_balance = bw_details.get('Unpaid Balance'),
+                        )
+
+                        bw_expense = FileExpensesBorrower.objects.create(
+                            file_id=filemaster,
+                            monthly_income=bw_details.get('Monthly Income'),
+                            net_rental_income=bw_details.get('Net Rental Income')
+                        )
+                        bw_expense.save()
+            # File Master
+
+            # File Escrow Master
+            company_name = request.POST['escrow_company']
+            number = request.POST['escrow_number']
+            officer_name = request.POST['escrow_officer']
+            officer_phone = request.POST['escrow_phone']
+            officer_email = request.POST['escrow_email']
+            
+            opened_date = None
+            if 'escrow_open_date' in request.POST and len(request.POST['escrow_open_date']) > 1:
+                opened_date = request.POST['escrow_open_date']
+
+            is_open = None
+            if 'please_open' in request.POST:
+                is_open = request.POST['please_open']
+
+            assistant_name = request.POST['escrow_assistant']
+            assitant_phone = request.POST['assistant_phone']
+            assistant_email = request.POST['assistant_email']
+
+            requested_escrow_fees = None
+            if 'requested_escrow_fees' in request.POST:
+                requested_escrow_fees = request.POST['requested_escrow_fees']
+
+            fileescrowmap = FileEscrowMap(
+                file_id=filemaster,
+                company_name=company_name,
+                number=number,
+                officer_name=officer_name,
+                officer_phone=officer_phone,
+                officer_email=officer_email,
+                opened_date=opened_date,
+                is_open=is_open,
+                assistant_name=assistant_name,
+                assitant_phone=assitant_phone,
+                assistant_email=assistant_email,
+                requested_escrow_fees=requested_escrow_fees,
+                created_by=user_obj
+            )
+            fileescrowmap.save()
+            # File Escrow Master
+
+            # File HOA Master
+            hoa = request.POST['hoa']
+            hoa_phone = request.POST['hoa_phone']
+            hoa_email = request.POST['hoa_email']
+            filehoa = FileHoa(
+                file_id=filemaster,
+                hoa_name=hoa,
+                hoa_phone=hoa_phone,
+                hoa_email=hoa_email,
+                created_by=user_obj
+            )
+            filehoa.save()
+            # File HOA Master
+            # File Title Master
+            title_name = request.POST['title']
+            title_order = request.POST['title_order']
+            title_rep_name = request.POST['title_rep']
+            title_rep_phone = request.POST['title_rep_phone']
+            title_rep_email = request.POST['title_rep_email']
+            filetitlemap = FileTitleMap(
+                file_id=filemaster,
+                title_name=title_name,
+                title_order=title_order,
+                title_rep_name=title_rep_name,
+                title_rep_phone=title_rep_phone,
+                title_rep_email=title_rep_email,
+                created_by=user_obj
+            )
+            filetitlemap.save()
+            # File Title Master
+            # File Lisiting Buyer Master
+            listing_office = request.POST['listing_office']
+            listing_agent = request.POST['listing_agent']
+            listing_agent_phone = request.POST['listing_agent_phone']
+            listing_agent_email = request.POST['listing_agent_email']
+            buyer_re_office = request.POST['buyer_office']
+            buyer_agent = request.POST['buyer_agent']
+            buyer_agent_phone = request.POST['buyer_agent_phone']
+            buyer_agent_email = request.POST['buyer_agent_email']
+            file_listing_buyer = FileListingBuyer(
+                file_id=filemaster,
+                listing_office=listing_office,
+                listing_agent=listing_agent,
+                listing_agent_phone=listing_agent_phone,
+                listing_agent_email=listing_agent_email,
+                buyer_re_office=buyer_re_office,
+                buyer_agent=buyer_agent,
+                buyer_agent_phone=buyer_agent_phone,
+                buyer_agent_email=buyer_agent_email,
+                created_by=user_obj
+            )
+            file_listing_buyer.save()
+            # File Lisiting Buyer Master
+			# File Co Borrower List
+
+            co_borrower_name_array = request.POST.getlist('co_borrower_name[]')
+            co_borrower_email_array = request.POST.getlist(
+                'co_borrower_email[]')
+            co_borrower_phone_array = request.POST.getlist(
+                'co_borrower_phone[]')
+            co_borrower_length = len(co_borrower_name_array)
+            co_borrower_ids = []
+            co_borrower_count = 0
+            while co_borrower_count < co_borrower_length:
+                file_co_borrower = FileCoBorrower(
+                    file_id=filemaster,
+                    co_borrower_name=co_borrower_name_array[co_borrower_count],
+                    co_borrower_email=co_borrower_email_array[co_borrower_count],
+                    co_borrower_phone=co_borrower_phone_array[co_borrower_count],
+                    created_by=user_obj
+                )
+                file_co_borrower.save()
+                co_borrower_ids.append(file_co_borrower)
+                if 'transaction_info' in request.session:
+                    transaction_info = request.session['transaction_info']
+                    for details in transaction_info.get('Applicant'):
+                        if details.get("Applicant / Co-Applicant Indicator") == "QZ":
+                            # Convert the Date of Birth to date formate
+                            cw_dob = date_convertion(
+                                details.get('Date of Birth'))
+
+                            # Get the Particualr Borrower deatils using SSN number
+                            cw_details = transaction_info.get(
+                                details.get('SSN'))
+                            try:
+                                state = StateMaster.objects.get(is_active='Y',fnm_state_value=cw_details.get('Residence State'))
+                                state = state.id
+                            except StateMaster.DoesNotExist:
+                                state = None
+                            # save the all the details in backend with out showing in the webpage
+                            file_co_borrower = FileCoBorrower.objects.get(
+                                id=file_co_borrower.id)
+                            file_co_borrower.co_borrower_first_name = details.get('Applicant First Name')
+                            file_co_borrower.co_borrower_middle_name = details.get('Applicant Middle Name')
+                            file_co_borrower.co_borrower_last_name = details.get('Applicant Last Name')
+                            file_co_borrower.co_borrower_dependents = details.get('Dependents (no.)')    
+                            file_co_borrower.co_borrower_social_security_number = details.get('SSN')
+                            file_co_borrower.co_borrower_date_of_birth = cw_dob
+                            file_co_borrower.co_borrower_years_in_school = details.get('Yrs. School')
+                            file_co_borrower.co_borrower_marital_status = details.get('Marital Status')
+                            file_co_borrower.co_borrower_street = cw_details.get('Residence Street Address')
+                            file_co_borrower.co_borrower_city = cw_details.get('Residence City')
+                            file_co_borrower.co_borrower_state = state
+                            file_co_borrower.co_borrower_zip = cw_details.get('Residence Zip Code')
+                            file_co_borrower.co_borrower_country = cw_details.get('Country')
+                            file_co_borrower.co_borrower_address_type = cw_details.get('Own/Rent/Living Rent Free')
+                            file_co_borrower.co_borrower_years_in_address = cw_details.get('No. Yrs.')
+                            file_co_borrower.save()
+
+                            try:
+                                state = StateMaster.objects.get(is_active='Y',fnm_state_value=cw_details.get('Employer State'))
+                                state = state.id
+                            except StateMaster.DoesNotExist:
+                                state = None
+
+                            cw_emp_details = CoBorrowerEmploymentDetails.objects.create(
+                            	file_id=filemaster,
+                                cw_id=file_co_borrower,
+								employer_name=cw_details.get('Employer Name'),
+								employer_street_address=cw_details.get('Employer Street Address'),
+								employer_city=cw_details.get('Employer City'),
+								employer_zip=cw_details.get('Employer Zip Code'),
+								employer_state=state,
+								self_employed=Boolen_field.get(bw_details.get('Self Employed')),
+								no_of_years_in_this_job=cw_details.get('Yrs. on this job'),
+								yrs_employed_in_this_line_of_work_profession=cw_details.get('Yrs. employed in this line of work/profession'),
+								position_title_type_of_business=cw_details.get('Position / Title / Type of Business'),
+								business_phone=cw_details.get('Business Phone', None),
+                        	)
+                            cw_emp_details.save()
+
+                            cw_expense = FileExpensesCoBorrower.objects.create(
+                                file_id=filemaster,
+                                monthly_income=cw_details.get('Monthly Income'),
+                                net_rental_income=cw_details.get('Net Rental Income')
+                            )
+                            cw_expense.save()
+
+                co_borrower_count += 1
+
+            dec_list = [
+                'a. Are there any outstanding judgments against you?',
+                'b. Have you been declared bankrupt within the past 7 years?',
+                'c. Have you had property foreclosed upon or given title or deed in lieu thereof in the last 7 years?',
+                'd. Are you a party to a lawsuit?',
+                'e. Have you directly or indirectly been obligated on any loan…',
+                'f. Are you presently delinquent or in default on any Federal debt…',
+                'g. Are you obligated to pay alimony child support or separate maintenance?',
+                'h. Is any part of the down payment borrowed?',
+                'i. Are you a co-maker or',
+                'j. Are you a U.S. citizen? k. Are you a permanent resident alien?',
+                'l. Do you intend to occupy…',
+                'm. Have you had an ownership interest…',
+                'm. (1) What type of property…',
+                'm. (2) How did you hold title…'
+            ]
+
+            transaction_list = [
+                "a. Purchase price",
+                "b. Alterations, improvements, repairs",
+                "c. Land",
+                "d. Refinance (Inc. debts to be paid off)",
+                "e. Estimated prepaid items",
+                "f. Estimated closing costs",
+                "g. PMI MIP, Funding Fee",
+                "h. Discount",
+                "j. Subordinate financing",
+                "n. PMI, MIP, Funding Fee financed",
+                'Total costs (add items a through h)',
+                " Borrower's closing costs paid by Seller",
+                'm. Loan amount (exclude PMI, MIP,Funding Fee financed)',
+                'o. Loan amount (add m & n)',
+                'p. Cash from/to Borrower (subtract j, k, l & o from i)'
+            ]
+            if 'transaction_info' in request.session:
+                transaction_info = request.session['transaction_info']
+
+                # Details of Transactions
+                for tran_details in transaction_list:
+                    tran_map = DetailsTransactionMap.objects.create(
+                        file_id=filemaster,
+                        transaction_description=tran_details,
+                        value=transaction_info.get(tran_details)
+                    )
+
+                for details in transaction_info.get('Applicant'):
+
+                    if details.get("Applicant / Co-Applicant Indicator") == "BW":
+                        # Get the Particualr Borrower deatils using SSN number
+                        bw_details = transaction_info.get(
+                            details.get('SSN'))
+                        
+                        for dec in dec_list:
+                            desc_values = DeclarationMap.objects.create(
+                                file_id=filemaster,
+                                declaration_description=dec,
+                                value=bw_details.get(dec),
+                                types='borrower',
+                                borrower_id=details.get('SSN')
+                            )
+
+                    if details.get("Applicant / Co-Applicant Indicator") == "QZ":
+                        # Get the Particualr Borrower deatils using SSN number
+                        cw_details = transaction_info.get(
+                            details.get('SSN'))
+                        
+                        for ids in co_borrower_ids:
+                            for dec in dec_list:
+                                desc_values = DeclarationMap.objects.create(
+                                    file_id=filemaster,
+                                    cw_id=ids,
+                                    declaration_description=dec,
+                                    value=cw_details.get(dec),
+                                    types='co-borrower',
+                                    co_borrower_id=details.get('SSN')
+                                )
+
+                # File Co Borrower List
+            # File Propery Address  Master
+            property_address = None
+            property_state_master_obj = None
+            mailing_state_master_obj = None
+            if 'property_address' in request.POST :
+                property_address = request.POST['property_address']
+            
+            property_city = request.POST['property_city']
+            if 'property_state' in request.POST :
+                property_state = request.POST['property_state']
+                try:
+                    property_state_master_obj = StateMaster.objects.get(id=property_state)
+                except ValueError:
+                    pass
+            
+           
+            property_zipcode = request.POST['property_zipcode']
+            mailing_address = request.POST['mailing_address']
+            mailing_city = request.POST['mailing_city']
+            if 'property_state' in request.POST :
+                mailing_state = request.POST['mailing_state']
+                try:
+                    mailing_state_master_obj = StateMaster.objects.get(
+                    id=mailing_state)
+                except ValueError:
+                    pass
+
+            mailing_zipcode = request.POST['mailing_zipcode']
+            file_property_map = FilePropertyMap(
+                file_id=filemaster,
+                property_address=property_address,
+                property_city=property_city,
+                property_state=property_state_master_obj,
+                property_zipcode=property_zipcode,
+                mailing_address=mailing_address,
+                mailing_city=mailing_city,
+                mailing_state=mailing_state_master_obj,
+                mailing_zipcode=mailing_zipcode,
+                created_by=user_obj
+            )
+            file_property_map.save()
+            # File Propery Address  Master
+            # File Co Borrower List
+            user_password_name_array = request.POST.getlist('user_password_name_array[]')
+            user_password_type_array = request.POST.getlist('user_password_type_array[]')
+            user_name_array = request.POST.getlist('user_name_array[]')
+            user_password_array = request.POST.getlist('user_password_array[]')
+            user_password_length = len(user_password_name_array)
+            user_password_count = 0
+            
+            while user_password_count < user_password_length:
+                file_password = FilePassword(
+                    file_id=filemaster,
+                    password_name=user_password_name_array[user_password_count],
+                    user_name=user_name_array[user_password_count],
+                    password=user_password_array[user_password_count],
+                    password_type=user_password_type_array[user_password_count],
+                    created_by=user_obj
+                )
+                file_password.save()
+                user_password_count += 1
+            # File Co Borrower List
+            try:
+                for f in filepound_files:
+                    tu = TemporaryUpload.objects.get(upload_id=f)
+                    file_pond_path = settings.DJANGO_DRF_FILEPOND_FILE_STORE_PATH + '/' + str(tu.file)
+                    try:
+                        os.mkdir('media/document_{}'.format(filemaster.id))
+                    except Exception:
+                        pass
+
+                    try:
+                        os.rename(tu.get_file_path(), 'media/document_{}/{}'.format(filemaster.id, tu.upload_name)) # Delete the temporary upload record and the temporary directory tu.delete()
+                    except Exception:
+                        pass
+
+                    file_instance = DocumentsTypeMaster(
+                        file_id=filemaster,
+                        document_file_path='document_{}/{}'.format(filemaster.id,tu.upload_name),
+                        document_file_name=tu.upload_name
+                    )
+                    file_instance.save()
+            except Exception:
+                pass
+            if len(filemaster.file_id)<=0:
+                messages.add_message(request, messages.INFO, 'File Created ')
+            else:
+                messages.add_message(request, messages.INFO, 'File Created - {}'. format(filemaster.file_id))
+            return HttpResponseRedirect('/dashboard/')
+
+    else:
+        form = FileForm()
+    return render(request,
+                  'file/new.html',
+                  {'form': form, 'user_obj': user_obj,'role_feature':role_feature, 'loan_officers_list': loan_officers_list, 'assign_processor_list':assign_processor_list}
+                  )
+
+
+def index(request):
+    if(request.session.has_key('company_id') == False):
+        return HttpResponseRedirect('/')
+    company_id = request.session.get('company_id')
+    company_obj = CompanyMaster.objects.get(id=company_id)
+    object_list = UserMaster.objects.filter(
+        company_id=company_obj)  # or any kind of queryset
+    user_id = request.session.get('user_id')
+    user_obj = UserMaster.objects.get(id=user_id)
+    file_master = FileMaster.objects.filter(created_by=user_obj)
+    role_id = request.session.get('role_id')
+    if role_id != None:
+        role_obj = RoleMaster.objects.get(id=role_id)
+        role_feature = RoleFeatureMap.objects.filter(role_id=role_obj).values_list('feature_id', flat=True)
+        role_feature = list(role_feature)
+    else:
+        role_feature = []
+    return render(request,
+                  'file/list.html',
+                  {'file_master': file_master,'role_feature':role_feature}
+                  )
+
+
+def view(request, file_id):
+    form = UpdateFileForm()
+    if(request.session.has_key('company_id') == False):
+        return HttpResponseRedirect('/')
+
+    if 'transaction_info' in request.session:
+        del request.session['transaction_info']
+
+    company_obj = CompanyMaster.objects.get(id=1)
+    company_obj = CompanyMaster.objects.get(id=1)
+    object_list = UserMaster.objects.filter(
+        company_id=company_obj)  # or any kind of queryset
+    user_id = request.session.get('user_id')
+    user_obj = UserMaster.objects.get(id=user_id)
+    file_master = FileMaster.objects.get(id=file_id)
+    co_borrower = FileCoBorrower.objects.filter(file_id=file_id)
+    file_property_count = FilePropertyMap.objects.filter(file_id=file_master.id).count()
+    if file_property_count>0:
+        file_property_map = FilePropertyMap.objects.get(file_id=file_master.id)
+    else:
+        file_property_map = None
+    borrower_employment_detail_count = BorrowerEmploymentDetails.objects.filter(file_id=file_master.id).count()
+    if borrower_employment_detail_count>0:
+        borrower_employment_detail = BorrowerEmploymentDetails.objects.filter(file_id=file_master.id)
+    else:
+        borrower_employment_detail = None
+    co_borrower_employment_detail_count = CoBorrowerEmploymentDetails.objects.filter(file_id=file_master.id).count()
+    if co_borrower_employment_detail_count>0:
+        co_borrower_employment_detail = CoBorrowerEmploymentDetails.objects.filter(file_id=file_master.id)
+    else:
+        co_borrower_employment_detail = None
+    co_borrower_detail_count = FileCoBorrower.objects.filter(file_id=file_master.id).count()
+    if co_borrower_detail_count>0:
+        co_borrower_detail = FileCoBorrower.objects.filter(file_id=file_master.id)
+    else:
+        co_borrower_detail = None
+    borrower_declaration_count = DeclarationMap.objects.filter(file_id=file_master.id,types='borrower').count()
+    if borrower_declaration_count>0:
+        borrower_declaration = DeclarationMap.objects.filter(file_id=file_master.id,types='borrower')
+    else:
+        borrower_declaration = None
+
+    co_borrower_declaration_count = DeclarationMap.objects.filter(file_id=file_master.id,types='co-borrower').count()
+    if co_borrower_declaration_count>0:
+        co_borrower_declaration = DeclarationMap.objects.filter(file_id=file_master.id,types='co-borrower')
+    else:
+        co_borrower_declaration = None
+
+    co_borrower_declaration_detail_count = co_borrower_declaration_count / 14
+    detail_transaction_count = DetailsTransactionMap.objects.filter(file_id=file_master.id).count()
+    if detail_transaction_count>0:
+        detail_transaction = DetailsTransactionMap.objects.filter(file_id=file_master.id)
+    else:
+        detail_transaction = None
+    
+    try:
+        states = StateMaster.objects.filter(is_active='Y')
+    except StateMaster.DoesNotExist:
+        states = None
+        
+    try:
+        particular_state = StateMaster.objects.get(id=file_master.borrower_state, is_active='Y')
+    except StateMaster.DoesNotExist:
+        particular_state = None
+
+    file_escrow_count = FileEscrowMap.objects.filter(file_id=file_master.id).count()
+    if file_escrow_count>0:
+        detail_file_escrow = FileEscrowMap.objects.filter(file_id=file_master.id)
+    else:
+        detail_file_escrow = None
+    file_title_count = FileTitleMap.objects.filter(file_id=file_master.id).count()
+    if file_title_count>0:
+        detail_file_title = FileTitleMap.objects.filter(file_id=file_master.id)
+    else:
+        detail_file_title = None
+    file_hoa_count = FileHoa.objects.filter(file_id=file_master.id).count()
+    if file_hoa_count>0:
+        detail_file_hoa = FileHoa.objects.filter(file_id=file_master.id)
+    else:
+        detail_file_hoa = None
+    file_password_count = FilePassword.objects.filter(file_id=file_master.id).count()
+    if file_password_count>0:
+        detail_file_password_record = FilePassword.objects.filter(file_id=file_master)
+    else:
+        detail_file_password_record = None
+
+    try:
+        mortgage = FileMortage.objects.filter(is_active='Y')
+    except Exception:
+        mortgage = None
+    
+    try:
+        assets_details = FileAssets.objects.get(file_id=file_master.id)
+    except Exception:
+        assets_details = None
+    
+    try:
+        liabilities_details = FileLiabilities.objects.get(file_id=file_master.id)
+    except Exception:
+        liabilities_details = None
+    
+    try:
+        bw_expenses = FileExpensesBorrower.objects.get(file_id=file_master.id)
+    except Exception:
+        bw_expenses = None
+
+    try:
+        cw_expenses = FileExpensesCoBorrower.objects.filter(file_id=file_master.id)
+    except Exception:
+        cw_expenses = None
+    
+    try:
+        escrow_details = FileEscrowMap.objects.get(file_id=file_master.id)
+    except Exception:
+        escrow_details = None
+    
+    try:
+        listing_buyers = FileListingBuyer.objects.get(file_id=file_master.id)
+    except Exception:
+        listing_buyers = None
+    
+    document_form = DocumentUpload()
+    try:
+        document_detail_obj = list(DocumentsTypeMaster.objects.filter(file_id=file_master).values())
+    except Exception:
+        document_detail_obj = None
+
+    # document_details = None
+    # if len(document_detail_obj) > 0:
+    #     document_details = {
+    #         'file_id': file_master.id,
+    #         'file_names': ','.join(f.get('document_file_name') for f in document_detail_obj)
+    #     }
+
+    lock_expiration_date = file_master.lock_expiration_date
+    if lock_expiration_date:
+        lock_expiration_date = str(lock_expiration_date.date())
+
+    return render(request,
+                  'file/detail.html',
+                  {'form':form,
+                  'borrower_declaration':borrower_declaration,
+                  'co_borrower_declaration':co_borrower_declaration,
+                  'borrower_employment_detail':borrower_employment_detail,
+                  'detail_transaction':detail_transaction,
+                  'file_master': file_master, 
+                  'file_property_map': file_property_map,
+                  'co_borrower': co_borrower,
+                  'co_borrower_employment_detail':co_borrower_employment_detail,
+                  'states': states,
+                  'particular_state': particular_state,
+                  'detail_file_hoa':detail_file_hoa,
+                  'detail_file_escrow':detail_file_escrow,
+                  'detail_file_title':detail_file_title,
+                  'detail_file_password_record':detail_file_password_record,
+                  'mortgage': mortgage,
+                  'assets_details': assets_details,
+                  'liabilities_details':liabilities_details,
+                  'bw_expenses': bw_expenses,
+                  'cw_expenses': cw_expenses,
+                  'escrow_details':escrow_details,
+                  'listing_buyers':listing_buyers,
+                  'document_form':document_form,
+                  'document_details':document_detail_obj,
+                  'lock_expiration_date': lock_expiration_date
+                  }
+                  )
+
+
+def import_file(request):
+    """
+    For auto populate the data in the create transaction fields.
+    we have import file and populate the fields with the data
+    """
+    if(request.session.has_key('company_id') == False):
+        return HttpResponseRedirect('/')
+
+    company_id = request.session.get('company_id')
+    company_obj = CompanyMaster.objects.get(id=company_id)
+    # Initial form empty data
+    form = FileForm()
+    user_id = request.session.get('user_id')
+    user_obj = UserMaster.objects.get(id=user_id)
+
+    loan_officers_list = []
+    loan_officers = RoleMaster.objects.filter(company_id=company_id, role_type='Loan officer')
+    for officers in loan_officers:
+        user_role = UserRoleMap.objects.filter(role_id=officers.id)
+        for role in user_role:
+            users = UserMaster.objects.filter(id=role.user_id.id)
+            for i in users:
+                loan_officers_list.append(i)
+
+    assign_processor_list = UserRoleMap.objects.filter(role_id__role_type='Loan Processor', role_id__company_id=company_obj)
+
+    if request.method == 'POST' and request.FILES.get('myfile'):
+        transaction_file = request.FILES.get('myfile')
+        # Store the file in the Media Directory
+        fs = FileSystemStorage(settings.MEDIA_ROOT)
+        filename = fs.save(transaction_file.name, transaction_file)
+        
+        try:
+            files = {'file': open(
+                str(settings.MEDIA_ROOT) + '/' + filename, 'rb')}
+            r = requests.post(settings.PARSER_ENDPOINT, files=files)
+            if not r.ok:
+                return HttpResponseRedirect('/file/create/')
+        except Exception as e:
+            return HttpResponseRedirect('/file/create/')
+
+        transaction_info = r.json()
+        request.session['transaction_info'] = transaction_info
+        borrower = {}
+        co_borrower_list = []
+        for details in transaction_info.get('Applicant'):
+            if details.get("Applicant / Co-Applicant Indicator") == "BW":
+                borrower.update({
+                    'borrower_name': details.get('Applicant First Name'),
+                    'borrower_phone': details.get('Home Phone'),
+                    'borrower_email': details.get('Email Address'),
+                })
+
+            if details.get("Applicant / Co-Applicant Indicator") == "QZ":
+                co_borrower = {}
+                co_borrower.update({
+                    'co_borrower_name': details.get('Applicant First Name'),
+                    'co_borrower_phone': details.get('Home Phone'),
+                    'co_borrower_email': details.get('Email Address'),
+                })
+                co_borrower_list.append(co_borrower)
+        try:
+            rate_type = RateTypeMaster.objects.get(is_active='Y', fnm_applied_value=transaction_info.get('Amortization Type'))
+            rate_type = rate_type.id
+        except RateTypeMaster.DoesNotExist:
+            rate_type = None
+        
+        try:
+            loan_purpose = LoanPurposeMaster.objects.get(is_active='Y',fnm_purpose_value=transaction_info.get('Purpose of Loan'),fnm_applied_value=transaction_info.get('Mortgage Applied For') )
+            loan_purpose = loan_purpose.id
+        except LoanPurposeMaster.DoesNotExist:
+            loan_purpose = None
+
+        try:
+            property_type = PropertyTypeMaster.objects.get(is_active='Y',fnm_property_value=transaction_info.get('Property will be'))
+            property_type = property_type.id
+        except PropertyTypeMaster.DoesNotExist:
+            property_type = None
+        
+        try:
+            state = StateMaster.objects.get(is_active='Y',fnm_state_value=transaction_info.get('Property State'))
+            state = state.id
+        except StateMaster.DoesNotExist:
+            state = None
+        
+        months_to_years = transaction_info.get('No. of Months')
+        if months_to_years and len(months_to_years)>0:
+            try:
+                term = TermMaster.objects.get(is_active='Y', term=int(int(months_to_years) / 12))
+                term = term.id
+            except TermMaster.DoesNotExist:
+                term = None
+        else:
+            term = None
+
+        final_dict = {
+            'loan_amount': transaction_info.get('Loan Amount'),
+            'property_type': property_type,
+            'property_address': transaction_info.get('Property Street Address'),
+            'property_city': transaction_info.get('Property City'),
+            'property_state': state,
+            'property_zipcode': transaction_info.get('Property Zip Code'),
+            'appraised_value': transaction_info.get('Property Appraised Value'),
+			"rate_type": rate_type,
+			'loan_purpose': loan_purpose,
+			'rate': transaction_info.get('Interest Rate'),
+			'term': term,
+        }
+        final_dict.update(borrower)
+        # Fill the form with initial data to see after importing the file
+        form = FileForm(initial=final_dict)
+        return render(request, 'file/new.html', {'form': form, 'co_applicants': co_borrower_list,'user_obj':user_obj, 'loan_officers_list':loan_officers_list, 'assign_processor_list':assign_processor_list})
+    return render(request, 'file/new.html', {'form': form,'user_obj':user_obj, 'loan_officers_list':loan_officers_list, 'assign_processor_list':assign_processor_list})
+
+
+def upload_documents(request, file_id):
+    try:
+        file_master = FileMaster.objects.get(id=file_id)
+    except DocumentsType.DoesNotExist:
+        file_master = None
+
+    document_form = DocumentUpload()
+    if request.method == "POST":
+        document_form = DocumentUpload(request.POST, request.FILES)
+        files = request.POST.getlist('filepond')
+        for f in files:
+            tu = TemporaryUpload.objects.get(upload_id=f)
+            file_pond_path = settings.DJANGO_DRF_FILEPOND_FILE_STORE_PATH + '/' + str(tu.file)
+            try:
+                os.mkdir('media/document_{}'.format(file_master.id))
+            except Exception:
+                pass
+
+            try:
+                os.rename(tu.get_file_path(), 'media/document_{}/{}'.format(file_master.id, tu.upload_name)) # Delete the temporary upload record and the temporary directory tu.delete()
+            except Exception:
+                pass
+
+            file_instance = DocumentsTypeMaster(
+                file_id=file_master,
+                document_file_path='document_{}/{}'.format(file_master.id,tu.upload_name),
+                document_file_name=tu.upload_name
+            )
+            file_instance.save()
+
+        return HttpResponseRedirect(reverse('view_file', args=[file_master.id]))
+    return render(request, "file/detail_upload_file.html", {"document_form": document_form})
+
+
+def sub_status_filter(request):
+    status_id = request.GET.get('status_id', None)
+    sub_status = LoanSubStatusMaster.objects.filter(status_id=status_id)
+    return render(request, 'file/sub_status.html',{'sub_status': sub_status})
+
+def loan_officer_filter(request):
+    user_id = request.GET.get('user_id', None)
+    user_master = UserMaster.objects.get(id=user_id)
+    loan_officer_details = {
+        'email': user_master.email,
+        'fax': user_master.fax,
+        'nmls_id': user_master.nmls_id,
+        'lo_direct': user_master.phone
+    }
+    return JsonResponse(loan_officer_details)
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import FileResponse
+
+@csrf_exempt
+def download_files(request):
+    file_id = request.POST.get('file_id', None)
+
+    try:
+        file_master = FileMaster.objects.get(id=int(file_id))
+    except Exception:
+        file_master = None
+
+    try:
+        document_details = list(DocumentsTypeMaster.objects.filter(file_id=file_master).values())
+    except Exception:
+        document_details = None
+
+    media_path = str(settings.MEDIA_ROOT)
+    fantasy_zip = zipfile.ZipFile(media_path + '/' + 'document_{}.zip'.format(file_master.id), 'w')
+    for file in document_details:
+        fantasy_zip.write(os.path.join('media', file.get('document_file_path')), os.path.relpath(os.path.join('media',file.get('document_file_path')), media_path))
+    fantasy_zip.close()
+
+    zip_file = {
+        'zip_response': 'document_{}.zip'.format(file_master.id)
+    }
+    return JsonResponse(zip_file)
+

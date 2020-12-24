@@ -1,0 +1,165 @@
+ <!-- Tab Menu Link -->
+ <div class="col-2 p-0">
+
+    <div class="status">
+       <div class="card">
+          <div class="card-body">
+             <table class="status-table">
+                <tbody>
+                   <tr>
+                      <td>
+                         Loan Number
+                      </td>
+                      <td>
+                         <span class="loan-number">
+
+                            {{ file_master.loan_number}}
+                         </span>
+                      </td>
+                   </tr>
+                   <tr>
+                      <td>
+                         Loan Status
+                      </td>
+                      <td>
+                         <span class="closing-status">{{ file_master.status_id.status_name}}</span> 
+                      </td>
+                   </tr>
+                   <tr>
+                      <td>
+                         Date
+                      </td>
+                      <td>
+                         {{ file_master.created_date|date:'m-d-Y'}} 
+                      </td>
+                   </tr>
+                   <tr>
+                      <td>
+                         Loan Officer Name
+                      </td>
+                      <td>
+                        {{ file_master.loan_officer_id.user_name}}
+                      </td>
+                   </tr>
+                   <tr>
+                      <td>
+                         NMLS Id
+                      </td>
+                      <td>
+                         <span class="loan-number">
+                              {{ file_master.nmls_id}}
+                         </span>
+                      </td>
+                   </tr>
+                </tbody>
+             </table> 
+          </div>
+       </div>
+    </div>
+
+    <div class="main-menu mt-3">
+       <!-- Nav tabs -->
+       <ul class="nav nav-tabs" id="main_menu_tabs" role="tablist" style="background:rgba(242, 242, 242, 0.4) !important;">
+             <li class="nav-item">
+                <a class="nav-link active" id="menu-tab" data-toggle="tab" href="#menu" role="tab" aria-controls="menu" aria-selected="true">Menus</a>
+             </li>
+             <li class="nav-item">
+                <a class="nav-link" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="summary" aria-selected="false">Summary</a>
+             </li>                                         
+          </ul>
+          <!-- ./Nav tabs -->
+          
+          <div class="tab-content overlay-second">
+             <div class="tab-pane active" id="menu" role="tabpanel" aria-labelledby="menu-tab">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action" id="loan_list" data-toggle="list" href="#loan_detail" role="tab" aria-controls="Logs">Loan Details</a>
+                    {% if '14' in role_feature %}
+                         <button class="dropdown-btn drp-2 list-group-item list-group-item-action ">URLA 
+                            <i class="fa fa-caret-down"></i>
+                         </button>
+                         <div class="dropdown-container drp-2-d">  
+                            <div class="list-group" id="list-tab-second" role="tablist">      
+                               <!-- <div class="tab-content" id="nav-tabContent-second">                        -->
+                                  <a class="list-group-item list-group-item-action"  id="type_of_mortgage_list" data-toggle="list" href="#type_of_mortgage-details" role="tab" aria-controls="Type of Mortgage">
+                                  Type of Mortgage</a>
+                                  <a class="list-group-item list-group-item-action"  id="property_information_list" data-toggle="list" href="#property_information-details" role="tab" aria-controls="Property Information">
+                                     Property Information</a>
+                                  <a class="list-group-item list-group-item-action"  id="borrower_information_list" data-toggle="list" href="#borrower_information-details" role="tab" aria-controls="Borrower Information">
+                                     Borrower Information</a>
+                                  <a class="list-group-item list-group-item-action"  id="employment_information_list" data-toggle="list" href="#employment_information-details" role="tab" aria-controls="Employment Information">
+                                     Employment Information</a>
+                                  <a class="list-group-item list-group-item-action"  id="expense_information_list" data-toggle="list" href="#expense_information-details" role="tab" aria-controls="Expense Information">
+                                     Expense Information</a>
+                                  <a class="list-group-item list-group-item-action"  id="assets_liabilities_list" data-toggle="list" href="#assets_liabilities-details" role="tab" aria-controls="Assets And Liabilities">
+                                     Assets And Liabilities</a>
+                                  <a class="list-group-item list-group-item-action"  id="details_transaction_list" data-toggle="list" href="#details_transaction-details" role="tab" aria-controls="Details Of Transaction">
+                                     Details Of Transaction</a>
+                                  <a class="list-group-item list-group-item-action"  id="declarations_list" data-toggle="list" href="#declarations-details" role="tab" aria-controls="Declarations">
+                                     Declarations</a>
+                                  <a class="list-group-item list-group-item-action"  id="acknowledgement_agreement_list" data-toggle="list" href="#acknowledgement_agreement-details" role="tab" aria-controls="Acknowledgement and Agreement">
+                                     Acknowledgement <br/>and Agreement</a>
+                                  <a class="list-group-item list-group-item-action"  id="government_monitoring_list" data-toggle="list" href="#government_monitoring-details" role="tab" aria-controls="Government Monitoring">
+                                     Government Monitoring</a>
+                               <!-- </div> -->
+                            </div>
+                         </div>
+                   {% endif %}
+                         <a class="list-group-item list-group-item-action" id="password-details-list" data-toggle="list" href="#password-details" role="tab" aria-controls="password">Manage Password</a>
+                   <a class="list-group-item list-group-item-action" id="logs-list" data-toggle="list" href="#logs" role="tab" aria-controls="Logs">Logs</a>
+                   <a class="list-group-item list-group-item-action" id="processor-assists-list" data-toggle="list" href="#processor-assists" role="tab" aria-controls="Processor Assists">Processor Assists</a>
+                   <a class="list-group-item list-group-item-action" id="date-tracking-list" data-toggle="list" href="#date-tracking" role="tab" aria-controls="Date Tracking">Date Tracking</a>
+                   
+                   <a class="list-group-item list-group-item-action" id="documents-list" data-toggle="list" href="#documents-tracking" role="tab" aria-controls="Documents">Documents</a>
+                   
+                </div>
+             </div>
+             
+             <div class="tab-pane" id="summary" role="tabpanel" aria-labelledby="summary-tab">                     
+
+                <table class="summary-table">
+                   <tbody>
+                      <tr>
+                         <td class="description"><label for="NoteRate">Interest Rate: %</label></td>
+                         <td class="value"><span>{{ file_master.rate }}</span></td>
+                      </tr>
+
+                      <tr>
+                         <td class="description"><label for="Purpose">Mortgage Purpose</label></td>
+                         <td class="value"><span>{{ file_master.mortage_applied_type}}</span></td>
+                      </tr>
+                      <!-- Refinance Purpose -->
+                      <tr>
+                         <td class="description"><label for="RefinancePurpose">Refinance Purpose</label></td>
+                         <td class="value"><span>{{ file_master.refinance_purpose}}</span></td>
+                      </tr>
+                      <!-- LTV/CLTV/TLTV -->
+                      <tr>
+                         <td><label for="LoanToValue">LTV/CLTV</label></td>
+                         <td class="value "><span>{{ file_master.ltv }}</span> / <span>{{ file_master.ctv }}</span></td>
+                      </tr>
+                      <!-- Occupancy Type -->
+                      <tr>
+                         <td><label for="OccupancyType">Occupancy Type</label></td>
+                         <td class="value pull-left"><span>{{ file_master.occupancy }}</span></td>
+                      </tr>
+                      <!-- Base Loan Amount -->
+                      <tr>
+                         <td><label for="LoanAmount">Loan Amount</label></td>
+                         <td class="value "><span>{{ file_master.loan_amount }}</span></td>
+                      </tr>
+                      <!-- Appraised Value -->
+                      <tr>
+                         <td><label for="AppraisedValue">Appraised Value</label></td>
+                         <td class="value "><span>{{ file_master.appraisal_value}}</span></td>
+                      </tr>
+                      <!-- Property Type -->
+                      <tr>
+                         <td><label for="PropertyType">Property Type</label></td>
+                         <td class="value pull-left"><span>{{ file_master.property_type }}</span></td>
+                      </tr>
+                   </tbody>
+                </table>
+             </div>
+          </div>
+    </div>
+ </div>

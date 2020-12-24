@@ -1,0 +1,594 @@
+{% load currency %} 
+<!-- Borrower Information -->
+{% if div_id == 'borrower_information-details' %}
+   <div class="tab-pane fade active show" id="borrower_information-details" role="tabpanel" aria-labelledby="borrower_information_list">
+{% else %}
+<div class="tab-pane fade " id="borrower_information-details" role="tabpanel" aria-labelledby="borrower_information_list">
+{% endif %}
+    <!-- Section Header -->
+             <div class="d-flex justify-content-between section-header">
+                <span class="section-title">Borrower Information</span>
+             </div>
+             <!-- ./Section Header -->
+      <form method="POST" action="" id="id_borrower_information_form">
+             <!-- Tabs Section Body -->
+            <div class="card mt-2">
+               <div class="card-body tab-overflow">     
+                      <!-- Borrower -->
+                         <div class="card-header">
+                            <span>
+                               <i class="fas fa-exclamation-circle mr-1"></i>
+                               Borrower - {{ file_master.borrower_name}}
+                            </span>
+                            <span></span>
+                         </div>
+                         <div class="p-2">
+                               <div class="row">
+                                  <div class="col-3">
+                                     <div class="form-group">
+                                        <label class="label">Suffix</label>
+                                        <input type="text" class="form-control" name="borrower_suffix" value="{{ file_master.borrower_suffix|check_none_values }}">                                             
+                                     </div>
+                                  </div>
+                                  <div class="col-3">
+                                     <div class="form-group">
+                                        <label class="label">First Name</label>
+                                        <input type="text" class="form-control" name="borrower_first_name" value="{{ file_master.borrower_first_name|check_none_values}}">                                             
+                                     </div>
+                                  </div>
+                                  <div class="col-3">
+                                     <div class="form-group">
+                                        <label class="label">Middle Name</label>
+                                        <input type="text" class="form-control" name="borrower_middle_name" value="{{ file_master.borrower_middle_name|check_none_values}}">                                             
+                                     </div>
+                                  </div>
+                                  <div class="col-3">
+                                     <div class="form-group">
+                                        <label class="label">Last Name</label>
+                                        <input type="text" class="form-control" name="borrower_last_name" value="{{ file_master.borrower_last_name|check_none_values}}">                                             
+                                     </div>
+                                  </div>
+                                  <div class="col-4">
+                                     <div class="form-group">
+                                        <label class="label">Social Security Number</label>
+                                        <input type="number" class="form-control" name="borrower_social_security_number" value="{{ file_master.borrower_social_security_number}}">
+                                     </div>
+                                  </div>
+                                  <div class="col-4">
+                                     <div class="form-group">
+                                        <label class="label">Home Phone <small>(incl. area code)</small></label>
+                                        <input type="number" class="form-control" name="borrower_phone" value="{{ file_master.borrower_phone}}">
+                                     </div>
+                                  </div>
+                                  <div class="col-4">
+                                     <div class="form-group">
+                                        <label class="label">DOB</label>
+                                        <input type="date" class="form-control" placeholder="mm/dd/yyyy" name="borrower_date_of_birth" value="{{ file_master.borrower_date_of_birth}}">
+                                     </div>
+                                  </div>
+                                  <div class="col-4">
+                                     <div class="form-group">
+                                        <label class="label">Years School</label>
+                                        <input type="number" class="form-control" name="borrower_years_in_school" value="{{ file_master.borrower_years_in_school }}">
+                                     </div>
+                                  </div>                            
+                                  <div class="col-4">
+                                     <div class="form-group no-btn">
+                                        <label class="label">Marital Status</label>
+                                        <select class="form-control" name="borrower_marital_status">
+                                          {% if file_master.borrower_marital_status == 'Married' %}
+                                          <option value='{{ file_master.borrower_marital_status }}' selected>{{ file_master.borrower_marital_status }}</option>
+                                          <option>Unmarried</option>
+                                          <option>Separated</option>
+                                          {% elif file_master.borrower_marital_status == 'Unmarried' %}
+                                          <option value='{{ file_master.borrower_marital_status }}' selected>{{ file_master.borrower_marital_status }}</option>
+                                          <option>Married</option>
+                                          <option>Separated</option>
+                                          {% elif file_master.borrower_address_type == 'Separated' %}
+                                          <option value='{{ file_master.borrower_marital_status }}' selected>{{ file_master.borrower_marital_status }}</option>
+                                          <option>Married</option>
+                                          <option>Unmarried</option>
+                                          {% else %}
+                                          <option>Married</option>
+                                          <option>Unmarried</option>
+                                          <option>Separated</option>
+                                          {% endif %}
+                                        </select>
+                                     </div>
+                                  </div>                                       
+                                  <div class="col-4">
+                                     <div class="form-group">
+                                        <label class="label">Dependents</label>
+                                        <input type="number" class="form-control" name="borrower_dependents" value="{{ file_master.borrower_dependents }}">
+                                     </div>
+                                  </div>                                       
+                                  <div class="col-12">
+                                     <div class="row">     
+                                        <div class="col-4">
+                                           <div class="form-group no-btn">
+                                              <label class="label">Property Type</label>
+                                              <select class="form-control" name="borrower_address_type">
+                                                {% if file_master.borrower_address_type == 'Own' %}
+                                                 <option value='{{ file_master.borrower_address_type }}' selected>Own</option>
+                                                 <option>Rent</option>
+                                                {% elif file_master.borrower_address_type == 'Rent' %}
+                                                <option>Own</option>
+                                                <option value='{{ file_master.borrower_address_type }}' selected>Rent</option>
+                                                {% else %}
+                                                <option>Own</option>
+                                                <option>Rent</option>
+                                                {% endif %}
+                                              </select>
+                                           </div>
+                                        </div>
+                                        <div class="col-4">
+                                           <div class="form-group">
+                                              <label class="label">No Years</label>
+                                              <input type="number" class="form-control" name="borrower_years_in_address" value="{{ file_master.borrower_years_in_address }}">
+                                           </div>
+                                        </div>
+                                        <div class="col-5">
+                                           <div class="form-group">
+                                              <label class="label">Street</label>
+                                              <textarea type="text" class="form-control" name="borrower_street" id="borrower_street">{{ file_master.borrower_street|check_none_values}}</textarea>
+                                           </div>
+                                        </div>
+                                        <div class="col-7">
+                                           <div class="row">
+                                              <div class="col-4">
+                                                 <div class="form-group">
+                                                    <label class="label">City</label>
+                                                    <input type="text" class="form-control" name="borrower_city" id="borrower_city" value="{{ file_master.borrower_city|check_none_values}}">
+                                                 </div>                                             
+                                                 </div>                                             
+                                              <div class="col-4">
+                                                 <div class="form-group no-btn">
+                                                    <label class="label">State</label>
+                                                    <select class=" form-control browser-default custom-select" name="borrower_state" id="borrower_state">
+                                                       {% for state in states %}
+                                                          {% if state.id == file_master.borrower_state|convert_to_int %}
+                                                             <option value="{{state.id}}" selected>{{state.state}}</option>
+                                                          {% endif %}
+                                                          <option value="{{state.id}}">{{state.state}}</option>
+                                                       {% endfor %}
+                                                     </select>
+                                                    <!-- <input type="text" class="form-control" value="{{ file_master.borrower_state }}"> -->
+                                                 </div>
+                                              </div>
+                                              <div class="col-4">
+                                                 <div class="form-group">
+                                                    <label class="label">Zip</label>
+                                                    <input type="number" class="form-control" name="borrower_zip" id="borrower_zip" value="{{ file_master.borrower_zip}}">
+                                                 </div>
+                                              </div>                                       
+                                           </div>
+                                        </div>                                                                          
+                                     </div>
+                                  </div>                                       
+                                  <div class="col-12">
+                                     <div class="row">  
+                                        <div class="col-3">
+                                           <div class="form-group regular">
+                                              <label class="label">Mailing Address</label>
+                                              <input type="checkbox" class="form-control address_fill" id="mailing_address_fill" name="borrower_mailing_address">
+                                              <label>Same</label>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="row">
+                                        <div class="col-5">
+                                           <div class="form-group">
+                                              <label class="label">Street</label>
+                                              <textarea type="text" class="form-control" name="borrower_mailing_street" id="id_mailing_address_1"></textarea>
+                                           </div>
+                                        </div>
+                                        <div class="col-7 ">
+                                           <div class="row">
+                                              <div class="col-4">
+                                                 <div class="form-group">
+                                                    <label class="label">City</label>
+                                                    <input type="text" class="form-control" name="borrower_mailing_city" id="id_mailing_city_1" >
+                                                 </div>                                             
+                                                 </div>                                             
+                                              <div class="col-4">
+                                                 <div class="form-group no-btn">
+                                                    <label class="label">State</label>
+                                                    <select class=" form-control browser-default custom-select" name="borrower_mailing_state" id="id_mailing_state_1">
+                                                      {% for state in states %}
+                                                          <option value="{{state.id}}">{{state.state}}</option>
+                                                       {% endfor %}
+                                                   </select>
+                                                 </div>
+                                              </div>
+                                              <div class="col-4">
+                                                 <div class="form-group">
+                                                    <label class="label">Zip</label>
+                                                    <input type="number" class="form-control" name="borrower_mailing_zip" id="id_mailing_zip_1">
+                                                 </div>
+                                              </div>                                       
+                                           </div>
+                                        </div>                                                                          
+                                     </div>
+                                  </div>                                       
+                                  <div class="col-12">
+                                     <div class="row">  
+                                        <div class="col-3">
+                                           <div class="form-group regular">
+                                              <label class="label">Former Address</label>                                                
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="row">
+                                       <div class="col-5">
+                                          <div class="form-group">
+                                             <label class="label">Street</label>
+                                             <textarea type="text" class="form-control" name="borrower_former_street" id="id_former_address_1">{{ file_master.borrower_former_address|check_none_values}}</textarea>
+                                          </div>
+                                       </div>
+                                       <div class="col-7 ">
+                                          <div class="row">
+                                             <div class="col-4">
+                                                <div class="form-group">
+                                                   <label class="label">City</label>
+                                                   <input type="text" class="form-control" name="borrower_former_city" id="id_former_city_1" value="{{ file_master.borrower_former_city|check_none_values}}">
+                                                </div>                                             
+                                                </div>                                             
+                                             <div class="col-4">
+                                                <div class="form-group no-btn">
+                                                   <label class="label">State</label>
+                                                   <select class=" form-control browser-default custom-select" name="borrower_former_state" id="borrower_former_state">
+                                                      {% for state in states %}
+                                                         {% if state.id == file_master.borrower_former_state|convert_to_int %}
+                                                            <option value="{{state.id}}" selected>{{state.state}}</option>
+                                                         {% endif %}
+                                                         <option value="{{state.id}}">{{state.state}}</option>
+                                                      {% endfor %}
+                                                    </select>
+                                                </div>
+                                             </div>
+                                             <div class="col-4">
+                                                <div class="form-group">
+                                                   <label class="label">Zip</label>
+                                                   <input type="number" class="form-control" name="borrower_former_zip" id="id_former_zip_1" value="{{ file_master.borrower_former_zip}}">
+                                                </div>
+                                             </div>                                       
+                                          </div>
+                                       </div>                                                                     
+                                     </div>
+                                  </div>                                       
+                               </div>
+                         </div>
+                      <!-- ./Borrower -->                      
+
+                     {% for file_co_borrower in co_borrower %}
+
+                      <!-- Co-Borrower -->
+                        <div class="card-header">
+                           <span>
+                              <i class="fas fa-exclamation-circle mr-1"></i>
+                              Co-Borrower - {{ file_co_borrower.co_borrower_name }} <input type="hidden" name="co_borrower_ids" value="{{ file_co_borrower.id }}">
+                           </span>
+                           <span></span>
+                        </div>
+                         
+                        <div class="p-2">
+                           <div class="row">
+                              <div class="col-3">
+                                 <div class="form-group">
+                                    <label class="label">Suffix</label>
+                                    <input type="text" class="form-control" name="co_borrower_suffix" value="{{ file_co_borrower.co_borrower_suffix|check_none_values}}">                                             
+                                 </div>
+                              </div>
+                              <div class="col-3">
+                                 <div class="form-group">
+                                    <label class="label">First Name</label>
+                                    <input type="text" class="form-control" name="co_borrower_first_name" value="{{ file_co_borrower.co_borrower_first_name|check_none_values}}">                                             
+                                 </div>
+                              </div>
+                              <div class="col-3">
+                                 <div class="form-group">
+                                    <label class="label">Middle Name</label>
+                                    <input type="text" class="form-control" name="co_borrower_middle_name" value="{{ file_co_borrower.co_borrower_middle_name|check_none_values}}">                                             
+                                 </div>
+                              </div>
+                              <div class="col-3">
+                                 <div class="form-group">
+                                    <label class="label">Last Name</label>
+                                    <input type="text" class="form-control" name="co_borrower_last_name" value="{{ file_co_borrower.co_borrower_last_name|check_none_values }}">                                             
+                                 </div>
+                              </div>
+                              <div class="col-4">
+                                 <div class="form-group">
+                                    <label class="label">Social Security Number</label>
+                                    <input type="number" class="form-control" name="co_borrower_social_security_number" value="{{ file_co_borrower.co_borrower_social_security_number}}">
+                                 </div>
+                              </div>
+                              <div class="col-4">
+                                 <div class="form-group">
+                                    <label class="label">Home Phone <small>(incl. area code)</small></label>
+                                    <input type="number" class="form-control" name="co_borrower_phone" value="{{ file_co_borrower.co_borrower_phone}}">
+                                 </div>
+                              </div>
+                              <div class="col-4">
+                                 <div class="form-group">
+                                    <label class="label">DOB</label>
+                                    <input type="date" class="form-control" placeholder="mm/dd/yyyy" name="co_borrower_date_of_birth" value="{{ file_co_borrower.co_borrower_date_of_birth }}">
+                                 </div>
+                              </div>
+                              <div class="col-4">
+                                 <div class="form-group">
+                                    <label class="label">Years School</label>
+                                    <input type="number" class="form-control" name="co_borrower_years_in_school" value="{{ file_co_borrower.co_borrower_years_in_school }}">
+                                 </div>
+                              </div>
+               
+                              <div class="col-4">
+                                 <div class="form-group no-btn">
+                                    <label class="label">Marital Status</label>
+                                    <select class="form-control" name="co_borrower_marital_status">
+                                       {% if file_co_borrower.co_borrower_marital_status == 'Married' %}
+                                          <option value='{{ file_co_borrower.co_borrower_marital_status }}' selected>{{ file_co_borrower.co_borrower_marital_status }}</option>
+                                          <option>Unmarried</option>
+                                          <option>Separated</option>
+                                       {% elif file_co_borrower.co_borrower_marital_status == 'Unmarried' %}
+                                          <option value='{{ file_co_borrower.co_borrower_marital_status }}' selected>{{ file_co_borrower.co_borrower_marital_status }}</option>
+                                          <option>Married</option>
+                                          <option>Separated</option>
+                                       {% elif file_co_borrower.co_borrower_marital_status == 'Separated' %}
+                                          <option value='{{ file_co_borrower.co_borrower_marital_status }}' selected>{{ file_co_borrower.co_borrower_marital_status }}</option>
+                                          <option>Married</option>
+                                          <option>Unmarried</option>
+                                       {% else %}
+                                          <option>Married</option>
+                                          <option>Unmarried</option>
+                                          <option>Separated</option>
+                                       {% endif %}
+                                    </select>
+                                 </div>
+                              </div>                                      
+                              <div class="col-4">
+                                 <div class="form-group">
+                                    <label class="label">Dependents</label>
+                                    <input type="number" class="form-control" name="co_borrower_dependents" value="{{ file_co_borrower.co_borrower_dependents }}">
+                                 </div>
+                              </div>                                       
+                              <div class="col-12">
+                                 <div class="row">     
+                                    <div class="col-4">
+                                       <div class="form-group no-btn">
+                                          <label class="label">Property Type</label>
+                                          <select class="form-control" name="co_borrower_address_type">
+                                             {% if file_co_borrower.co_borrower_address_type == 'Own' %}
+                                                <option value='{{ file_co_borrower.co_borrower_address_type }}' selected>Own</option>
+                                                <option>Rent</option>
+                                             {% elif file_co_borrower.co_borrower_address_type == 'Rent' %}
+                                                <option>Own</option>
+                                                <option value='{{ file_co_borrower.co_borrower_address_type }}' selected>Rent</option>
+                                             {% else %}
+                                                <option>Own</option>
+                                                <option>Rent</option>
+                                             {% endif %}
+                                          </select>
+                                       </div>
+                                    </div>
+                                    <div class="col-4">
+                                       <div class="form-group">
+                                          <label class="label">No Years</label>
+                                          <input type="number" class="form-control" name="co_borrower_years_in_address" value='{{ file_co_borrower.co_borrower_years_in_address }}'>
+                                       </div>
+                                    </div>
+                                    <div class="col-5">
+                                       <div class="form-group">
+                                          <label class="label">Street</label>
+                                          <textarea type="text" class="form-control" name="co_borrower_street" id="co_borrower_street_{{ file_co_borrower.id}}">{{ file_co_borrower.co_borrower_street|check_none_values }}</textarea>
+                                       </div>
+                                    </div>
+                                    <div class="col-7">
+                                       <div class="row">
+                                          <div class="col-4">
+                                             <div class="form-group">
+                                                <label class="label">City</label>
+                                                <input type="text" class="form-control" name="co_borrower_city" id="co_borrower_city_{{ file_co_borrower.id}}" value='{{ file_co_borrower.co_borrower_city|check_none_values }}'>
+                                             </div>                                             
+                                             </div>                                             
+                                          <div class="col-4">
+                                             <div class="form-group no-btn">
+                                                <label class="label">State</label>
+                                                <select class=" form-control browser-default custom-select" name="co_borrower_state" id="co_borrower_state_{{ file_co_borrower.id}}">
+                                                   {% for state in states %}
+                                                      {% if state.id == file_co_borrower.co_borrower_state|convert_to_int %}
+                                                         <option value="{{state.id}}" selected>{{state.state}}</option>
+                                                      {% endif %}
+                                                      <option value="{{state.id}}">{{state.state}}</option>
+                                                   {% endfor %}
+                                                </select>
+                                             </div>
+                                          </div>
+                                          <div class="col-4"> 
+                                             <div class="form-group">
+                                                <label class="label">Zip</label>
+                                                <input type="number" class="form-control" name="co_borrower_zip" id="co_borrower_zip_{{ file_co_borrower.id}}" value='{{ file_co_borrower.co_borrower_zip }}'>
+                                             </div>
+                                          </div>                                       
+                                       </div>
+                                    </div>                                                                          
+                                 </div>
+                              </div>                                       
+                              <div class="col-12">
+                                 <div class="row">  
+                                    <div class="col-3">
+                                       <div class="form-group regular">
+                                          <label class="label">Mailing Address</label>
+                                          <input type="checkbox" class="form-control mailing_address_fill_{{ file_co_borrower.id}}" id="mailing_address_fill_{{ file_co_borrower.id}}" name="co_borrower_mailing_address">
+                                          <label>Same</label>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                    <div class="col-5">
+                                       <div class="form-group">
+                                          <label class="label">Street</label>
+                                          <textarea type="text" class="form-control" name="co_borrower_mailing_street" id="id_co_mailing_address_{{ file_co_borrower.id}}"></textarea>
+                                       </div>
+                                    </div>
+                                    <div class="col-7 ">
+                                       <div class="row">
+                                          <div class="col-4">
+                                             <div class="form-group">
+                                                <label class="label">City</label>
+                                                <input type="text" class="form-control" name="co_borrower_mailing_city" id="id_co_mailing_city_{{ file_co_borrower.id}}" >
+                                             </div>                                             
+                                             </div>                                             
+                                          <div class="col-4">
+                                             <div class="form-group no-btn">
+                                                <label class="label">State</label>
+                                                <select class=" form-control browser-default custom-select" name="co_borrower_mailing_state" id="id_co_mailing_state_{{ file_co_borrower.id}}">
+                                                   {% for state in states %}
+                                                      <option value="{{state.id}}">{{state.state}}</option>
+                                                   {% endfor %}
+                                                </select>
+                                             </div>
+                                          </div>
+                                          <div class="col-4">
+                                             <div class="form-group">
+                                                <label class="label">Zip</label>
+                                                <input type="number" class="form-control" name="co_borrower_mailing_zip" id="id_co_mailing_zip_{{ file_co_borrower.id}}">
+                                             </div>
+                                          </div>                                       
+                                       </div>
+                                    </div>                                                                          
+                                 </div>
+                              </div>                                      
+                              <div class="col-12">
+                                 <div class="row">  
+                                    <div class="col-3">
+                                       <div class="form-group regular">
+                                          <label class="label">Former Address</label>                                                
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                    <div class="col-5">
+                                       <div class="form-group">
+                                          <label class="label">Street</label>
+                                          <textarea type="text" class="form-control" name="co_borrower_former_street" id="id_co_former_address_{{ file_co_borrower.id}}">{{ file_co_borrower.co_borrower_former_address|check_none_values}}</textarea>
+                                       </div>
+                                    </div>
+                                    <div class="col-7 ">
+                                       <div class="row">
+                                          <div class="col-4">
+                                             <div class="form-group">
+                                                <label class="label">City</label>
+                                                <input type="text" class="form-control" name="co_borrower_former_city" id="id_co_former_city_{{ file_co_borrower.id}}" value="{{ file_co_borrower.co_borrower_former_city|check_none_values}}">
+                                             </div>                                             
+                                             </div>                                             
+                                          <div class="col-4">
+                                             <div class="form-group no-btn">
+                                                <label class="label">State</label>
+                                                <select class=" form-control browser-default custom-select" name="co_borrower_former_state" id="id_co_former_state_{{ file_co_borrower.id}}">
+                                                   {% for state in states %}
+                                                      {% if state.id == file_co_borrower.co_borrower_former_state|convert_to_int %}
+                                                         <option value="{{state.id}}" selected>{{state.state}}</option>
+                                                      {% endif %}
+                                                      <option value="{{state.id}}">{{state.state}}</option>
+                                                   {% endfor %}
+                                                   </select>
+                                             </div>
+                                          </div>
+                                          <div class="col-4">
+                                             <div class="form-group">
+                                                <label class="label">Zip</label>
+                                                <input type="number" class="form-control" name="co_borrower_former_zip" id="id_co_former_zip_{{ file_co_borrower.id}}" value="{{ file_co_borrower.co_borrower_former_zip}}">
+                                             </div>
+                                          </div>                                       
+                                       </div>
+                                    </div>                                                                          
+                                 </div>
+                              </div>                                       
+                           </div>
+                        </div>
+                     {% endfor %} 
+                      <!-- ./Co-Borrower -->                       
+               </div>
+            </div>
+            <div class="row mt-3">
+               <div class="col-md-12">
+                  <div class="text-center">
+                     <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+                     <button type="submit" class="btn btn-success btn-sm" id="id_submit_mortage"><i class="far fa-check-circle mr-2"></i>Save</button>
+                  </div>
+               </div>
+            </div>
+      </form>
+             <!-- ./Tabs Section Body -->                  
+   </div>
+          <!-- ./Borrower Information  -->
+<script>
+   var token = '{{csrf_token}}';
+   $("#id_borrower_information_form").on('submit', function (e) {
+      e.preventDefault();
+      $.ajax({
+         headers: { "X-CSRFToken": token },
+         type: "POST",
+         url: "{% url 'borrower_information' file_master.id %}",
+         data: $('#id_borrower_information_form').serialize(),
+         success: function (response) {
+            window.location.href=window.location.href;
+         }
+      });
+   });
+   $('textarea[name="borrower_mailing_street"]').val("{{file_master.borrower_mailing_address|check_none_values }}");
+   $('input[name="borrower_mailing_city"]').val("{{file_master.borrower_mailing_city|check_none_values }}");
+   $('select[name="borrower_mailing_state"]').val("{{file_master.borrower_mailing_state }}");
+   $('input[name="borrower_mailing_zip"]').val("{{file_master.borrower_mailing_zip }}");
+
+   
+   $('#mailing_address_fill').change(function() {
+         var ischecked = $(this).is(':checked');
+         console.log(ischecked)
+         if(ischecked) {
+            var borrower_street = $('#borrower_street').val();
+            var borrower_city = $('#borrower_city').val();
+            var borrower_zip = $('#borrower_zip').val();
+            var borrower_state = $('#borrower_state').val();
+            console.log(borrower_state, borrower_city, borrower_zip, borrower_street)
+            $('#id_mailing_address_1').val(borrower_street);
+            $('#id_mailing_city_1').val(borrower_city);
+            $('#id_mailing_state_1').val(borrower_state).trigger('change');
+            $('#id_mailing_zip_1').val(borrower_zip);
+         } else{
+         $('#id_mailing_address_1').val('');
+         $('#id_mailing_city_1').val('');
+         $('#id_mailing_state_1').val('').trigger('change');
+         $('#id_mailing_zip_1').val('');
+      }
+   });
+
+   {% for file_co_borrower in co_borrower %}
+      $('#id_co_mailing_address_{{ file_co_borrower.id}}').val("{{file_co_borrower.co_borrower_mailing_address|check_none_values }}");
+      $('#id_co_mailing_city_{{ file_co_borrower.id}}').val("{{file_co_borrower.co_borrower_mailing_city|check_none_values }}");
+      $('#id_co_mailing_state_{{ file_co_borrower.id}}').val("{{file_co_borrower.co_borrower_mailing_state }}");
+      $('#id_co_mailing_zip_{{ file_co_borrower.id}}').val("{{file_co_borrower.co_borrower_mailing_zip }}");
+      
+      $('.mailing_address_fill_{{ file_co_borrower.id }}').change(function() {
+            var ischecked = $(this).is(':checked');
+            console.log(ischecked)
+            if(ischecked) {
+               var co_borrower_street = $('#co_borrower_street_{{ file_co_borrower.id}}').val();
+               var co_borrower_city = $('#co_borrower_city_{{ file_co_borrower.id}}').val();
+               var co_borrower_zip = $('#co_borrower_zip_{{ file_co_borrower.id}}').val();
+               var co_borrower_state = $('#co_borrower_state_{{ file_co_borrower.id}}').val();
+               console.log(co_borrower_state, co_borrower_city, co_borrower_zip, co_borrower_street)
+               $('#id_co_mailing_address_{{ file_co_borrower.id}}').val(co_borrower_street);
+               $('#id_co_mailing_city_{{ file_co_borrower.id}}').val(co_borrower_city);
+               $('#id_co_mailing_state_{{ file_co_borrower.id}}').val(co_borrower_state).trigger('change');
+               $('#id_co_mailing_zip_{{ file_co_borrower.id}}').val(co_borrower_zip);
+            } else{
+            $('#id_co_mailing_address_{{ file_co_borrower.id}}').val('');
+            $('#id_co_mailing_city_{{ file_co_borrower.id}}').val('');
+            $('#id_co_mailing_state_{{ file_co_borrower.id}}').val('').trigger('change');
+            $('#id_co_mailing_zip_{{ file_co_borrower.id}}').val('');
+         }
+      });
+   {% endfor %}
+</script>

@@ -1,0 +1,714 @@
+{% if div_id == 'assets_liabilities-details' %}
+<div class="tab-pane fade active show" id="assets_liabilities-details" role="tabpanel" aria-labelledby="assets_liabilities_list">
+{% else %}
+<div class="tab-pane fade" id="assets_liabilities-details" role="tabpanel" aria-labelledby="assets_liabilities_list">
+{% endif %}
+      <div class="d-flex justify-content-between section-header"> 
+      <span class="section-title">Assets And Liabilities</span> 
+   </div>
+   <form method="POST" action="" id="id_assests_liabilites_form">
+      <div class="card mt-2">
+         <div class="card-body tab-overflow">
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Description</label>
+                        <input class="form-control" type="text" value="{{ file_master.asset_description}}" name="asset_description">
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Market <br>Value</label>
+                        <input class="form-control" type="number" value="{{ file_master.assest_market_value}}" name="assest_market_value"> 
+                     </div>
+                  </div>
+                  <div class="col-6">
+                     <div class="form-group">
+                        <label class="label-p">Cash deposit <br>toward purchase held by </label>
+                        <input class="form-control" type="number" value="{{ file_master.asset_cash_deposit}}" name="asset_cash_deposit"> 
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="card-header"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                     List checking and savings accounts below
+               </span> 
+               
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Name</label>
+                        <input type="text" class="form-control" id='id_asset_name_1'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Address of <br>Bank</label>
+                        <input type="text" class="form-control" id='id_address_bank_1'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">S&L, or <br> Credit Union</label>
+                        <input type="text" class="form-control" id='id_s_l_credit_union_1'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Acct. No</label>
+                        <input type="number" class="form-control" id='id_acct_no_1'>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-12">
+                  <div class="input-group d-flex justify-content-end">
+                     <button type="button" class="btn btn-primary btn-sm add_list_savings"> <i class="fas fa-plus mr-1" aria-hidden="true"></i> Add </button>
+                  </div>
+               </div>
+               <div class="table-style-three">
+                  <table>
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Address of Bank</th>
+                           <th>S&L or Credit Union</th>
+                           <th>Acct. No</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                     <tbody id="list_savings">
+                        {% if list_saving_details %}
+                           {% for list_saving in list_saving_details %}
+                           <tr id='list_savings_{{list_saving.id}}'>
+                              <td>
+                                 <input type='text' class='form-control' name='asset_name_1[]'  value="{{ list_saving.file_name }}">
+                                 <input type='hidden' class='form-control list_savings_ids' name='list_savings_ids[]'  value="{{ list_saving.id }}">
+                              </td>
+                              <td>
+                                 <input type='text' class='form-control' name='address_bank_1[]' value="{{ list_saving.file_address_bank }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='s_l_credit_union_1[]' value="{{ list_saving.file_s_l_credit_union }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='acct_no_1[]' value="{{ list_saving.file_acct_no }}">
+                              </td>
+                              <td>
+                                 <button type="button" class="remove_list_savings_ajax btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>
+                              </td>
+                           </tr>
+                           {% endfor %}
+                        {% endif %}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <div class="card-header" style="margin-top: 2%;"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                  Liabilities and Pledged Assets
+               </span> 
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Name</label>
+                        <input type="text" class="form-control"  id='id_liabilities_name_1'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Address of <br>Compnay</label>
+                        <input type="text" class="form-control"  id='id_liabilities_address_company_1'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Monthly Payment</label>
+                        <input type="text" class="form-control"  id='id_liabilities_monthly_payment_1'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Months Left to Pay</label>
+                        <input type="number" class="form-control"  id='id_liabilities_months_left_to_pay_1'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Unpaid <br>Balance</label>
+                        <input type="text" class="form-control"  id='id_liabilities_unpaid_balance_1'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Acct. No</label>
+                        <input type="number" class="form-control" id='id_liabilities_acct_no_1'>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-12">
+                  <div class="input-group d-flex justify-content-end">
+                     <button type="button" class="btn btn-primary btn-sm liabilities_pledged_assets"> <i class="fas fa-plus mr-1" aria-hidden="true"></i> Add </button>
+                  </div>
+               </div>  
+               <div class="table-style-three">
+                  <table>
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Address of Company</th>
+                           <th>Monthly Payment</th>
+                           <th>Months Left to Pay</th>
+                           <th>Unpaid Balance</th>
+                           <th>Acct. No</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                     <tbody id="liabilities_pledged_assets">
+                        {% if liabilities_pledged_assets_details %}
+                           {% for liabilities_pledged_assets in liabilities_pledged_assets_details %}
+                           <tr id='liabilities_pledged_assets_{{liabilities_pledged_assets.id}}'>
+                              <td>
+                                 <input type='text' class='form-control' name='liabilities_name_1[]'  value="{{ liabilities_pledged_assets.file_name }}">
+                                 <input type='hidden' class='form-control liabilities_pledged_asset_ids' name='liabilities_pledged_asset_ids[]'  value="{{ liabilities_pledged_assets.id }}">
+                              </td>
+                              <td>
+                                 <input type='text' class='form-control' name='liabilities_address_company_1[]' value="{{ liabilities_pledged_assets.file_address_company }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='liabilities_monthly_payment_1[]' value="{{ liabilities_pledged_assets.file_monthly_payment }}">
+                              </td>
+                              <td>
+                                 <input type='number'  class='form-control' name='liabilities_months_left_to_pay_1[]' value="{{ liabilities_pledged_assets.file_months_left_to_pay }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='liabilities_unpaid_balance_1[]' value="{{ liabilities_pledged_assets.file_unpaid_balance }}">
+                              </td>
+                              <td>
+                                 <input type='number'  class='form-control' name='liabilities_acct_no_1[]' value="{{ liabilities_pledged_assets.file_acct_no }}">
+                              </td>
+                              <td>
+                                 <button type="button" class="remove_liabilities_pledged_assets_ajax btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>
+                              </td>
+                           </tr>
+                           {% endfor %}
+                        {% endif %}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <div class="card-header" style="margin-top: 2%;"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                  Continuation Sheet/Residential Loan Application                                 
+               </span> 
+               <span></span> 
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Borrower</label>
+                        <input class="form-control" value="{{ file_master.borrower_name }}"> </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Agency Case Number</label>
+                        <input class="form-control" type="number" value="{{ file_master.agency_case_master }}"> </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Co-Borrower</label> 
+                        {% for i in co_borrower %}
+                        <input class="form-control" value="{{ i.co_borrower_name}}"> 
+                        {% endfor %} 
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Lender Case Number</label>
+                        <input class="form-control" type="number" value="{{ file_master.lender_case_number }}"> </div>
+                  </div>
+               </div>
+            </div>
+            <div class="card-header" style="margin-top: 2%;"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                  Assets
+               </span> 
+            </div>
+            
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Name</label>
+                        <input type="text" class="form-control" id='id_asset_name'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Address of <br>Bank</label>
+                        <input type="text" class="form-control" id='id_address_bank'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">S&L, or <br> Credit Union</label>
+                        <input type="text" class="form-control" id='id_s_l_credit_union'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Cash or <br>MarketValue</label>
+                        <input type="text" class="form-control" id='id_cash_market_value'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Months Left <br>to Pay</label>
+                        <input type="text" class="form-control" id='id_months_left_to_pay'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Acct. No</label>
+                        <input type="number" class="form-control" id='id_acct_no'>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-12">
+                  <div class="input-group d-flex justify-content-end">
+                     <button type="button" class="btn btn-primary btn-sm add_assets"> <i class="fas fa-plus mr-1" aria-hidden="true"></i> Add </button>
+                  </div>
+               </div>  
+               <div class="table-style-three">
+                  <table>
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Address of Bank</th>
+                           <th>S&L, or Credit Union</th>
+                           <th>Cash or MarketValue</th>
+                           <th>Months Left to Pay</th>
+                           <th>Acct. No</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                     <tbody id="assets">
+                        {% if assets_details %}
+                           {% for asset in assets_details %}
+                           <tr id='assets_{{asset.id}}'>
+                              <td>
+                                 <input type='text' class='form-control' name='asset_name[]'  value="{{ asset.file_assets }}">
+                                 <input type='hidden' class='form-control assets_id' name='asset_ids[]'  value="{{ asset.id }}">
+                              </td>
+                              <td>
+                                 <input type='text' class='form-control' name='address_bank[]' value="{{ asset.file_address_bank }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='s_l_credit_union[]' value="{{ asset.file_s_l_credit_union }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='cash_market_value[]' value="{{ asset.file_cash_or_description_market_value }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='months_left_to_pay[]' value="{{ asset.file_months_left_to_pay }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='acct_no[]' value="{{ asset.file_acct_no }}">
+                              </td>
+                              <td>
+                                 <button type="button" class="remove_assets_ajax btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>
+                              </td>
+                           </tr>
+                           {% endfor %}
+                        {% endif %}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            <div class="card-header" style="margin-top: 2%;"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                  Liabilities
+               </span> 
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Name</label>
+                        <input type="text" class="form-control"  id='id_liabilities_name'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Address of <br>Compnay</label>
+                        <input type="text" class="form-control"  id='id_liabilities_address_company'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Monthly Payment <br>&Months Left to Pay</label>
+                        <input type="text" class="form-control"  id='id_liabilities_monthly_payment'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Unpaid <br>Balance</label>
+                        <input type="text" class="form-control"  id='id_liabilities_unpaid_balance'>
+                     </div>
+                  </div>
+                  <div class="col-3">
+                     <div class="form-group">
+                        <label class="label-p">Acct. No</label>
+                        <input type="number" class="form-control" id='id_liabilities_acct_no'>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-12">
+                  <div class="input-group d-flex justify-content-end">
+                     <button type="button" class="btn btn-primary btn-sm add_liabilities"> <i class="fas fa-plus mr-1" aria-hidden="true"></i> Add </button>
+                  </div>
+               </div> 
+               <div class="table-style-three">
+                  <table>
+                     <thead>
+                        <tr>
+                           <th>Name</th>
+                           <th>Address of Company</th>
+                           <th>Monthly Payment &Months Left to Pay</th>
+                           <th>Unpaid Balance</th>
+                           <th>Acct. No</th>
+                           <th>Action</th>
+                        </tr>
+                     </thead>
+                     <tbody id="liabilities">
+                        {% if liabilities_details %}
+                           {% for liabilities in liabilities_details %}
+                           <tr id='liabilites_{{liabilities.id}}'>
+                              <td>
+                                 <input type='text' class='form-control' name='liabilities_name[]'  value="{{ liabilities.file_liabilities_name }}">
+                                 <input type='hidden' class='form-control liabilities_id' name='liabilities_ids[]'  value="{{ liabilities.id }}">
+                              </td>
+                              <td>
+                                 <input type='text' class='form-control' name='liabilities_address_company[]' value="{{ liabilities.file_liabilities_address_company }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='liabilities_monthly_payment[]' value="{{ liabilities.file_liabilities_monthly_payment }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='liabilities_unpaid_balance[]' value="{{ liabilities.file_liabilities_unpaid_balance }}">
+                              </td>
+                              <td>
+                                 <input type='text'  class='form-control' name='liabilities_acct_no[]' value="{{ liabilities.file_liabilities_acct_no }}">
+                              </td>
+                              <td>
+                                 <button type="button" class="remove_liabilities_ajax btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>
+                              </td>
+                           </tr>
+                           {% endfor %}
+                        {% endif %}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row mt-3">
+         <div class="col-md-12">
+            <div class="text-center">
+               <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+               <button type="submit" class="btn btn-success btn-sm" id="id_submit_mortage"><i class="far fa-check-circle mr-2"></i>Save</button>
+            </div>
+         </div>
+      </div>
+   </form>
+</div>
+
+<script>
+   $(document).ready(function(){
+      
+      $('.add_assets').click(function() {
+         var rowCount = $('#assets tr').length + 1;
+         var id_asset_name = $("#id_asset_name").val();
+         var id_address_bank = $("#id_address_bank").val();
+         var id_s_l_credit_union = $("#id_s_l_credit_union").val();
+         var id_cash_market_value = $("#id_cash_market_value").val();
+         var id_months_left_to_pay = $("#id_months_left_to_pay").val();
+         var id_acct_no = $("#id_acct_no").val();
+         if(id_asset_name.trim().length > 0 || id_address_bank.trim().length > 0 || id_s_l_credit_union > 0 || id_cash_market_value > 0 || id_months_left_to_pay>0 || id_acct_no>0) {
+            $.ajax({
+               url: "{% url 'add_assets_liabilites_details' %}",
+               data: {
+                  'file_id': "{{ file_master.id }}",
+                  'asset_name': id_asset_name,
+                  'address_bank': id_address_bank,
+                  's_l_credit_union': id_s_l_credit_union,
+                  'cash_market_value':id_cash_market_value,
+                  'months_left_to_pay':id_months_left_to_pay,
+                  'acct_no':id_acct_no,
+               },
+               success: function (data) {
+                  var asset_name = "<input type='text' class='form-control' name='asset_name[]'  value='" + id_asset_name + "'><input type='hidden' class='form-control assets_id' name='asset_ids[]'  value='" +data.file_asset_id+"'>";
+                  var address_bank = "<input type='text' class='form-control' name='address_bank[]' value='" + id_address_bank + "'>";
+                  var s_l_credit_union = "<input type='text'  class='form-control' name='s_l_credit_union[]' value='" + id_s_l_credit_union + "'>";
+                  var cash_market_value = "<input type='text'  class='form-control' name='cash_market_value[]' value='" + id_cash_market_value + "'>";
+                  var months_left_to_pay = "<input type='text'  class='form-control' name='months_left_to_pay[]' value='" + id_months_left_to_pay + "'>";
+                  var acct_no = "<input type='text'  class='form-control' name='acct_no[]' value='" + id_acct_no + "'>";
+                  var remove_button = '<button type="button" class="remove_assets_ajax btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>';
+                  var row = "<tr id='assets_"+data.file_asset_id+"'>";
+                  var row = row + "<td>" + asset_name + "</td>";
+                  var row = row + "<td>" + address_bank + "</td>";
+                  var row = row + "<td>" + s_l_credit_union + "</td>";
+                  var row = row + "<td>" + cash_market_value + "</td>";
+                  var row = row + "<td>" + months_left_to_pay + "</td>";
+                  var row = row + "<td>" + acct_no + "</td>";
+                  var row = row + "<td>" + remove_button + "</td> ";
+                  var row = row + "</tr>";
+                  $('#assets').append(row);
+                  $("#id_asset_name").val('');
+                  $("#id_address_bank").val('');
+                  $("#id_s_l_credit_union").val('');
+                  $("#id_cash_market_value").val('');
+                  $("#id_months_left_to_pay").val('');
+                  $("#id_acct_no").val('');
+               }
+            });
+         }else {
+            alert("Please enter All the Assets Detail");
+         }
+      });
+      $('.add_liabilities').click(function() {
+         var rowCount = $('#liabilities tr').length + 1;
+         var id_liabilities_name = $("#id_liabilities_name").val();
+         var id_liabilities_address_company = $("#id_liabilities_address_company").val();
+         var id_liabilities_monthly_payment = $("#id_liabilities_monthly_payment").val();
+         var id_liabilities_unpaid_balance = $("#id_liabilities_unpaid_balance").val();
+         var id_liabilities_acct_no = $("#id_liabilities_acct_no").val();
+         if(id_liabilities_name.trim().length > 0 || id_liabilities_address_company.trim().length > 0 || id_liabilities_monthly_payment > 0 || id_liabilities_unpaid_balance > 0 || id_liabilities_acct_no>0) {
+            $.ajax({
+               url: "{% url 'add_liabilities_details' %}",
+               data: {
+                  'file_id': "{{ file_master.id }}",
+                  'liabilities_name': id_liabilities_name,
+                  'liabilities_address_company': id_liabilities_address_company,
+                  'liabilities_monthly_payment': id_liabilities_monthly_payment,
+                  'liabilities_unpaid_balance':id_liabilities_unpaid_balance,
+                  'liabilities_acct_no':id_liabilities_acct_no,
+               },
+               success: function (data) {
+                  var liabilities_name = "<input type='text' class='form-control' name='liabilities_name[]'  value='" + id_liabilities_name + "'><input type='hidden' class='form-control liabilities_id' name='liabilities_ids[]'  value='"+data.file_liabilities_id+"'>";
+                  var liabilities_address_company = "<input type='text' class='form-control' name='liabilities_address_company[]' value='" + id_liabilities_address_company + "'>";
+                  var liabilities_monthly_payment = "<input type='text'  class='form-control' name='liabilities_monthly_payment[]' value='" + id_liabilities_monthly_payment + "'>";
+                  var liabilities_unpaid_balance = "<input type='text'  class='form-control' name='liabilities_unpaid_balance[]' value='" + id_liabilities_unpaid_balance + "'>";
+                  var liabilities_acct_no = "<input type='text'  class='form-control' name='liabilities_acct_no[]' value='" + id_liabilities_acct_no + "'>";
+                  var remove_button = '<button type="button" class="remove_liabilities_ajax btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>';
+                  var row = "<tr id='liabilities_"+data.file_liabilities_id+"'>";
+                  var row = row + "<td>" + liabilities_name + "</td>";
+                  var row = row + "<td>" + liabilities_address_company + "</td>";
+                  var row = row + "<td>" + liabilities_monthly_payment + "</td>";
+                  var row = row + "<td>" + liabilities_unpaid_balance + "</td>";
+                  var row = row + "<td>" + liabilities_acct_no + "</td>";
+                  var row = row + "<td>" + remove_button + "</td> ";
+                  var row = row + "</tr>";
+                  $('#liabilities').append(row);
+                  $("#id_liabilities_name").val('');
+                  $("#id_liabilities_address_company").val('');
+                  $("#id_liabilities_monthly_payment").val('');
+                  $("#id_liabilities_unpaid_balance").val('');
+                  $("#id_liabilities_acct_no").val('');
+               }
+            });
+         } else {
+            alert("Please enter All the Liabilities Detail");
+         }
+      });
+      var token = '{{csrf_token}}';
+      $("#id_assests_liabilites_form").on('submit', function (e) {
+         e.preventDefault();
+         $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "{% url 'assets_liabilites_details' file_master.id %}",
+            data: $('#id_assests_liabilites_form').serialize(),
+            success: function (response) {
+               window.location.href=window.location.href;
+            }
+         });
+      });
+      
+   });
+</script>
+<script>
+   $(document).ready(function(){
+      $(document).on('click', '.remove_liabilities_ajax', function() {
+         var liabilities_id = $(this).closest("tr").find("input[name='liabilities_ids[]']").val();
+         console.log(liabilities_id)
+         $.ajax({
+            url: "{% url 'delete_liabilities_details' %}",
+            data: {
+               'file_id': "{{ file_master.id }}",
+               'liabilities_id': liabilities_id
+            },
+            success: function (data) {
+               $('#liabilities_'+ liabilities_id +'').remove();
+            }
+         });
+      });
+   });
+</script>
+<script>
+   $(document).ready(function(){
+      $(document).on('click', '.remove_assets_ajax', function() {
+         var asset_id = $(this).closest("tr").find("input[name='asset_ids[]']").val();
+         $.ajax({
+            url: "{% url 'delete_assests_details' %}",
+            data: {
+               'file_id': "{{ file_master.id }}",
+               'asset_id': asset_id
+            },
+            success: function (data) {
+               $('#assets_'+ asset_id +'').remove();
+            }
+         });
+      });
+   });
+</script>
+<script>
+   $('.add_list_savings').click(function() {
+      var rowCount = $('#list_savings tr').length + 1;
+      var id_asset_name_1 = $("#id_asset_name_1").val();
+      var id_address_bank_1 = $("#id_address_bank_1").val();
+      var id_s_l_credit_union_1 = $("#id_s_l_credit_union_1").val();
+      var id_acct_no_1 = $("#id_acct_no_1").val();
+      if(id_asset_name_1.trim().length > 0 || id_address_bank_1.trim().length > 0 || id_s_l_credit_union_1 > 0 || id_acct_no_1 > 0) {
+         $.ajax({
+            url: "{% url 'add_list_savings_details' %}",
+            data: {
+               'file_id': "{{ file_master.id }}",
+               'asset_name_1': id_asset_name_1,
+               'address_bank_1': id_address_bank_1,
+               's_l_credit_union_1': id_s_l_credit_union_1,
+               'acct_no_1':id_acct_no_1,
+            },
+            success: function (data) {
+               var asset_name_1 = "<input type='text' class='form-control' name='asset_name_1[]'  value='" + id_asset_name_1 + "'><input type='hidden' class='form-control list_savings_ids' name='list_savings_ids[]'  value='" +data.file_saving_list+"'>";
+               var address_bank_1 = "<input type='text' class='form-control' name='address_bank_1[]' value='" + id_address_bank_1 + "'>";
+               var s_l_credit_union_1 = "<input type='text'  class='form-control' name='s_l_credit_union_1[]' value='" + id_s_l_credit_union_1 + "'>";
+               var acct_no_1 = "<input type='text'  class='form-control' name='acct_no_1[]' value='" + id_acct_no_1 + "'>";
+               var remove_button = '<button type="button" class="remove_list_savings_ajax btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>';
+               var row = "<tr id='list_savings_"+data.file_saving_list+"'>";
+               var row = row + "<td>" + asset_name_1 + "</td>";
+               var row = row + "<td>" + address_bank_1 + "</td>";
+               var row = row + "<td>" + s_l_credit_union_1 + "</td>";
+               var row = row + "<td>" + acct_no_1 + "</td>";
+               var row = row + "<td>" + remove_button + "</td> ";
+               var row = row + "</tr>";
+               $('#list_savings').append(row);
+               $("#id_asset_name_1").val('');
+               $("#id_address_bank_1").val('');
+               $("#id_s_l_credit_union_1").val('');
+               $("#id_acct_no_1").val('');
+            }
+         });
+      }else {
+         alert("Please enter All the Assets Detail");
+      }
+});
+</script>
+<script>
+   $(document).ready(function(){
+      $(document).on('click', '.remove_list_savings_ajax', function() {
+         var asset_id_1 = $(this).closest("tr").find("input[name='list_savings_ids[]']").val();
+         $.ajax({
+            url: "{% url 'delete_list_savings_details' %}",
+            data: {
+               'file_id': "{{ file_master.id }}",
+               'asset_id_1': asset_id_1
+            },
+            success: function (data) {
+               $('#list_savings_'+ asset_id_1 +'').remove();
+            }
+         });
+      });
+   });
+</script>
+<script>
+   $('.liabilities_pledged_assets').click(function() {
+         var rowCount = $('#liabilities_pledged_assets tr').length + 1;
+         var id_liabilities_name_1 = $("#id_liabilities_name_1").val();
+         var id_liabilities_address_company_1 = $("#id_liabilities_address_company_1").val();
+         var id_liabilities_monthly_payment_1 = $("#id_liabilities_monthly_payment_1").val();
+         var id_liabilities_months_left_to_pay_1 = $("#id_liabilities_months_left_to_pay_1").val();
+         var id_liabilities_unpaid_balance_1 = $("#id_liabilities_unpaid_balance_1").val();
+         var id_liabilities_acct_no_1 = $("#id_liabilities_acct_no_1").val();
+         if(id_liabilities_name_1.trim().length > 0 || id_liabilities_address_company_1.trim().length > 0 || id_liabilities_monthly_payment_1 > 0 || id_liabilities_months_left_to_pay_1 > 0 || id_liabilities_unpaid_balance_1 > 0 || id_liabilities_acct_no_1 >0) {
+            $.ajax({
+               url: "{% url 'add_liabilities_pledged_assets' %}",
+               data: {
+                  'file_id': "{{ file_master.id }}",
+                  'liabilities_name_1': id_liabilities_name_1,
+                  'liabilities_address_company_1': id_liabilities_address_company_1,
+                  'liabilities_monthly_payment_1': id_liabilities_monthly_payment_1,
+                  'liabilities_months_left_to_pay_1': id_liabilities_months_left_to_pay_1,
+                  'liabilities_unpaid_balance_1':id_liabilities_unpaid_balance_1,
+                  'liabilities_acct_no_1':id_liabilities_acct_no_1,
+               },
+               success: function (data) {
+                  var liabilities_name_1 = "<input type='text' class='form-control' name='liabilities_name_1[]'  value='" + id_liabilities_name_1 + "'><input type='hidden' class='form-control liabilities_pledged_asset_ids' name='liabilities_pledged_asset_ids[]'  value='"+data.file_liabilities_pledged_assets_list+"'>";
+                  var liabilities_address_company_1 = "<input type='text' class='form-control' name='liabilities_address_company_1[]' value='" + id_liabilities_address_company_1 + "'>";
+                  var liabilities_monthly_payment_1 = "<input type='text'  class='form-control' name='liabilities_monthly_payment_1[]' value='" + id_liabilities_monthly_payment_1 + "'>";
+                  var liabilities_months_left_to_pay_1 = "<input type='number'  class='form-control' name='liabilities_months_left_to_pay_1[]' value='" + id_liabilities_months_left_to_pay_1 + "'>";
+                  var liabilities_unpaid_balance_1 = "<input type='text'  class='form-control' name='liabilities_unpaid_balance_1[]' value='" + id_liabilities_unpaid_balance_1 + "'>";
+                  var liabilities_acct_no_1 = "<input type='text'  class='form-control' name='liabilities_acct_no_1[]' value='" + id_liabilities_acct_no_1 + "'>";
+                  var remove_button = '<button type="button" class="remove_liabilities_pledged_assets_ajax btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>';
+                  var row = "<tr id='liabilities_pledged_assets_"+data.file_liabilities_pledged_assets_list+"'>";
+                  var row = row + "<td>" + liabilities_name_1 + "</td>";
+                  var row = row + "<td>" + liabilities_address_company_1 + "</td>";
+                  var row = row + "<td>" + liabilities_monthly_payment_1 + "</td>";
+                  var row = row + "<td>" + liabilities_months_left_to_pay_1 + "</td>";
+                  var row = row + "<td>" + liabilities_unpaid_balance_1 + "</td>";
+                  var row = row + "<td>" + liabilities_acct_no_1 + "</td>";
+                  var row = row + "<td>" + remove_button + "</td> ";
+                  var row = row + "</tr>";
+                  $('#liabilities_pledged_assets').append(row);
+                  $("#id_liabilities_name_1").val('');
+                  $("#id_liabilities_address_company_1").val('');
+                  $("#id_liabilities_monthly_payment_1").val('');
+                  $("#id_liabilities_unpaid_balance_1").val('');
+                  $("#id_liabilities_acct_no_1").val('');
+               }
+            });
+         } else {
+            alert("Please enter All the Liabilities Detail");
+         }
+      });
+</script>
+<script>
+   $(document).ready(function(){
+      $(document).on('click', '.remove_liabilities_pledged_assets_ajax', function() {
+         var liabilities_pledged_assets_id = $(this).closest("tr").find("input[name='liabilities_pledged_asset_ids[]']").val();
+         $.ajax({
+            url: "{% url 'delete_liabilities_pledged_assets_list_details' %}",
+            data: {
+               'file_id': "{{ file_master.id }}",
+               'liabilities_pledged_assets_id': liabilities_pledged_assets_id
+            },
+            success: function (data) {
+               $('#liabilities_pledged_assets_'+ liabilities_pledged_assets_id +'').remove();
+            }
+         });
+      });
+   });
+</script>

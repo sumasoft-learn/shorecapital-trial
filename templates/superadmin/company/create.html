@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+   {% load static %}
+   <head>
+      {% block head %}
+        {% include "head.html" %}
+      {% endblock %}
+   </head>        
+   <body class="bg-light">
+    {% block nav %}
+      {% include "superadmin/nav.html" %}
+    {% endblock %}
+    
+    <div class="d-block">
+       {% block sidebar %}
+         {% include "superadmin/sidebar.html" %}
+       {% endblock %}
+       
+       
+       <!-- Main Section -->
+       <main>
+            
+          <!-- Section Menu -->
+          <div class="row m-0"> 
+            <!-- Content -->
+            <div class="col-12 px-3">
+                 <!-- Section Header -->
+                 <div class="d-flex justify-content-between section-header">
+                  <span class="section-title">Create Company</span>                           
+               </div>
+               <!-- ./Section Header -->
+
+               <!-- Tabs Section Body -->
+               <div class="card mt-2">
+                  <div class="card-body">
+                     <div class="p-2">
+                        <form action="" method="POST">
+                             {% if form.errors %}
+                                  {% for field in form %}
+                                    {% for error in field.errors %}
+                                      <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                      </div>
+                                    {% endfor %}
+                                  {% endfor %}
+                                  {% for error in form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                      <strong>{{ error|escape }}</strong>
+                                    </div>
+                                  {% endfor %}
+                                {% endif %}
+                             {% csrf_token %}
+                             
+                               
+                            <div class="row">
+                              
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                   <label>Compnay Name</label>
+                                    {{ form.company_name }} 
+                                 </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                 <div class="input-group">
+                                    <label for="inputFirstName">Company Code</label>
+                                    {{ form.company_code }}
+                                 </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                 <div class="input-group">
+                                    <label >Admin Login Id</label>
+                                    {{ form.user_id }} 
+                                 </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                 <div class="input-group">
+                                    <label for="inputFirstName">Admin Name</label>
+                                    {{ form.user_name }}
+                                 </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                 <div class="input-group">
+                                    <label for="inputFirstName">Admin Email</label>
+                                    {{ form.email }}
+                                 </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                 <div class="input-group">
+                                    <label >Password</label>
+                                    {{ form.password }} 
+                                 </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                 <div class="input-group">
+                                    <label for="inputFirstName">Confirm Password</label>
+                                    {{ form.confirm_password }}
+                                 </div>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                 <div class="input-group">
+                                    <label >Is Active</label>
+                                    <div class="d-flex justify-content-between">
+                                       {% for choice in form.is_active %}
+                                           <label class="d-flex ml-5">
+                                             {{ choice.tag }} {{ choice.choice_label }}
+                                           </label>
+                                       {% endfor %}
+                                    </div>
+                                 </div>
+                              </div>      
+                              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-right mt-3">
+                                 <button class="btn btn-outline-success btn-sm" type="submit">
+                                   <i class="fas fa-user-plus mr-2"></i>Create Company
+                                 </button>
+                              </div>
+                           </div>
+                        </form>                  
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         
+         {% block footer %}
+            {% include "superadmin/footer.html" %}
+         {% endblock %}
+     
+<script>
+  $(document).ready(function(){
+    $('#id_role_list').change(function(){
+      var value = $(this).val();
+      if(value==2){
+        $('#id_nmls_id').attr("required","required");
+        $('.nmls_field').show();
+      }else{
+        $('#id_nmls_id').removeAttr("required");
+        $('.nmls_field').hide();
+      }
+    });
+    $('#id_company_code').on('keypress', function (event) {
+    var regex = new RegExp("^[a-z0-9_]+$");
+    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+        event.preventDefault();
+        return false;
+        }
+    });
+  });
+
+</script>
+</html>

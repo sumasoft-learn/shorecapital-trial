@@ -1,0 +1,46 @@
+
+{% load static %}
+
+<!-- Loader  -->
+<div class="loader">
+   <img src="{% static 'includes/loader.svg' %}">
+</div>
+<!-- ./Loader  -->
+
+
+ <!-- Header -->
+ <header>
+   <nav class="navbar navbar-expand-lg navbar-light bg-white box-shadow-1 justify-content-md-between">
+      <div>
+         <a class="mr-3 dark" id="sidebar_menu">
+            <i class="fas fa-bars"></i>
+         </a>
+   
+         <a class="navbar-brand dark" href="/dashboard/">
+            <i class="fas fa-chart-line"></i>
+            <b>ELLIE</b>TRAC  
+         </a>
+         
+         <button class="btn btn-outline-success btn-sm removeFrame ml-2"><i class="fas fas fa-backward mr-1"></i>Back to Dashboard</button>
+
+      </div>         
+
+      <div class="d-flex align-items-center">
+         
+         <div class="dropdown ">
+            <a class="dark dropdown-toggle profile-img" id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+                <span class="mx-1">{{ user_obj.user_name|title }}</span>
+            </a>  
+            <div class="dropdown-menu" style="margin-left: -70px;">
+				<a class="dropdown-item" href="{% url 'update_profile' %}"><i class="fas fa-sign-out pr-1 " aria-hidden="true"></i>Edit
+                  Profile</a>
+               <a class="dropdown-item" href="{% url 'change_password' user_id=request.session.user_id %}"><i class="fas fa-sign-out pr-1 " aria-hidden="true"></i>Change
+                  Password</a>
+			   <a class="dropdown-item" href="/logout/"><i class="fas fa-sign-out pr-1 " aria-hidden="true"></i> Log
+                  Out</a>
+            </div>     
+         </div>      
+      </div>
+   </nav>
+</header>
+<!-- ./Header -->

@@ -1,0 +1,1340 @@
+{% load currency %}
+{% load static  %}
+<!-- Loan Details -->
+{% if div_id is None or div_id == 'None' %}
+<div class="tab-pane fade show active" id="loan_detail" role="tabpanel" aria-labelledby="type_of_mortgage_list">
+{% else %}
+<div class="tab-pane fade" id="loan_detail" role="tabpanel" aria-labelledby="type_of_mortgage_list">
+{% endif %}     
+<!-- Section Header -->
+	<div class="d-flex justify-content-between section-header">
+      <span class="section-title">Loan Information</span> 
+      <span>
+         {% include 'file/import_file_view.html' %}
+      </span> 
+   </div>
+	<!-- ./Section Header -->
+   <!-- Tabs Section Body -->
+   <form  method="POST" action="" class="update_transaction_file" id="id_update_transaction_file">
+      <div class="card mt-2">
+         <!-- Property Address  -->
+         <div class="p-2">
+            
+               <div class="row">
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group no-btn">
+                        <label>Status</label>
+                        {{form.status}}
+                        <input type="hidden" name="old_status_id" value="{{file_master.status_id.id}}">
+                     </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group no-btn">
+                        <label>Sub Status</label>
+                        {{form.sub_status_id}}
+                        <input type="hidden" name="old_sub_status_id" value="{{file_master.sub_status_id.id}}">
+                     </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group no-btn">
+                        <label>Assigned Processor</label> 
+                        {{form.assigned_user_id}} 
+                     </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group ">
+                        <label>Brokerage</label> 
+                        {{form.brokerage}} 
+                     </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Program Code</label> 
+                        {{form.program_code}} 
+                     </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Customer ID</label> 
+                        {{form.customer_id}} 
+                     </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group no-btn">
+                        <label>Loan officer</label> 
+                        {{form.lo_name}} 
+                     </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>NMLS ID</label> {{form.nmls_id}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>L/O Email </label> {{form.lo_email}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>L/O Direct#</label> {{form.lo_direct}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Loan Fax</label> {{form.lo_fax}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>A/E Name</label> {{form.ae_name}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>A/E Direct# </label> {{form.ae_direct}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>A/E Email</label> {{form.ae_email}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>A/E Fax</label> {{form.ae_fax}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Company ID</label> {{form.ae_company_id}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Charge Processing Fee </label>
+                        <div class="d-flex justify-content-between"> {% for choice in form.charge_processing_fee %}
+                           <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>URL</label> {{form.url}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Estimate Close Date</label>
+                        <input type="text" class="form-control" id="id_estimate_close_date"  name="estimate_close_date" value="{{ file_master.est_closure_date|date:'m/d/Y' }}" max="2500-12-31" autocomplete="off"> </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Lender</label> {{form.lender}} </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group no-btn no-btn-spacing">
+                        <label>Tax Transcripts</label> {{form.tax_transcript}}
+                        <input class="form-control " name="tt_date" type="text" id="tt_date_value" max="2500-12-31" autocomplete="off"> </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group no-btn no-btn-spacing">
+                        <label>Closing Disclosure</label> {{form.closing_disclosure}}
+                        <input class="form-control " name="cd_date" type="text" id="cd_date" max="2500-12-31" autocomplete="off"> </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group no-btn no-btn-spacing">
+                        <label>Appraisal Ordered</label> {{form.appraisal_ordered}}
+                        <input class="form-control " name="ad_date" type="text" id="ad_date" max="2500-12-31" autocomplete="off"> </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Receive Date</label>
+                        <input class="form-control ReceiveDate" type="text" name="recieved_date" id="id_recieved_date" max="2500-12-31" autocomplete="off" readonly> </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                     <div class="input-group">
+                        <label>Notes</label>
+                        <textarea class="form-control Notes" rows="5" name="note" style="height: 45px;">{{ file_master.note }}</textarea>
+                     </div>
+                  </div>
+               </div>
+         </div>
+         <!-- ./Property Address  -->
+      </div>
+      <div class="card mt-2">
+         <div class="p-2">
+            <div class="row">
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Loan Purpose</label> {{form.loan_purpose}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Loan Number</label> {{form.loan_number}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Lock Expiration Date</label> <input class="form-control" id="lock_expiraton_date_id" placeholder=" " name="lock_expiraton_date" type="text" max="2500-12-31" autocomplete="off"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Float</label>
+                     <div class="d-flex justifyc-content-between"> {% for choice in form.float %}
+                        <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Property Type</label> {{form.property_type}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Rate Type</label> {{form.rate_type}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Rate</label> {{form.rate}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>PIW</label>
+                     <div class="d-flex justify-content-between"> {% for choice in form.piw %}
+                        <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Impounds</label> {{form.impound}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Term</label> {{form.term}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Occupancy </label> {{form.occupancy_master}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Subordination</label>
+                     <div class="d-flex justify-content-between"> {% for choice in form.subordination %}
+                        <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Loan Amount</label> {{form.loan_amount}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 2nd_loan_amount_div" style="display:none">
+                  <div class="input-group">
+                     <label>2nd Loan Amount:</label>
+                     <input type="text" name="loan_amount_2" class="calculate_ltv form-control" placeholder="2nd Loan Amount" maxlength="50" id="id_loan_amount_2" value="{{file_master.loan_amount_2}}" data-type="currency" pattern="^\d{1,3}(,\d{3})*(\.\d+)?$"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Appraised Value </label> {{ form.appraised_value }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>LTV</label> {{form.ltv}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>CLTV</label> {{form.cltv}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group form_reverse_check no-btn">
+                     <label>Reverse Status</label> {{form.reverse_status}} </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="card mt-2">
+         <div class="p-2">
+            <div class="row">
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Loan Property
+                        <br/>Address</label> {{ form.property_address }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label> Mailing Address</label> {{form.mailing_address}} {{ form.mailing_address_check.value }}
+
+                     {% if file_property_map.mailing_address_check == 'on' %}
+                        <input type="checkbox" name='address_fill' class="d-flex justify-content-between" id="address_fill" checked />
+                     {% else %}
+                        <input type="checkbox" name='address_fill' class="d-flex justify-content-between" id="address_fill" />
+                     {% endif %}
+
+                  </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Deliver Disclosures</label>
+                     <div class="d-flex justify-content-between"> {% for choice in form.deliver_disclosures %}
+                        <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                  </div>
+                  <div class="input-group">
+                     <label></label>
+                     <div class="d-flex justify-content-between"> {% for choice in form.deliver_disclosures_type %}
+                        <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Loan City</label> {{ form.property_city }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Mailing City</label> {{form.mailing_city}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group d-flex">
+                     <label>Request Conditions
+                        <br/> and/or Stips From</label>
+                     <div class="d-flex justify-content-between"> {% for choice in form.request_conditions_stips_from %}
+                        <label class="d-flex ml-4"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Property State</label> {{ form.property_state }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group no-btn">
+                     <label>Mailing State</label> {{form.mailing_state}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label> Charge Credit Report </label>
+                     <div class="d-flex justify-content-between"> {% for choice in form.charge_credit_report %}
+                        <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                  </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>ZipCode</label> {{ form.property_zipcode }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Mailing Zipcode</label> {{form.mailing_zipcode}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label>Charge Appraisal </label>
+                     <div class="d-flex justify-content-between"> {% for choice in form.charge_appraisal %}
+                        <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="card mt-2">
+         <div class="card-header"> <span>
+                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+                        Borrower Address
+                     </span> <span></span> </div>
+         <div class="p-2">
+            <div class="row">
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputmailh">Borrower Name</label> {{ form.borrower_name}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputmailh">Borrower Phone</label> {{form.borrower_phone}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputmailh">Borrower Email</label> {{form.borrower_email}} </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="card mt-2">
+         <div class="card-header"> <span>
+                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+                        Co-Borrower Address
+                     </span> <span></span> </div>
+         <div class="p-2">
+            <div class="row">
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputmailh">Co Borrower Name</label>
+                     <input type="text" class="form-control" placeholder="Co Borrower Name" maxlength="50" id="id_co_borrower_name"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputmailh">Co Borrower Phone</label>
+                     <input type="text" class="form-control" placeholder="Co Borrower Phone" maxlength="50" id="id_co_borrower_phone"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputmailh">Co Borrower Email</label>
+                     <input type="email" class="form-control" placeholder="Co Borrower Email" maxlength="50" id="id_co_borrower_email"> </div>
+               </div>
+               <div class="col-12">
+                  <div class="input-group d-flex justify-content-end">
+                     <button type="button" class="btn btn-primary btn-sm add_co_borrower ajax_add_co_borrower"> <i class="fas fa-plus mr-1" aria-hidden="true"></i> Add </button>
+                  </div>
+               </div>
+            </div>
+            <div class="row mt-2">
+               <div class="col-12">
+                  <div class="table-style-three">
+                     <table>
+                        <thead>
+                           <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Co Borrower Name</th>
+                              <th scope="col">Co Borrower Phone</th>
+                              <th scope="col">Co Borrower Email</th>
+                              <th scope="col">Action</th>
+                           </tr>
+                        </thead>
+                        <tbody id="co_borrower_table"></tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="card mt-2">
+         <div class="card-header"> <span>
+                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+                        Escrow Details
+                     </span> <span></span> </div>
+         <div class="p-2">
+            <div class="row">
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Escrow Company</label> {{ form.escrow_company }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Loan Number</label> {{ form.escrow_number }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Escrow Officer</label> {{ form.escrow_officer }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputpasswordh">Officer Phone</label> {{ form.escrow_phone }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Officer Email</label> {{ form.escrow_email}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputmailh">Please Open</label> {% for choice in form.please_open %}
+                     <div class="d-flex justify-content-between">
+                        <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+                     </div> <span class="radio"></span> {% endfor %} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Escrow Opened Date</label>
+                     <input type="text" class="form-control" id="escrow_open_date" placeholder=" " name="escrow_open_date" value="{{ escrow_details.opened_date|date:'m/d/Y' }}" max="2500-12-31"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Escrow Assistant</label> {{ form.escrow_assistant}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Assistant Phone</label> {{ form.assistant_phone}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Assistant Email</label> {{ form.assistant_email}} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputpasswordh">Has Loan Officer Requested
+                        <br/>Escrow Fees</label>
+                     <div class="d-flex">
+                        <div class="d-flex justify-content-between"> {% for choice in form.requested_escrow_fees %}
+                           <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label> {% endfor %} </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="card mt-2">
+         <div class="p-2">
+            <div class="row">
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Title</label>
+                     <input type="text" name="title" class="form-control" placeholder="Title" maxlength="250" id="id_title"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Title Order</label>
+                     <input type="text" name="title_order" class="form-control" placeholder="Title Order" maxlength="250" id="id_title_order"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Title Rep</label>
+                     <input type="text" name="title_rep" class="form-control" placeholder="Title Rep" maxlength="250" id="id_title_rep"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputpasswordh">Title Rep Phone</label>
+                     <input type="text" name="title_rep_phone" class="form-control" placeholder="Title Rep Phone" maxlength="250" id="id_title_rep_phone"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Title Rep Email</label>
+                     <input type="email" name="title_rep_email" class="form-control" placeholder="Title Rep Email" maxlength="250" id="id_title_rep_email"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">HOA</label>
+                     <input type="text" name="hoa" class="form-control" placeholder="HOA" maxlength="250" id="id_hoa"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">HOA Phone</label>
+                     <input type="text" name="hoa_phone" class="form-control" placeholder="HOA Phone" maxlength="250" id="id_hoa_phone"> </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">HOA Email</label>
+                     <input type="email" name="hoa_email" class="form-control" placeholder="HOA Email" maxlength="250" id="id_hoa_email"> </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!--Listing Office -->
+      <div class="card mt-2 listing_office_div">
+         <div class="p-2">
+            <div class="row">
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Listing Office</label> {{ form.listing_office }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Listing Agent:</label> {{ form.listing_agent }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">L/Agent Phone</label> {{ form.listing_agent_phone }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for="inputpasswordh">L/Agent Email</label> {{ form.listing_agent_email }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Buyers RE Office</label> {{ form.buyer_office }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">Buyers Agent :</label> {{ form.buyer_agent }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">B/Agent Phone</label> {{ form.buyer_agent_phone }} </div>
+               </div>
+               <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="input-group">
+                     <label for=" ">B/Agent Email</label> {{ form.buyer_agent_email }} </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!--Listing Office-->
+      <div class="row mt-3">
+         <div class="col-md-12">
+            <div class="text-center">
+               <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+               <button type="submit" class="btn btn-success btn-sm" id="id_submit_loan"><i class="far fa-check-circle mr-2"></i>Save</button>
+            </div>
+         </div>
+      </div>
+   </form>
+</div>
+
+<!-- ./Tabs Section Body -->
+ <!-- ./Loan Details -->
+ <script src="{% static 'scripts/urla_calculation.js' %}"></script>
+ <script>
+     $(document).ready(function(){
+      $('.form-control').attr('autocomplete','off');
+            var status = "{{file_master.status_id.id}}";
+            $.ajax({
+                  url: "{% url 'status_filter' %}",
+                  data: {
+                  'status_id': status
+                  },
+                  success: function (response) {
+                       
+                        $('#id_sub_status_id').html(response);
+                        
+                        $('#id_sub_status_id').val("{{file_master.sub_status_id.id}}");
+                        $(".SubStatus > .dropdown-toggle > .filter-option > .filter-option-inner > .filter-option-inner-inner").html($('.SubStatus option[value="{{file_master.sub_status_id.id}}"]').text());
+				$('#id_sub_status_id option[value="{{file_master.sub_status_id.id}}"]').attr("selected",true);
+                  }
+            });
+         $("#id_borrower_phone").attr('type','number');
+         $('#id_borrower_email').attr('type', 'email');
+         $('#id_brokerage').val("{{file_master.brokerage}}");
+         $('#id_status').val("{{file_master.status_id.id}}");
+         $('#id_sub_status_id').val("{{file_master.sub_status_id.id}}");
+         $('#id_assigned_user_id').val('{{file_master.assigned_user_id.id}}')
+         $('#id_tax_transcript').val('{{file_master.tax_transcript.id}}')
+         $('#id_closing_disclosure').val('{{file_master.closing_disclosure.id}}')
+         $('#id_appraisal_ordered').val('{{file_master.appraisal_ordered.id}}')
+         document.getElementById("tt_date_value").defaultValue = "{{ file_master.tax_transcript_date|date:'m/d/Y' }}";
+         document.getElementById("cd_date").defaultValue = "{{ file_master.closing_disclosure_date|date:'m/d/Y' }}";
+         document.getElementById("ad_date").defaultValue = "{{ file_master.appraisal_ordered_date|date:'m/d/Y' }}";
+         $('#id_recieved_date').val("{{ file_master.recieved_date|date:'m/d/Y'}}")
+         $('.Notes').val("{{ file_master.note }}")
+         $('#id_program_code').val("{{file_master.program_code}}");
+         $('#id_customer_id').val("{{file_master.customer_id}}");
+         $('#id_lo_name').val("{{file_master.loan_officer_id.id}}");
+         $('#lock_expiraton_date_id').val("{{ file_master.lock_expiration_date|date:'m/d/Y'}}")
+
+         $('#id_loan_number').val("{{file_master.loan_number}}");
+
+         $('#id_nmls_id').val("{{file_master.nmls_id}}");
+         $('#id_lo_email').val("{{file_master.loan_officer_email}}");
+         $('#id_lo_direct').val("{{file_master.loan_officer_direct}}");
+         $('#id_lo_fax').val("{{file_master.loan_officer_fax}}");
+         $('#id_ae_name').val("{{file_master.ae_name}}");
+
+         $('#id_ae_direct').val("{{file_master.ae_direct}}");
+         $('#id_ae_email').val("{{file_master.ae_email}}");
+         $('#id_ae_fax').val("{{file_master.ae_fax}}");
+         $('#id_ae_company_id').val("{{file_master.ae_company_id}}");
+         $('#id_url').val("{{file_master.url}}");
+
+         $('#id_lender').val("{{file_master.lender}}");
+         $('#id_property_type').val("{{file_master.property_type.id}}");
+         $('select[name="term"]').val("{{file_master.term.id }}");
+         $('#id_rate').val("{{file_master.rate}}");
+         $('#id_appraised_value').val("{{file_master.appraisal_value|currency_form_converter}}");
+         $('#id_ltv').val("{{file_master.ltv}}");
+         $('#id_cltv').val("{{file_master.cltv}}");
+
+
+
+
+         {% if file_property_map != None %}
+            $('input[name="property_address"]').val("{{file_property_map.property_address}}");
+            $('input[name="property_city"]').val("{{file_property_map.property_city }}");
+            $('select[name="property_state"]').val("{{file_property_map.property_state.id }}");
+            $('input[name="mailing_address"]').val("{{file_property_map.mailing_address}}");
+            $('input[name="mailing_city"]').val("{{file_property_map.mailing_city }}");
+            $('select[name="mailing_state"]').val("{{file_property_map.mailing_state.id }}");
+            $('input[name="property_zipcode"]').val("{{file_property_map.property_zipcode}}");
+            $('input[name="mailing_zipcode"]').val("{{file_property_map.mailing_zipcode }}");
+            
+         {% endif %}
+         $('input[name="borrower_name"]').val("{{file_master.borrower_name}}");
+         $('input[name="borrower_phone"]').val("{{file_master.borrower_phone }}");
+         $('input[name="borrower_email"]').val("{{file_master.borrower_email }}");
+
+            $(function() {
+                $('select').not(".SubStatus,#id_status").selectpicker();
+            });
+            $('.2nd_loan_amount_div').hide();
+            $('.form_reverse_check').hide();
+	    $(".listing_office_div").hide();
+            $('#address_fill').change(function() {
+                var ischecked = $(this).is(':checked');
+                if(ischecked) {
+                    var property_address = $('#id_property_address').val();
+                    var property_city = $('#id_property_city').val();
+                    var property_zipcode = $('#id_property_zipcode').val();
+                    var property_state = $('#id_property_state').val();
+                    $('#id_mailing_address').val(property_address);
+                    $('#id_mailing_city').val(property_city);
+                    $('#id_mailing_state').val(property_state).trigger('change');
+                    $('#id_mailing_zipcode').val(property_zipcode);
+                } else{
+                  $('#id_mailing_address').val('');
+                  $('#id_mailing_city').val('');
+                  $('#id_mailing_state').val('').trigger('change');
+                  $('#id_mailing_zipcode').val('');
+                }
+            });
+            $('.subordination').change(function() {
+                var value = $(this).val();
+                if(value == 'Y') {
+                    $('.2nd_loan_amount_div').show();
+                } else {
+                    $('.2nd_loan_amount_div').hide();
+                    $('#id_loan_amount_2').val(0);
+                }
+            });
+            $('.calculate_ltv').change(function() {
+                var first_loan_amount = $('#id_loan_amount').val();
+                var first_loan_amount = first_loan_amount.replace(',', '')
+                var second_loan_amount = 0;
+                var subordination = $('.subordination').val();
+                if(subordination == 'Y') {
+                    var second_loan_amount = $('#id_loan_amount_2').val();
+                    var second_loan_amount = second_loan_amount.replace(',', '')
+                } else {
+                    var second_loan_amount = 0;
+                }
+                var appraised = $('#id_appraised_value').val();
+                var appraised = appraised.replace(',', '')
+                var first_loan_amount = parseFloat(first_loan_amount);
+                var second_loan_amount = parseFloat(second_loan_amount);
+                var ltv = first_loan_amount / appraised * 100;
+                var cltv = (first_loan_amount + second_loan_amount) / appraised * 100;
+                // round to 2 decimal places
+                ltv = Math.round(ltv * 100) / 100;
+                cltv = Math.round(cltv * 100) / 100;
+                console.log(cltv, ltv)
+                $('#id_cltv').val(cltv);
+                $('#id_ltv').val(ltv);
+            });
+
+            // Currency converter on Change
+				$("input[data-type='currency']").on({
+					keyup: function() {
+					formatCurrency($(this));
+					},
+					blur: function() { 
+					formatCurrency($(this), "blur");
+					}
+				});
+
+
+				function formatNumber(n) {
+				// format number 1000000 to 1,234,567
+				return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+				}
+
+
+				function formatCurrency(input, blur) {
+				// appends $ to value, validates decimal side
+				// and puts cursor back in right position.
+				
+				// get input value
+				var input_val = input.val();
+				
+				// don't validate empty input
+				if (input_val === "") { return; }
+				
+				// original length
+				var original_len = input_val.length;
+
+				// initial caret position 
+				var caret_pos = input.prop("selectionStart");
+					
+				// check for decimal
+				if (input_val.indexOf(".") >= 0) {
+
+					// get position of first decimal
+					// this prevents multiple decimals from
+					// being entered
+					var decimal_pos = input_val.indexOf(".");
+
+					// split number by decimal point
+					var left_side = input_val.substring(0, decimal_pos);
+					var right_side = input_val.substring(decimal_pos);
+
+					// add commas to left side of number
+					left_side = formatNumber(left_side);
+
+					// validate right side
+					right_side = formatNumber(right_side);
+					
+					// On blur make sure 2 numbers after decimal
+					if (blur === "blur") {
+					right_side += "00";
+					}
+					
+					// Limit decimal to only 2 digits
+					right_side = right_side.substring(0, 2);
+
+					// join number by .
+					input_val = left_side + "." + right_side;
+
+				} else {
+					// no decimal entered
+					// add commas to number
+					// remove all non-digits
+					input_val = formatNumber(input_val);
+					input_val = input_val;
+					
+					// final formatting
+					if (blur === "blur") {
+					input_val += ".00";
+					}
+				}
+				
+				// send updated string to input
+				input.val(input_val);
+
+				// put caret back in the right position
+				var updated_len = input_val.length;
+				caret_pos = updated_len - original_len + caret_pos;
+				input[0].setSelectionRange(caret_pos, caret_pos);
+				}
+            
+            $('.add_co_borrower').click(function() {
+                var rowCount = $('#co_borrower_table tr').length + 1;
+                var id_co_borrower_name = $("#id_co_borrower_name").val();
+                var id_co_borrower_phone = $("#id_co_borrower_phone").val();
+                var id_co_borrower_email = $("#id_co_borrower_email").val();
+                if(id_co_borrower_name.trim().length > 0 && id_co_borrower_phone.trim().length > 0 && id_co_borrower_email) {
+                  $.ajax({
+                     url: "{% url 'add_co_borrower' %}",
+                     data: {
+                        'file_id': "{{ file_master.id }}",
+                        'co_borrower_name': id_co_borrower_name,
+                        'co_borrower_phone': id_co_borrower_phone,
+                        'co_borrower_email': id_co_borrower_email
+                     },
+                     success: function (data) {
+                        var id_co_borrower_id = data.file_co_borrower_id
+                        var co_borrower_name = "<input type='text' class='form-control' name='co_borrower_name[]' required value='" + id_co_borrower_name + "'><input type='hidden' class='form-control' name='co_borrower_id'  value='"+ id_co_borrower_id +"'>";
+                        var co_borrower_phone = "<input type='number' class='form-control' name='co_borrower_phone[]' required value='" + id_co_borrower_phone + "'>";
+                        var co_borrower_email = "<input type='email' class='form-control' name='co_borrower_email[]' required value='" + id_co_borrower_email + "'>";
+                        var remove_button = '<button type="button" class="remove_co_borrower btn btn-outline-danger btn-sm mr-2"><i class="fa fa-minus "></i> <small> Remove</small></button>';
+                        var row = "<tr class='co_borrower_"+ id_co_borrower_id +"'>";
+                        var row = row + "<th scope='row'>" + rowCount + "</th>";
+                        var row = row + "<td>" + co_borrower_name + "</td>";
+                        var row = row + "<td>" + co_borrower_phone + "</td>";
+                        var row = row + "<td>" + co_borrower_email + "</td>";
+                        var row = row + "<td>" + remove_button + "</td> ";
+                        var row = row + "</tr>";
+                        $('#co_borrower_table').append(row);
+                        $("#id_co_borrower_name").val('');
+                        $("#id_co_borrower_phone").val('');
+                        $("#id_co_borrower_email").val('');
+                     }
+                  });   
+                } else {
+                    alert("Please enter All the Co Borrower Detail");
+                }
+            });
+           
+            $('.float_type').change(function() {
+                var float_type = $(this).val();
+                if(float_type == 'Y') {
+                    document.getElementById("lock_expiraton_date_id").disabled = true;
+                } else {
+                    $("#lock_expiraton_date_id").attr('disabled', false);
+                }
+            });
+            $('.please_open_check').change(function() {
+                var please_open = $(this).val();
+                if(please_open == 'Y') {
+                    document.getElementById("escrow_open_date").disabled = true;
+                } else {
+                    $("#escrow_open_date").attr('disabled', false);
+                }
+            });
+		
+	    var loan_purpose_id = $('#id_loan_purpose').val();
+            if(loan_purpose_id == 9 || loan_purpose_id ==4){
+               $(".form_reverse_check").show();
+            }else{
+               $(".form_reverse_check").hide();
+            }
+
+            $('#id_loan_purpose').change(function() {
+                var id = $(this).val();
+                if(id == 2 || id == 7) {
+                    $('.va_base_loan').show();
+                } else {
+                    $('.va_base_loan').hide();
+                }
+                if(id == 3 || id == 6) {
+                    $('.fha_base_loan').show();
+                } else {
+                    $('.fha_base_loan').hide();
+                }
+                if(id == 9 || id == 4) {
+                  $('.form_reverse_check').show();
+               } else {
+                  $('.form_reverse_check').hide();
+               }
+            });
+	    
+            var loan_purpose_id = $('#id_loan_purpose').val();
+            if(loan_purpose_id == 1 || loan_purpose_id ==2 || loan_purpose_id ==3 || loan_purpose_id == 4){
+               $(".listing_office_div").show();
+            }else{
+               $(".listing_office_div").hide();
+            }
+
+            $('#id_loan_purpose').change(function(){
+               var id = $(this).val();
+               if(id==1 || id ==2 || id ==3 || id == 4){
+                  
+                  $(".listing_office_div").show();
+               }else{
+                  
+                  $(".listing_office_div").hide();
+               }
+            });
+            $("#id_status").change(function () {
+					var status = $(this).val();
+					$.ajax({
+						url: "{% url 'status_filter' %}",
+						data: {
+						'status_id': status
+						},
+						success: function (response) {
+							$('#id_sub_status_id').html(response);
+							
+						}
+					});
+				});
+
+var rowCount = 1;
+             {% for co_borrower_row in co_borrower %}
+        var co_borrower_name = "<input type='text' class='form-control' name='co_borrower_name[]'  value='{{ co_borrower_row.co_borrower_name }}'><input type='hidden' class='form-control' name='co_borrower_id'  value='{{ co_borrower_row.id }}'>";
+        var co_borrower_email = "<input type='email' class='form-control' name='co_borrower_email[]'  value='{{ co_borrower_row.co_borrower_email }}'>";
+        var co_borrower_phone = "<input type='text' class='form-control' name='co_borrower_phone[]' value='{{ co_borrower_row.co_borrower_phone }}'>";
+        var remove_button = '<button type="button" class="remove_co_borrower btn btn-outline-danger btn-sm mr-2"><i class="fa fa-minus "></i> <small> Remove</small></button>';
+        var row = "<tr class='co_borrower_{{ co_borrower_row.id }}'>";
+        var row = row + "<th >" + rowCount + "</th>";
+        var row = row + "<td>" + co_borrower_name + "</td>";
+        var row = row + "<td>" + co_borrower_phone + "</td>";
+        var row = row + "<td>" + co_borrower_email + "</td>";
+        var row = row + "<td>" + remove_button + "</td> ";
+        var row = row + "</tr>";
+        $('#co_borrower_table').append(row);
+        rowCount++;
+
+{% endfor %}
+        {% for file_escrow in detail_file_escrow %}
+            $('input[name="escrow_company"]').val("{{file_escrow.company_name }}");
+            $('input[name="escrow_number"]').val("{{file_escrow.number }}");
+            $('input[name="escrow_officer"]').val("{{file_escrow.officer_name }}");
+
+            $('input[name="escrow_phone"]').val("{{file_escrow.officer_phone }}");
+            $('input[name="escrow_email"]').val("{{file_escrow.officer_email }}");
+            $('input[name="escrow_assistant"]').val("{{file_escrow.assistant_name }}"); 
+            $('input[name="assistant_phone"]').val("{{file_escrow.assitant_phone }}");
+            $('input[name="assistant_email"]').val("{{file_escrow.assistant_email }}");           
+
+        {% endfor %}
+        {% for file_title in detail_file_title %}
+            $('input[name="title"]').val("{{file_title.title_name }}");
+            $('input[name="title_order"]').val("{{file_title.title_order }}");
+            $('input[name="title_rep"]').val("{{file_title.title_rep_name }}");
+
+            $('input[name="title_rep_phone"]').val("{{file_title.title_rep_phone }}");
+            $('input[name="title_rep_email"]').val("{{file_title.title_rep_email }}");
+                
+
+        {% endfor %}
+        {% for file_hoa in detail_file_hoa %}
+            $('input[name="hoa"]').val("{{file_hoa.hoa_name }}");
+            $('input[name="hoa_phone"]').val("{{file_hoa.hoa_phone }}");
+            $('input[name="hoa_email"]').val("{{file_hoa.hoa_email }}");
+
+           
+                
+
+        {% endfor %}
+
+        $('select[name="reverse_status"]').val(['{{file_master.reverse_status}}']);
+        $('input:radio[name=charge_processing_fee]').val(['{{file_master.charging_processing_fees}}']);
+        $('input:radio[name=float]').val(['{{file_master.float}}']);
+        $('input:radio[name=piw]').val(['{{file_master.piw}}']);
+        $('input:radio[name=subordination]').val(['{{file_master.subordination}}']);
+        $('input:radio[name=charge_appraisal]').val(['{{file_master.charge_appraisal}}']);
+        $('input:radio[name=charge_credit_report]').val(['{{file_master.charge_credit_report}}']);
+        $('input:radio[name=request_conditions_stips_from]').val(['{{file_master.req_condition_stip_from}}']);
+        $('input:radio[name=deliver_disclosures]').val(['{{file_master.delievery_disclosure}}']);
+        $('input:radio[name=please_open]').val(['{{escrow_details.is_open}}']);
+        $('input:radio[name=requested_escrow_fees]').val(['{{escrow_details.requested_escrow_fees}}']);
+
+        $('input[name=listing_office]').val(['{{listing_buyers.listing_office}}']);
+        $('input[name=listing_agent]').val(['{{listing_buyers.listing_agent}}']);
+        $('input[name=listing_agent_phone]').val(['{{listing_buyers.listing_agent_phone}}']);
+        $('input[name=listing_agent_email]').val(['{{listing_buyers.listing_agent_email}}']);
+        $('input[name=buyer_office]').val(['{{listing_buyers.buyer_re_office}}']);
+        $('input[name=buyer_agent]').val(['{{listing_buyers.buyer_agent}}']);
+        $('input[name=buyer_agent_phone]').val(['{{listing_buyers.buyer_agent_phone}}']);
+        $('input[name=buyer_agent_email]').val(['{{listing_buyers.buyer_agent_email}}']);
+         
+         {% if file_master.subordination == 'Y' %}
+            $('.2nd_loan_amount_div').show();
+         {% endif %}
+
+
+     });
+ </script>
+<script>
+   $(document).ready(function(){
+      var est_date_1    = "{{ file_master.est_closure_date }}";
+                  
+                 
+                  var date    = new Date(est_date_1),
+                  yr      = date.getFullYear(),
+                  month   =  date.getMonth() ,
+                  day     = date.getDate()  < 10 ? '0' + date.getDate()  : date.getDate(),
+                  month = month + 1;
+                  month   = month < 10 ? '0' + month : month,
+                  est_date_est = month + '/' + day + '/' + yr;
+                  if (est_date_1 != 'None'){
+                     $('#id_estimate_close_date').val(est_date_est)
+                  }
+      $(document).on('click', '.remove_co_borrower', function() {
+         var co_borrower_id = $(this).closest("tr").find("input[name='co_borrower_id']").val();
+         if (typeof(co_borrower_id) == 'undefined'){
+            $(this).closest('tr').remove();
+         } else{
+            $.ajax({
+               url: "{% url 'delete_co_borrower' %}",
+               data: {
+                  'co_borrower_id': co_borrower_id
+               },
+               success: function (data) {
+                  if (data.is_delete == 'success'){
+                     $('.co_borrower_'+ co_borrower_id +'').remove();
+                  }
+               }
+            });
+         }
+      });
+   });
+</script>
+<script>
+   var token = '{{csrf_token}}';
+   $("#id_update_transaction_file").on('submit', function (e) {
+      e.preventDefault();
+      $.ajax({
+         headers: { "X-CSRFToken": token },
+         type: "POST",
+         url: "{% url 'update_transaction_file' file_master.id %}",
+         data: $('#id_update_transaction_file').serialize(),
+         success: function (data) {
+            var old_sub_status_id = $('input[name=old_sub_status_id]').val();
+            var table_id = "table_"+old_sub_status_id;
+            var file_class = ".file_id_{{file_master.id}}"; 
+
+            var table_obj =  window.parent.document.getElementById(table_id); 
+            var row = $(table_obj).find(file_class);
+            var new_sub_status_id  = $("#id_sub_status_id").val();
+            var new_table_id = "table_"+new_sub_status_id;
+            var new_table_obj =  window.parent.document.getElementById(new_table_id); 
+            $(row).remove();
+           
+            $(new_table_obj).prepend(row);
+            var date = new Date(data.file.lock_expiration_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.lock_expiration_date == 'None' || data.file.lock_expiration_date=='' || data.file.lock_expiration_date==null ){
+                  $(row).find('.lock_expiration_date').html('Not Locked');
+            }else{
+                  $(row).find('.lock_expiration_date').html(new_date);
+            }
+            if(data.file.lock_expiration_date == 'None' || data.file.lock_expiration_date=='' || data.file.lock_expiration_date==null ){
+               $(row).find('.lock_expiration_date_value').val('');
+            }else{
+               $(row).find('.lock_expiration_date_value').val(data.file.lock_expiration_date);
+            }
+            var date = new Date(data.file.recieved_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.recieved_date == 'None' || data.file.recieved_date==''){
+                  $(row).find('.recieved_date').html('');
+            }else{
+                  $(row).find('.recieved_date').html(new_date);
+            }
+            
+            $(row).find('.rd_date_value').val(data.file.recieved_date);
+            var date = new Date(data.file.tax_transcript_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+           
+            if(data.file.tax_transcript == 3 || data.file.tax_transcript == 4 ){
+                 
+                  $(row).find('.tt_t_date').html(new_date);
+            }else{
+               $(row).find('.tt_t_date').html('');
+            }
+           
+            $(row).find('.tt_t_value').html(data.file.file_tax_transcript);
+
+            $(row).find('.tt_date_value').val(data.file.tax_transcript_date);
+            $(row).find('.tt_value').val(data.file.tax_transcript);
+            var date = new Date(data.file.closing_disclosure_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            
+            if(data.file.file_closing_value == null || data.file.file_closing_value=='None' ){
+                  $(row).find('.cd_c_date').html('');
+            }else{
+                  $(row).find('.cd_c_date').html(new_date);
+            }
+          
+            $(row).find('.cd_c_value').html(data.file.file_closing_value);
+
+
+            $(row).find('.cd_date_value').val(data.file.closing_disclosure_date);
+            $(row).find('.cd_value').val(data.file.closing_disclosure);
+
+            $(row).find('.note').html(data.file.note);
+
+            $(row).find('.lender').html(data.file.lender);
+
+            $(row).find('.lender_value').val(data.file.lender);
+            $(row).find('.sub_status_value').val(data.file.sub_status_id);
+            $(row).find('.status_value').val(data.file.status_id);
+
+            $(row).find('.lo_user_name').html(data.file.loan_user_name);
+            $(row).find('.ae_company_id').html(data.file.brokerage);
+            var date = new Date(data.file.appraisal_ordered_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.appraisal_ordered == '5' || data.file.appraisal_ordered == '7'){
+                 
+                  $(row).find('.ad_a_date').html(new_date);
+            }else{
+               $(row).find('.ad_a_date').html('');
+            }
+            
+            $(row).find('.ad_a_value').html(data.file.file_appraisal_value);
+
+            $(row).find('.ao_date_value').val(data.file.appraisal_ordered_date);
+            $(row).find('.ao_value').val(data.file.appraisal_ordered);
+            var date = new Date(data.file.escrow_opened_date);
+            var day = date.getDate();
+            
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.escrow_opened_date == 'None' || data.file.escrow_opened_date=='' || data.file.escrow_opened_date==null){
+                  $(row).find('.es_opened_date').html('');
+            }else{
+                  $(row).find('.es_opened_date').html(new_date);
+            }
+            
+            $(row).find('.es_company').html(data.file.escrow_company);
+            
+            $(row).find('.escrow_opened_date_value').val(data.file.escrow_opened_date);
+            $(row).find('.escrow_company_value').val(data.file.escrow_company);
+            $(row).find('.file_name').html(data.file.file_id);
+            
+            // All Table View refresh
+
+            var table_id = "table_all";
+            var file_class = ".file_id_{{file_master.id}}"; 
+           
+            var table_obj =  window.parent.document.getElementById(table_id); 
+            var row = $(table_obj).find(file_class);
+           
+            var date = new Date(data.file.lock_expiration_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.lock_expiration_date == 'None' || data.file.lock_expiration_date=='' || data.file.lock_expiration_date == null){
+                  $(row).find('.lock_expiration_date').html('Not Locked');
+            }else{
+                  $(row).find('.lock_expiration_date').html(new_date);
+            }
+            
+            $(row).find('.lock_expiration_date_value').val(data.file.lock_expiration_date);
+            var date = new Date(data.file.recieved_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.recieved_date == 'None' || data.file.recieved_date==''){
+                  $(row).find('.recieved_date').html('');
+            }else{
+                  $(row).find('.recieved_date').html(new_date);
+            }
+            
+            $(row).find('.rd_date_value').val(data.file.recieved_date);
+            var date = new Date(data.file.tax_transcript_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+           
+            if(data.file.tax_transcript == 3 || data.file.tax_transcript == 4 ){
+                 
+                  $(row).find('.tt_date').html(new_date);
+                 
+            }else{
+               $(row).find('.tt_t_date').html('');
+            }
+           
+            $(row).find('.tt_t_value').html(data.file.file_tax_transcript);
+
+            $(row).find('.tt_date_value').val(data.file.tax_transcript_date);
+            $(row).find('.tt_value').val(data.file.tax_transcript);
+            var date = new Date(data.file.closing_disclosure_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.file_closing_value == null || data.file.file_closing_value=='None' || data.file.file_closing_value ==''){
+                  $(row).find('.cd_date').html('');
+            }else{
+                  $(row).find('.cd_date').html(new_date);
+            }
+          
+            $(row).find('.cd_c_value').html(data.file.file_closing_value);
+
+
+            $(row).find('.cd_date_value').val(data.file.closing_disclosure_date);
+            $(row).find('.cd_value').val(data.file.closing_disclosure);
+
+            $(row).find('.note').html(data.file.note);
+
+            $(row).find('.lender').html(data.file.lender);
+
+            $(row).find('.lender_value').val(data.file.lender);
+            $(row).find('.sub_status_value').val(data.file.sub_status_id);
+            $(row).find('.status_value').val(data.file.status_id);
+
+            $(row).find('.lo_user_name').html(data.file.loan_user_name);
+            $(row).find('.ae_company_id').html(data.file.brokerage);
+            var date = new Date(data.file.appraisal_ordered_date);
+            var day = date.getDate();
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.appraisal_ordered == '5' || data.file.appraisal_ordered == '7'){
+                 
+                  $(row).find('.ao_date').html(new_date);
+            }else{
+               $(row).find('.ao_date').html('');
+            }
+            
+            $(row).find('.ad_a_value').html(data.file.file_appraisal_value);
+
+            $(row).find('.ao_date_value').val(data.file.appraisal_ordered_date);
+            $(row).find('.ao_value').val(data.file.appraisal_ordered);
+            var date = new Date(data.file.escrow_opened_date);
+            var day = date.getDate();
+            
+            var month = date.getMonth()+1;
+            var new_date = month+"."+day;
+            if(data.file.escrow_opened_date == 'None' || data.file.escrow_opened_date=='' || data.file.escrow_opened_date==null){
+                  $(row).find('.es_opened_date').html('');
+            }else{
+                  $(row).find('.es_opened_date').html(new_date);
+            }
+            
+            $(row).find('.es_company').html(data.file.escrow_company);
+            
+            $(row).find('.escrow_opened_date_value').val(data.file.escrow_opened_date);
+            $(row).find('.escrow_company_value').val(data.file.escrow_company);
+            $(row).find('.file_name').html(data.file.file_id);
+
+            // All Table View Refresh 
+
+            window.location.href=window.location.href;
+         }
+      });
+
+   });
+      $('#tt_date_value').datepicker({
+		format: 'mm/dd/yyyy',
+      maxDate:  '2500/12/31',
+      });
+      $('#id_estimate_close_date').datepicker({
+      format: 'mm/dd/yyyy',
+      maxDate:  '2500/12/31',
+      });
+      $('#cd_date').datepicker({
+      format: 'mm/dd/yyyy',
+      maxDate:  '2500/12/31',
+      });
+      $('#ad_date').datepicker({
+      format: 'mm/dd/yyyy',
+      maxDate:  '2500/12/31',
+      });
+     
+      $('#escrow_open_date').datepicker({
+      format: 'mm/dd/yyyy',
+      maxDate:  '2500/12/31',
+      });
+      $('#lock_expiraton_date_id').datepicker({
+      format: 'mm/dd/yyyy',
+      maxDate:  '2500/12/31',
+      });
+
+      $("#id_lo_name").change(function () {
+					var loan_officer_id = $(this).val();
+					$.ajax({
+						url: "{% url 'loan_officer_filter' %}",
+						data: {
+						'user_id': loan_officer_id
+						},
+						dataType: 'json',
+						success: function (data) {
+							if (data.email){
+								$('input[name="lo_email"]').val(data.email);
+								$('input[name="lo_fax"]').val(data.fax);
+								$('input[name="nmls_id"]').val(data.nmls_id);
+								$('input[name="lo_direct"]').val(data.lo_direct);
+								$('#id_brokerage').val(data.borkerage);
+				
+							}
+						}
+					});
+            });
+
+      var value = '{{file_master.tax_transcript.id}}'
+      if(value==3 || value==4){
+            $("#tt_date_value").attr('required', 'required'); 
+            $("#tt_date_value").show();
+      }else{
+            $("#tt_date_value").hide();
+            $("#tt_date_value").removeAttr('required'); 
+      }
+
+      var value = "{{file_master.appraisal_ordered.id}}"
+      if(value==5 || value==7){
+            $("#ad_date").attr('required', 'required'); 
+            $("#ad_date").show();
+      }else{
+            $("#ad_date").hide();
+            $("#ad_date").removeAttr('required'); 
+      }
+      
+      var value = "{{file_master.closing_disclosure.id}}"
+      if(value==1 || value==2){
+            $("#cd_date").attr('required', 'required'); 
+            $("#cd_date").show();
+      }else{
+            $("#cd_date").hide();
+            $("#cd_date").removeAttr('required'); 
+      }
+
+      $(".AppraisalOrderedText").change(function(){
+                       var value = $(this).val();
+                       if(value==5 || value==7){
+                          $("#ad_date").attr('required', 'required'); 
+                          $("#ad_date").show();
+                       }else{
+                          $("#ad_date").hide();
+                          $("#ad_date").removeAttr('required'); 
+                       }
+                          
+                  });
+                  $("#id_tax_transcript").change(function(){
+                      var value = $(this).val();
+                       if(value==3 || value==4){
+                          $("#tt_date_value").attr('required', 'required'); 
+                          $("#tt_date_value").show();
+                       }else{
+                          $("#tt_date_value").hide();
+                          $("#tt_date_value").removeAttr('required'); 
+                       }
+                  });
+                  $("#id_closing_disclosure").change(function(){
+                      var value = $(this).val();
+                       if(value==1 || value==2){
+                          $("#cd_date").attr('required', 'required'); 
+                          $("#cd_date").show();
+                       }else{
+                          $("#cd_date").hide();
+                          $("#cd_date").removeAttr('required'); 
+                       }
+                  });
+                  
+</script>

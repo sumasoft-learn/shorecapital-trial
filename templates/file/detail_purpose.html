@@ -1,0 +1,398 @@
+{% load currency %}
+<!-- Purpose Details -->
+{% if div_id == 'property_information-details' %}
+<div class="tab-pane fade active show" id="property_information-details" role="tabpanel" aria-labelledby="property_information_list">
+{% else %}   
+<div class="tab-pane fade" id="property_information-details" role="tabpanel" aria-labelledby="property_information_list">
+{% endif %}
+      <form method="POST" action="" id="id_property_info">
+      <!-- Section Header -->
+      <div class="d-flex justify-content-between section-header"> <span class="section-title">Property information</span> </div>
+      <!-- ./Section Header -->
+      <!-- Tabs Section Body -->
+      <div class="card mt-2">
+         <div class="card-body tab-overflow">
+            <!-- Title will be held in what Name(s) -->
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Name(s)</label>
+                        <textarea type="text" class="form-control" name="property_name" id="id_property_name"></textarea>
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Title <small>(will be held)</small></label>
+                        <input type="text" class="form-control" name="property_title_will_be_held" id="id_property_title_will_be_held">
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Estate will be held in</label>
+                        <span class="regular d-flex justify-content-between">
+                           <span class="d-flex mr-1">
+                              {% if file_master.estate_will_be == 'fee_simple' %}
+                              <input type="radio" class="form-control estate" name="estate" checked value="fee_simple">
+                              <label class="label">Fee Simple</label> 
+                              {% else %}
+                              <input type="radio" class="form-control estate" name="estate" value="fee_simple">
+                              <label class="label">Fee Simple</label> 
+                              {% endif %}
+                           </span>
+                           <span class="d-flex mr-1">
+                              {% if file_master.estate_will_be == 'leasehold' %}
+                              <input type="radio" class="form-control estate" name="estate" checked value="leasehold">
+                              <label class="label">Leasehold</label> 
+                              {% else %}
+                              <input type="radio" class="form-control estate" name="estate" value="leasehold">
+                              <label class="label">Leasehold</label> 
+                              {% endif %}
+                           </span>
+                        </span>
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Source of Down <br>Payment</label> {{form.source_of_down}} 
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Settlement Charges</label>
+                        <input type="number" class="form-control" name="settlement_charges" id="id_settlement_charges">
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Subordinate Financing </label>
+                        <input type="number" class="form-control" name="subordinate_financing" id="id_subordinate_financing"> 
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- ./Title will be held in what Name(s)  -->
+            <!-- Property Address  -->
+            <div class="card-header"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                  Subject Property Address 
+               </span> 
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Street</label>
+                        <input type="text" name="type_property_address" class="form-control" placeholder="Property Address" maxlength="250" id="id_type_property_address">
+                     </div>
+                  </div>
+                  <div class="col-8">
+                     <div class="row">
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">City</label>
+                              <input type="text" name="type_property_city" class="form-control" placeholder="City" maxlength="50" id="id_type_property_city">
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group no-btn">
+                              <label class="label">State</label>
+                              <select name="type_property_state" class="form-control" id="id_type_property_state" tabindex="-98">
+                                 <option value="" selected="">---------</option>
+                                 {% for state in states %}
+                                 <option value="{{ state.id }}">{{ state.state }}</option>
+                                 {% endfor %}
+                              </select>
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Zip</label>
+                              <input type="number" name="type_property_zipcode" class="form-control" placeholder="Zipcode" maxlength="20" id="id_type_property_zipcode">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- ./Property Address  -->
+            <!-- Legal Description -->
+            <div class="card-header"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                  Legal Description of Subject Property
+               </span> 
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">No of Units</label> {{form.no_of_units}} 
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Year Built</label> {{form.year_built}} 
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group no-btn">
+                        <label class="label">Purpose of Loan</label>
+                        <select name="type_loan_purpose" class="form-control" id="id_type_loan_purpose" tabindex="-98">
+                           <option value="" selected="">---------</option>
+                           {% for loan_purpose in loan_purpose_list %}
+                           <option value="{{ loan_purpose.id }}">{{ loan_purpose.purpose_title }}</option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group no-btn">
+                        <label class="label">Property will be</label>
+                        <select name="type_property_type" class="form-control" id="id_type_property_type" tabindex="-98">
+                           <option value="" selected="">---------</option>
+                           {% for property_type in property_type_list %}
+                           <option value="{{ property_type.id }}">{{ property_type.property_type_title }}</option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- ./Legal Description -->
+            <!-- Complete this line if construction or construction-permanent loan -->
+            <div class="card-header"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                  Construction/Construction Permanent Loan
+               </span> 
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-6">
+                     <div class="form-group regular">
+                        <input type="checkbox" class="form-control" id="ccpl">
+                        <label for="ccpl">Construction/Construction Permanent Loan</label>
+                     </div>
+                  </div>
+                  <div class="col-12">
+                     <div class="row" id="ccpl_display">
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Year LotAcquired</label> 
+                              {{form.construction_lot_year}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Original Cost</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.construction_original_cost}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Amount Existing Liens</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.construction_amount}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Present Value of Lot (a)</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.construction_present_value}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Cost of  <br>Improvements (b)</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.construction_cost}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Total (a+b)</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.construction_total}} 
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- ./Complete this line if construction or construction-permanent loan -->
+            <!-- Complete this line if construction or construction-permanent loan -->
+            <div class="card-header"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                  Complete this line if this is a refinance loan
+               </span> 
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-6">
+                     <div class="form-group regular">
+                        <input type="checkbox" class="form-control" id="rl">
+                        <label for="rl">A Refinance Loan</label>
+                     </div>
+                  </div>
+                  <div class="col-12">
+                     <div class="row" id="rl_display">
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Year Acquired</label> 
+                              {{form.refinance_lot_year}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Original Cost</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.refinance_original_cost}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Amount Existing Liens</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.refinance_amount}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Purpose of Refinance</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.refinance_purpose}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group">
+                              <label class="label">Cost</label> <i class="fa fa-usd cost" aria-hidden="true"></i> 
+                              {{form.refinance_cost}} 
+                           </div>
+                        </div>
+                        <div class="col-4">
+                           <div class="form-group regular">
+                              <label class="label">Describe Improvements</label>
+                              <div class="d-flex justify-content-between">
+                                 <span class="mr-2 d-flex">
+                                    {% if file_master.refinance_describe_improvements == 'made' %}
+                                    <input type="radio" class="form-control describe_improvements" name="describe_improvements" checked value="made">
+                                    <label class="label">made</label> 
+                                    {% else %}
+                                    <input type="radio" class="form-control describe_improvements" name="describe_improvements" value="made">
+                                    <label class="label">made</label> 
+                                    {% endif %}
+                                 </span>
+                                 <span class="mr-2 d-flex">
+                                    {% if file_master.refinance_describe_improvements == 'to_be_made' %}
+                                    <input type="radio" class="form-control describe_improvements" name="describe_improvements" checked value="to_be_made">
+                                    <label class="label">to be made</label> 
+                                    {% else %}
+                                    <input type="radio" class="form-control describe_improvements" name="describe_improvements" value="to_be_made">
+                                    <label class="label">to be made</label> 
+                                    {% endif %}
+                                 </span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- ./Complete this line if construction or construction-permanent loan -->
+         </div>
+      </div>
+      <div class="row mt-3">
+         <div class="col-md-12">
+            <div class="text-center">
+               <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+               <button type="submit" class="btn btn-success btn-sm" id="id_submit_mortage"><i class="far fa-check-circle mr-2"></i>Save</button>
+            </div>
+         </div>
+      </div>
+   </form>
+	<!-- ./Tabs Section Body -->
+</div>
+<!-- ./Purpose Details -->
+<script>
+      $(document).ready(function(){
+         $('select[name="loan_purpose"]').val("{{file_master.loan_purpose_id.id}}");
+         $('select[name="impound"]').val("{{file_master.impound.id}}");
+         $('select[name="occupancy_master"]').val("{{file_master.occupancy.id}}");
+         $('select[name="compensation_payer_type"]').val("{{file_master.compensation_payer_type.id}}");
+         $('input[name="no_of_units"]').val("{{file_master.no_of_units}}");
+         $('input[name="year_built"]').val("{{file_master.year_built}}")
+         $('select[name="type_property_type"]').val("{{file_master.property_type.id}}");
+         $('select[name="type_loan_purpose"]').val("{{file_master.loan_purpose_id.id}}");
+
+         $('input[name="type_property_address"]').val("{{file_property_map.property_address|check_none_values}}");
+         $('input[name="type_property_city"]').val("{{file_property_map.property_city|check_none_values }}");
+         $('select[name="type_property_state"]').val("{{file_property_map.property_state.id }}");
+         $('input[name="type_property_zipcode"]').val("{{file_property_map.property_zipcode}}");
+
+
+         $('input[name="construction_lot_year"]').val("{{file_master.construction_lot_year}}");
+         $('input[name="construction_amount"]').val("{{file_master.construction_amount}}");
+         $('input[name="construction_original_cost"]').val("{{file_master.construction_original_cost|check_none_values|currency_form_converter }}");
+
+         $('input[name="construction_present_value"]').val("{{file_master.construction_present_value}}");
+         $('input[name="construction_cost"]').val("{{file_master.construction_cost}}");
+         $('input[name="construction_total"]').val("{{file_master.construction_total}}");
+
+         $('input[name="refinance_lot_year"]').val("{{file_master.refinance_lot_year}}");
+         $('input[name="refinance_amount"]').val("{{file_master.refinance_amount}}");
+         $('input[name="refinance_original_cost"]').val("{{file_master.refinance_original_cost|check_none_values|currency_form_converter }}");
+
+         $('input[name="refinance_purpose"]').val("{{file_master.refinance_purpose|check_none_values}}");
+         $('input[name="refinance_cost"]').val("{{file_master.refinance_cost}}");
+         $('textarea[name="source_of_down"]').val("{{file_master.source_of_down|check_none_values}}");
+
+         $('textarea[name="property_name"]').val("{{file_master.property_name|check_none_values}}");
+         $('input[name="property_title_will_be_held"]').val("{{file_master.property_title_will_be_held|check_none_values}}");
+         $('input[name="subordinate_financing"]').val("{{file_master.subordinate_financing}}");
+         $('input[name="settlement_charges"]').val("{{file_master.settlement_charges}}");
+
+         expense_sum($(".expense_add"),"#expenses_borrower", 'html');
+         $(document).on("change", ".sum_add", function() {
+            expense_sum($(".sum_add"),"#id_construction_total", 'value');
+         });
+      });
+</script>
+<script>
+   $("#id_property_info").on('submit', function (e) {
+      e.preventDefault();
+      $.ajax({
+         type: "POST",
+         url: "{% url 'property_information' %}",
+         data: {
+            'file_id': "{{ file_master.id }}",
+            'property_address':$('#id_type_property_address').val(),
+            'property_city':$('#id_type_property_city').val(),
+            'property_state':$('#id_type_property_state').val(),
+            'property_zipcode':$('#id_type_property_zipcode').val(),
+            'no_of_units':$('#id_no_of_units').val(),
+            'year_built':$('#id_year_built').val(),
+            'type_loan_purpose':$('#id_type_loan_purpose').val(),
+            'type_property_type':$('#id_type_property_type').val(),
+            'source_of_down':$('#id_source_of_down').val(),
+            'property_name':$('#id_property_name').val(),
+            'property_title_will_be_held':$('#id_property_title_will_be_held').val(),
+            'settlement_charges':$('#id_settlement_charges').val(),
+            'subordinate_financing':$('#id_subordinate_financing').val(),
+            'estate':$("input[name='estate']:checked").val(),
+            'refinance_describe_improvements': $("input[name='describe_improvements']:checked").val(),
+            'refinance_lot_year': $('#id_refinance_lot_year').val(),
+            'refinance_original_cost':$('#id_refinance_original_cost').val(),
+            'refinance_purpose':$('#id_refinance_purpose').val(),
+            'refinance_amount':$('#id_refinance_amount').val(),
+            'refinance_cost':$('#id_refinance_cost').val(),
+            'construction_lot_year':$('#id_construction_lot_year').val(),
+            'construction_original_cost': $('#id_construction_original_cost').val(),
+            'construction_amount': $('#id_construction_amount').val(),
+            'construction_present_value': $('#id_construction_present_value').val(),
+            'construction_cost': $('#id_construction_cost').val(),
+            'construction_total': $('#id_construction_total').val(),
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+         },
+         success: function (response) {
+            window.location.href=window.location.href;
+         }
+      });
+   });
+</script>

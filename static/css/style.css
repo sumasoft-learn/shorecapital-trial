@@ -1,0 +1,372 @@
+body {
+    font-size: 13px;
+    font-family: 'Muli', sans-serif;
+    color: rgba(0, 0, 0, .87);
+    background: #9e9e9e59 !important;
+ }
+ 
+ h1, h2, h3, h4, h5 {
+    font-weight: 400;
+ }
+ 
+ .btn {
+    font-size: 14px !important;
+ }
+ 
+ .mt-85px {
+    margin-top: 85px
+ }
+ 
+ a.navbar-brand.text-dark .fa, .logo .fa {
+    color: #3852e4;
+ }
+ 
+ /* -------------------------------------- */
+ 
+ .login-form i, .create-user-page i {
+    color: #424242a1
+ }
+ 
+ .login-form .fa-code, .login-form .fa-user, .login-form .fa-lock {
+    position: absolute;
+    left: 6px;
+    top: 10px;
+ }
+ 
+ .create-user-page .fa-user, .create-user-page .fa-id-card, .create-user-page .fa-envelope {
+    position: absolute;
+    left: 6px;
+    top: 10px;
+ }
+ 
+ h1.main-heading, .modal-title {
+    font-size: 22px;
+    color: #0087b1;
+    font-weight: 400;
+ }
+ 
+ h1.main-heading {
+    font-size: 24px !important;
+    color: #3852e4
+ }
+ 
+ .modal-title {
+    font-size: 18px;
+ }
+ 
+ .rounded-20px {
+    border-radius: 20px
+ }
+ 
+ .dropdown-menu {
+    right: 0;
+    left: auto
+ }
+ 
+ .dropdown-menu .dropdown-item {
+    font-size: 14px;
+ }
+ 
+ .login-form {
+    /* background-image: url('../img/login-bg.png');
+    background-size: cover;
+     background-color: cadetblue; */
+    background-color: #1c2763;
+    height: 100vh
+ }
+ 
+ h5 {
+    color: #3852e4
+ }
+ 
+ /* ::placeholder {
+    font-size: small;
+ } */
+ 
+ .create-new-transaction .form-group {
+    margin-bottom: .4rem;
+ }
+ 
+ .create-new-transaction label {}
+ 
+ form .form-control {
+    font-size: 11px;
+ }
+ 
+ .font-13px {
+    font-size: 13px !important;
+ }
+ 
+ select.form-control {
+    font-size: 11px;
+ }
+ 
+ .top-menu .nav-link {
+    font-size: 14px;
+ }
+ 
+ .top-menu .nav-link.active {
+    color: #3852e4 !important
+ }
+ 
+ ::placeholder {
+    font-size: 12px;
+ }
+ 
+ .modal-body {
+    background-color: #f4f4f475 !important;
+ }
+ 
+ /* 
+ .navbar {
+    position: fixed;
+    width: 100%;
+    height: 70px;
+    z-index: 1;
+ } */
+ 
+ .pagination a {
+   transition: background-color .3s;
+ }
+ 
+ input[type="search"] {
+    border: none;
+    border-radius: 4px;
+    border-bottom: 1px solid #ccc
+ }
+ 
+ input[type="search"], select {
+    height: 32px !important;
+ }
+ 
+ .navbar-brand {
+    font-size: 1.2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+ }
+ 
+ .sidebar {
+    width: 240px;
+    height: 100vh;
+    background-color: #1c2763;
+    position: fixed;
+    left: 0;
+    transition: 0.5s;
+    transition-property: left;
+ }
+ 
+ .sidebar a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    transition: 0.5s;
+    transition-property: background;
+ }
+ 
+ .sidebar i {
+    padding-right: 2px;
+    font-size: 14px;
+    color: #fff !important;
+ }
+ 
+ .sidebar .list-group-item {
+    border: 1px solid rgb(0 0 0 / 6%);
+ }
+ 
+ label #sidebar_btn {
+    color: #fff;
+    position: fixed;
+    left: 250px;
+    transition: 0.5s;
+    transition-property: color;
+ }
+ 
+ label #sidebar_btn:hover {
+    color: #333
+ }
+ 
+ label #sidebar_btn {
+    color: #19bbde
+ }
+ 
+ #check:checked~.sidebar {
+    left: -220px;
+ }
+ 
+ #check:checked~.sidebar a span {
+    display: none;
+ }
+ 
+ #check:checked~.sidebar a {
+    font-size: 20px;
+    margin-left: 160px;
+    color: #fff;
+    width: 80px;
+    text-decoration: none
+ }
+ 
+ .content {
+    margin-left: 240px;
+    margin-top: 61px;
+    padding-top: 20px;
+    height: 100vh;
+    transition: 0.5s;
+ }
+ 
+ #check:checked~.content {
+    margin-left: 0px;
+ }
+ 
+ #check {
+    display: none;
+ }
+ 
+ .navbar {
+    background: #fffefe
+ }
+ 
+ /* .search-textfield {
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+    width: 250px !important
+ }
+ 
+ .search-textfield:focus {
+    width: 100% !important
+ } */
+ 
+ p.profile-img {
+    width: 33px;
+    border-radius: 50%;
+    height: 33px;
+ }
+ 
+ .scrollable {
+    /* height: 395px; */
+    overflow-y: auto;
+ }
+ 
+ .table td, .table th {
+    padding: .45rem;
+ }
+ 
+ .sidebar li.list-group-item.new-file{
+    background: #28a745;
+    color: #fff;
+    cursor: pointer;
+ }
+ 
+ .sidebar li.list-group-item.active {
+    color: #ccc;
+    background-color: #3852e4
+ }
+ 
+ .sidebar li.list-group-item {
+    color: #ccc;
+    background-color:transparent;
+ }
+ 
+ .pull-up {
+    transition: all .25s ease;
+ }
+ 
+ .pull-up:hover {
+    transform: translateY(-4px) scale(1.00);
+    box-shadow: 0 14px 24px rgba(62, 57, 107, .2);
+    z-index: 30;
+ }
+ 
+ /*  --------------------------------- */
+ 
+ .company-info .card-body .fa-bar-chart-o {
+    color: blue;
+ }
+ 
+ .company-info .card-body .fa {
+    font-size: 38px;
+ }
+ 
+ .adv input[type="checkbox"] {
+    transform: scale(1.4)
+ }
+ 
+ /*  --------------------------------- */
+ 
+ /*  When not collapse attach rotate icon class */
+ 
+ .card .card-header a:not(.collapsed) .rotate-icon {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg) !important;
+ }
+ 
+ /* --------- */
+ 
+ .nav-tabs-custom .nav-link {
+    display: block;
+    padding: .5rem 2rem;
+    font-size: 13px;
+ }
+ 
+ .nav-tabs-custom .nav-link.active {
+    font-weight: bold;
+ }
+ 
+ .nav-tabs-custom .tab-pane {
+    font-size: 13px;
+ }
+ 
+ .nav-tabs-custom .tab-pane table td {
+    font-size: 11px;
+ }
+ 
+ /*  Processorsor Assist tab */
+ 
+ .inner-tabs .nav-link.active {
+    border: none !important;
+    border-bottom: 2px solid #13a6d3 !important;
+    color: orange;
+ }
+ 
+ .inner-tabs .nav-link {
+    font-size: 13px !important;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+ }
+ 
+ .bg-orange {
+    background: #FF7F00 !important
+ }
+ 
+ .bs-example .card-header {
+    margin-bottom: 0px;
+ }
+ 
+ .bs-example .btn {
+    font-size: 12px;
+ }
+ 
+ .order-service-accordion .card-header {
+    margin-top: 2px;
+    cursor: pointer;
+ }
+ 
+ .order-service-accordion a:hover {
+    text-decoration: none;
+ }
+ 
+ /*  Toggle switch*/
+ 
+ .btn-default {
+    background: #ccc;
+ }
+ 
+ .toggle-handle {
+    background: #fff;
+ }
+ 
+ .toggle.btn {
+    border-radius: 20px;
+ }
+ 
+ /* */
+ 
+ 

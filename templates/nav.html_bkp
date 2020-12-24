@@ -1,0 +1,34 @@
+
+{% load static %}
+
+ <!-- Header -->
+ <header>
+   <nav class="navbar navbar-expand-lg navbar-light bg-white box-shadow-1 justify-content-md-between">
+      <div>
+         <a class="mr-3 dark" id="sidebar_menu">
+            <i class="fas fa-bars"></i>
+         </a>
+   
+         <a class="navbar-brand dark" href="/dashboard/">
+            <i class="fas fa-line text-dark"></i>
+            <b>ELLIE</b>TRAC  
+         </a>
+      </div>         
+
+      <div class="d-flex align-items-center">
+         <a class="dark mr-4" href="#"><i class="fas fa-bell"></i></a>
+         <div class="dropdown ">
+            <a class="dark dropdown-toggle profile-img" id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+               <img src="https://demo.w3layouts.com/demos_new/template_demo/21-02-2020/collective-admin-panel-liberty-demo_Free/1892622516/web/assets/images/profileimg.jpg"  class="rounded-circle"> 
+            </a>  
+            <div class="dropdown-menu">
+               <a class="dropdown-item" href="/password/create"><i class="fas fa-sign-out pr-1 " aria-hidden="true"></i>Change
+                  Password</a>
+			   <a class="dropdown-item" href="/logout/"><i class="fas fa-sign-out pr-1 " aria-hidden="true"></i> Log
+                  Out</a>
+            </div>     
+         </div>      
+      </div>
+   </nav>
+</header>
+<!-- ./Header -->

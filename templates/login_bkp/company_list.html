@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+{% block head %}
+      {% include "head.html" %}
+    {% endblock %}
+    <script>
+        $(document).ready(function() {
+            $('#company_table').DataTable();
+        } );
+</script>
+<body>
+  <section class="py-4">
+    <div class="container">
+      <div class="row">
+        <div class="mx-auto col-11 col-md-10 col-lg-5 mt-5 ">
+
+          <div class="card shadow">
+            <div class="card-header text-center">
+              <h4 class="my-3">Company List</h4>
+              <br/>
+              For SuperAdmin Login <a href="/superadmin/">Click Here</a>
+            </div>
+            <div class="card-body p-4">
+			 <table class="table table-bordered" id="company_table">
+                 <tr>
+                     <th>Sno</th>
+                     <th>Company Name</th>
+                 </tr>
+                 {% for company_detail in company_list %}
+                 <tr>
+                     <td>
+                        {{ forloop.counter }}
+                     </td>
+                     <td>
+                        <a href="/{{company_detail.company_code}}">{{ company_detail.company_name }}</a>
+                     </td>
+                 </tr>
+                 {% endfor %}
+             </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+
+</html>

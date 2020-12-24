@@ -1,0 +1,40 @@
+EH       Shore Capital Corporation           1        
+TH T100099-0021        
+TPI 1.0001                              N
+0001  3.20 W
+00ANN
+01A01                                                                                                              R000009                   0.00  0.000                                                                                                                                                                     
+02A                                                                                                1  F1                                                                                    
+02B  16                                                                                1Unmarried man                                               1        
+02Ckarthik chowdary kasaraneni                                 
+03ABW         karthik                            chowdary                           kasaraneni                                            U0 N                 karthik.kasaraneni@sumasoft.net                                                 
+05H         226           0.00
+05H         201           0.00
+05H         214           0.00
+05H         206           0.00
+05H         222           0.00
+05H         223           0.00
+05H         202           0.00
+07A                                             0.00           0.00           0.00           0.00           0.00           0.00           0.00           0.00           
+08A         NNNNNNNNN01YN101
+09A                 
+10A         N4                              I
+10BI                                                                              Shore Capital Corporation                                                                                                                              
+00070 3.20 
+99BNF1           0.00       01                                                                                                                   
+ADSLoanOriginatorID                                                                     
+ADSLoanOriginationCompanyID                                                             
+ADSHMDARaceCollectedBasedOnVisual              :N                                       
+ADSHMDAGenderCollectedBasedOnVisual            :N                                       
+ADSHMDAEthnicityCollectedBasedOnVisual         :N                                       
+ADSHMDAEthnicityRefusalIndicator               :N                                       
+ADSHMDARaceRefusalIndicator                    :N                                       
+ADSHMDAGenderRefusalIndicator                  :N                                       
+ADSHMDAGenderType                              :InformationNotProvidedUnknown           
+ADSHMDAEthnicityType                           :InformationNotProvidedByApplicantInMIT  
+00011 3.20 
+LNC1 02                 N                                N                                 
+PID                                                  
+PCH   N      
+TT 1        
+ET 1        

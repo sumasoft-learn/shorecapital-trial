@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+   {% load static %}
+   <head>
+      {% block head %}
+        {% include "head.html" %}
+      {% endblock %}
+   </head>        
+   <body class="active bg-light">
+      {% block nav %}
+        {% include "nav.html" %}
+      {% endblock %}
+      
+      <div class="d-flex">
+         {% block sidebar %}
+           {% include "sidebar.html" %}
+         {% endblock %}
+         
+         
+         <!-- Main Section -->
+         <main class="">
+            
+            <!-- Section Menu -->
+            <div class="row"> 
+               <!-- Content -->
+               <div class="col-12 px-3 py-2">
+                 <!-- Section Header -->
+                 <div class="d-flex justify-content-between section-header">
+                    <span class="section-title">Create User</span>                           
+                 </div>
+                 <!-- ./Section Header -->
+
+                 <!-- Tabs Section Body -->
+                 <div class="card mt-2">
+                    <div class="card-body">
+                       <div class="p-2">
+                        <form action="" method="POST">
+                           {% if form.errors %}
+                             {% for field in form %}
+                               {% for error in field.errors %}
+                                 <div class="alert alert-danger">
+                                   <strong>{{ error|escape }}</strong>
+                                 </div>
+                               {% endfor %}
+                             {% endfor %}
+                             {% for error in form.non_field_errors %}
+                               <div class="alert alert-danger">
+                                 <strong>{{ error|escape }}</strong>
+                               </div>
+                             {% endfor %}
+                           {% endif %}
+                           {% csrf_token %}
+                           
+                           
+                           <div class="row ">
+                              <div  class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                  <div class="input-group">
+                                     <label >Roles </label>
+                                     <select name="role_list" class="form-control" required="" id="id_role_list">
+                                        <option value="">---------</option>
+                                        {% for role in role_list %}
+                                       <option value="{{role.id}}">{{role.role_name}}</option>
+                                       {% endfor %}
+                                     </select>
+                                  </div>
+                               </div>
+                                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="input-group">
+                                       <label>Login Id</label>
+                                        {{ user_id_detail.user_id }}
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="input-group">
+                                       <label for="inputFirstName">Name</label>
+                                       {{ form.user_name }}
+                                    </div>
+                                 </div>
+                                
+                                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="input-group">
+                                       <label for="inputEmailAddress">Email</label>
+                                       {{ form.email }} 
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="input-group">
+                                       <label for="inputEmailAddress">Fax</label>
+                                       {{ form.fax }} 
+                                    </div>
+                                 </div>
+                                
+                                 
+                                 <div  class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="input-group">
+                                       <label >Is Active</label>
+                                       <div class="d-flex justify-content-between">
+                                          {% for choice in form.is_active %}
+                                          <label class="d-flex align-items-center">
+                                             {{ choice.tag }} {{ choice.choice_label }}
+                                          </label>
+                                          {% endfor %}
+                                       </div>
+                                    </div>
+                                 </div>
+                               
+                              </div>
+                              <div class="row extra_field">
+
+                              </div>
+                              <div class="row">
+                                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-right mt-3">
+                                      <button class="btn btn-outline-success btn-sm" type="submit">
+                                        <i class="fas fa-user-plus mr-2"></i>Create User
+                                      </button>
+                                </div>
+                              </div>
+                           </form>               
+                        </div>
+                     </div>
+                 </div>
+                 <!-- ./Tabs Section Body -->   
+               </div>
+               <!-- ./Content -->
+            </div>
+       
+            {% block footer %}
+              {% include "footer.html" %}
+            {% endblock %}
+            
+            <!-- Custom Script -->
+			
+            <script>
+              $(document).ready(function(){
+                $('#id_role_list').val("{{user_role_map.0.role_id.id}}");
+                $.post("/user/getField/",{role_id:"{{user_role_map.0.role_id.id}}"}, function( data ) {
+                     $(".extra_field").html(data);
+                     $('#nmls_id').val("{{user_id_detail.nmls_id}}");
+                     $('#phone').val("{{user_id_detail.phone}}");
+                     $('#company').val("{{user_id_detail.officer_company}}");
+                });
+
+                $('#id_user_name').val("{{user_id_detail.user_name}}");
+                $('#id_email').val("{{user_id_detail.email}}");
+                $('#id_fax').val("{{user_id_detail.fax}}");
+                $('input:radio[name="is_active"]').filter('[value="{{user_id_detail.is_active}}"]').attr('checked', true);
+                {% if user_id_detail.fax != None %}
+                $('#id_fax').val("{{user_id_detail.fax}}");
+                {% endif %}
+                  $('#id_role_list').change(function(){
+                    var value = $(this).val();
+                    $.post("/user/getField/",{role_id:value}, function( data ) {
+                      $(".extra_field").html(data);
+                  });
+                });
+              });
+           </script>
+        </body>
+   </html>

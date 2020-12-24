@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+  {% block head %}
+    {% include "head.html" %}
+  {% endblock %}
+
+<body>
+{% block nav %}
+    {% include "superadmin/nav.html" %}
+{% endblock %}
+{% block sidebar %}
+     {% include "superadmin/sidebar.html" %}
+{% endblock %}
+   <div class="content px-2">
+      <div class="container-fluid ">
+
+         <!-- <a href="#" class="btn  float-right  text-white bg-success " data-toggle="modal" data-target="#myModal"
+            title="Create File" "=""> <i class=" fa fa-plus "></i> Create
+            User
+         </a> -->
+         <h1 class=" main-heading py-0 mb-0 ">Create Company</h1>
+
+
+         <hr class=" my-3">
+
+
+         <div class="row">
+            <div class="col-md-12">
+               <div class="card shadow create-user-page">
+                  <!-- <div class="card-header text-center">
+                        <h3 class="my-3">Create User</h3>
+                     </div> -->
+                  <div class="card-body p-4">
+                      <form action="" method="POST">
+                          {% if form.errors %}
+                            {% for field in form %}
+                              {% for error in field.errors %}
+                                <div class="alert alert-danger">
+                                  <strong>{{ error|escape }}</strong>
+                                </div>
+                              {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                              <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                              </div>
+                            {% endfor %}
+                          {% endif %}
+                          {% csrf_token %}
+                          <div class="form-row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                   <label class="  mb-1" for=" ">Compnay Name</label>
+                                <div class="position-relative"> <i class="fa  fa-id-card "></i> 
+                                        {{ form.company_name }} 
+                                </div>
+                        </div>
+                             </div>
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                   <label class="  mb-1" for="inputFirstName">Company Code</label>
+                                   <div class="position-relative"> <i class="fa  fa-user "></i> 
+                    {{ form.company_code }}
+                                   </div>
+                                </div>
+                             </div>
+                            
+                          </div>
+                                    <div class="form-row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                               <label class="  mb-1" for=" ">User Id</label>
+                                            <div class="position-relative"> <i class="fa  fa-id-card "></i> 
+                                                    {{ form.user_id }} 
+                                            </div>
+                                    </div>
+                                         </div>
+                                         <div class="col-md-4">
+                                            <div class="form-group">
+                                               <label class="  mb-1" for="inputFirstName">User Name</label>
+                                               <div class="position-relative"> <i class="fa  fa-user "></i> 
+                                {{ form.user_name }}
+                                               </div>
+                                            </div>
+                                         </div>
+                                         <div class="col-md-4">
+                                            <div class="form-group">
+                                               <label class="  mb-1" for="inputFirstName">User Email</label>
+                                               <div class="position-relative"> <i class="fa  fa-user "></i> 
+                                {{ form.email }}
+                                               </div>
+                                            </div>
+                                         </div>
+                                      </div>
+                          <div class="form-row">
+                            <div class="col-md-6">
+                                            <div class="form-group">
+                                               <label class="  mb-1" for=" ">Password</label>
+                                              <div class="position-relative"> <i class="fa  fa-id-card "></i> 
+                                {{ form.password }} 
+                              </div>
+                                            </div>
+                                         </div>
+                                         <div class="col-md-6">
+                                            <div class="form-group">
+                                               <label class="  mb-1" for="inputFirstName">Confirm Password</label>
+                                               <div class="position-relative"> <i class="fa  fa-user "></i> 
+                                {{ form.confirm_password }}
+                                               </div>
+                                            </div>
+                                         </div>
+                                        
+                                      </div>
+                                      
+                                      <div class="form-row">
+                                       
+                                         <div class="col-md-4">
+                                            <div class="form-group">
+                                               <label class="  mb-1" for=" ">Is Active</label>
+                                               <div class="d-flex  align-items-center ">
+                                {% for choice in form.is_active %}
+                                  <div class="form-check mr-5">
+                                    <label class="form-check-label">
+                                    {{ choice.tag }} {{ choice.choice_label }}
+                                    </label>
+                                                  </div>
+                                  <span class="radio"></span>
+                                {% endfor %}
+                                                 
+                                               </div>
+                                            </div>
+                                         </div>
+                                      </div>
+                                      <div class="form-group mt-4 mb-0">
+                                        <div class="float-right">
+                                            <button class="btn btn-primary btn-block" type="submit">Create
+                                                Company
+                                            </button>
+                                        </div>
+                          
+                                          </div>
+                                   </form>
+
+                  </div>
+               </div>
+            </div>
+         </div>
+
+      </div>
+      <footer class="border-top text-center   mt-3 py-2 ">
+         <p>All rights reserved. Shore Capital Mortage</p>
+
+      </footer>
+   </div>
+
+
+</body>
+<script>
+  $(document).ready(function(){
+    $('#id_role_list').change(function(){
+      var value = $(this).val();
+      if(value==2){
+        $('#id_nmls_id').attr("required","required");
+        $('.nmls_field').show();
+      }else{
+        $('#id_nmls_id').removeAttr("required");
+        $('.nmls_field').hide();
+      }
+    });
+    $('#id_company_code').on('keypress', function (event) {
+    var regex = new RegExp("^[a-z0-9_]+$");
+    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+        event.preventDefault();
+        return false;
+        }
+    });
+  });
+
+</script>
+</html>

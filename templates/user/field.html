@@ -1,0 +1,25 @@
+
+
+{% if role_row.role_type == "Loan officer" %}
+<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 extra_field" >
+    <div class="input-group">
+        <label >NMLS Id  </label>
+        <input type="text" name="nmls_id" class="form-control py-3 pl-4 extra_field_required" placeholder="NMLS Id" maxlength="50" id="nmls_id" required>
+    </div>
+</div>
+
+
+<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 extra_field">
+    <div class="input-group">
+        <label >Phone/Direct</label>
+        <input type="text" name="phone" class="form-control py-3 pl-4 extra_field_required" placeholder="Phone/Direct" maxlength="20" id="phone" required>
+    </div>
+</div>
+
+<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 extra_field" >
+    <div class="input-group">
+        <label >Officer Company </label>
+        <input type="text" name="company" class="form-control py-3 pl-4 extra_field_required" placeholder="Officer Company" maxlength="50" id="company" required>
+    </div>
+</div>
+{% endif %}

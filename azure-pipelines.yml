@@ -1,0 +1,56 @@
+# Python Django - WEB
+# shorecapital devops pipeline
+
+trigger:
+- master
+- development
+
+pool:
+  vmImage: 'ubuntu-latest'
+strategy:
+  matrix:
+    Python37:
+      PYTHON_VERSION: '3.7'
+  maxParallel: 3
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(PYTHON_VERSION)'
+    architecture: 'x64'
+  
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+    verbose: 1
+
+- task: AzureRmWebAppDeployment@4
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
+  displayName: 'Deploy to Production'
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'ShorecapitalConnectionARM'
+    appType: 'webAppLinux'
+    WebAppName: 'shorecapital'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    RuntimeStack: 'PYTHON|3.7'
+    AppSettings: '-SCM_DO_BUILD_DURING_DEPLOYMENT "True" -POST_BUILD_SCRIPT_PATH "Procfile.sh" -DISABLE_COLLECTSTATIC "True"'
+
+- task: AzureRmWebAppDeployment@4
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'development'))
+  displayName: 'Deploy to Development'
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'ShorecapitalConnectionARM'
+    appType: 'webAppLinux'
+    WebAppName: 'shorecapital'
+    deployToSlotOrASE: true
+    ResourceGroupName: 'ShoreCapitalResourceGroup'
+    SlotName: 'dev'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    RuntimeStack: 'PYTHON|3.7'
+    AppSettings: '-SCM_DO_BUILD_DURING_DEPLOYMENT "True" -WEBSITE_TIME_ZONE "India Standard Time" -POST_BUILD_SCRIPT_PATH "Procfile.sh" -DISABLE_COLLECTSTATIC "True" -DB_NAME "db_shorecapital" -DB_HOST "shorecapital.mysql.database.azure.com" -DB_PASSWORD D8\W$LSs%"8uWUvxgb"G -DB_PORT 3306 -DB_USER "shorecapitaluser@shorecapital"'

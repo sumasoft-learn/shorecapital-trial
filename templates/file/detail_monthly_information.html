@@ -1,0 +1,356 @@
+
+{% load currency %}
+<!-- Employment Information -->
+{% if div_id == 'expense_information-details' %}
+<div class="tab-pane fade active show" id="expense_information-details" role="tabpanel" aria-labelledby="expense_information_list">
+{% else %}
+<div class="tab-pane fade" id="expense_information-details" role="tabpanel" aria-labelledby="expense_information_list">
+{% endif %}
+  <!-- Section Header -->
+    <div class="d-flex justify-content-between section-header">
+       <span class="section-title">Monthly Income And Combined Housing Expense Information</span>
+    </div>
+    <!-- ./Section Header -->
+    <form method="POST" action="" id="id_expenses_form">
+      <!-- Tabs Section Body -->
+      <div class="card mt-2">
+         <div class="card-body tab-overflow"> 
+               <!--  -->
+                  <div class="card-header">
+                     <span>
+                        <i class="fas fa-exclamation-circle mr-1"></i>
+                        Gross
+                     </span>
+                     <span></span>
+                  </div>
+                  <div class="p-2">
+                        <div class="table-style-three">
+                           <table>
+                              <thead>
+                                 <tr>
+                                    <th>Monthly Income</th>
+                                    <th>Borrower <input type="hidden" name="bw_expenses_id" value="{{ bw_expenses.id }}"</th>
+
+                                    {% for i in co_borrower %}
+                                    <th>Co-Borrower {{ i.co_borrower_name }} <input type="hidden" name="co_borrower_expense_id" value="{{ i.id }}"></th>
+                                    {% endfor %}
+                                    <th>Total</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr class="whole_row_add">
+                                    <td>Base Empl. Income*</td>
+                                    <td><input type="number" name="br_base_empl" class="form-control expense_add base_expense" value="{{ bw_expenses.monthly_income|check_none_values }}"></td>
+                                    {% for j in co_borrower %}
+                                       {% for i in cw_expenses %}
+                                          {% if j.id == i.cw_id.id %}
+                                             <td><input type="text" name="co_base_empl" class="form-control co_borrower_{{j.id}} base_expense" value="{{ i.monthly_income|check_none_values }}"></td>
+                                          {% endif %}
+                                       {% endfor %}
+                                    {% endfor %}
+                                    
+                                    <td id="row_add"></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Overtime</td>
+                                    <td><input type="number" name="br_overtime" class="form-control expense_add base_expense_1" value="{{ bw_expenses.overtime|check_none_values }}"></td>
+                                    {% for j in co_borrower %}
+                                       {% for i in cw_expenses %}
+                                          {% if j.id == i.cw_id.id %}
+                                             <td><input type="text" name="co_overtime" class="form-control co_borrower_{{j.id}} base_expense_1" value="{{ i.overtime|check_none_values }}"></td>
+                                          {% endif %}
+                                       {% endfor %}
+                                    {% endfor %}
+                                    <td id="row_add_1"></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Bonuses</td>
+                                    <td><input type="number" name="br_bonuses" class="form-control expense_add base_expense_2" value="{{ bw_expenses.bonuses|check_none_values }}"></td>
+                                    {% for j in co_borrower %}
+                                       {% for i in cw_expenses %}
+                                          {% if j.id == i.cw_id.id %}
+                                             <td><input type="text" name="co_bonuses" class="form-control co_borrower_{{j.id}} base_expense_2" value="{{ i.bonuses|check_none_values }}"></td>
+                                          {% endif %}
+                                       {% endfor %}
+                                    {% endfor %}
+                                    <td id="row_add_2"></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Commissions</td>
+                                    <td><input type="number" name="br_commissions" class="form-control expense_add base_expense_3" value="{{ bw_expenses.commissions|check_none_values }}"></td>
+                                    {% for j in co_borrower %}
+                                       {% for i in cw_expenses %}
+                                          {% if j.id == i.cw_id.id %}
+                                             <td><input type="text" name="co_commissions" class="form-control co_borrower_{{j.id}} base_expense_3" value="{{ i.commissions|check_none_values }}"></td>
+                                          {% endif %}
+                                       {% endfor %}
+                                    {% endfor %}
+                                    <td id="row_add_3"></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Dividends/Interest</td>
+                                    <td><input type="number" name="br_dividends_interest" class="form-control expense_add base_expense_4" value="{{ bw_expenses.dividends_interest|check_none_values }}"></td>
+                                    {% for j in co_borrower %}
+                                       {% for i in cw_expenses %}
+                                          {% if j.id == i.cw_id.id %}
+                                             <td><input type="text" name="co_dividends_interest" class="form-control co_borrower_{{j.id}} base_expense_4" value="{{ i.dividends_interest|check_none_values }}"></td>
+                                          {% endif %}
+                                       {% endfor %}
+                                    {% endfor %}
+                                    <td id="row_add_4"></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Net Rental Income</td>
+                                    <td><input type="number" name="br_net_rental_income" class="form-control expense_add base_expense_5" value="{{ bw_expenses.net_rental_income|check_none_values }}"></td>
+                                    {% for j in co_borrower %}
+                                       {% for i in cw_expenses %}
+                                          {% if j.id == i.cw_id.id %}
+                                             <td><input type="text" name="co_net_rental_income" class="form-control co_borrower_{{j.id}} base_expense_5" value="{{ i.net_rental_income|check_none_values }}"></td>
+                                          {% endif %}
+                                       {% endfor %}
+                                    {% endfor %}
+                                    
+                                    <td id="row_add_5"></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Other</td>
+                                    <td><input type="number" name="br_other" class="form-control expense_add base_expense_6" value="{{ bw_expenses.other|check_none_values }}"></td>
+                                    {% for j in co_borrower %}
+                                       {% for i in cw_expenses %}
+                                          {% if j.id == i.cw_id.id %}
+                                             <td><input type="text" name="co_other" class="form-control co_borrower_{{j.id}} base_expense_6" value="{{ i.other|check_none_values }}"></td>
+                                          {% endif %}
+                                       {% endfor %}
+                                    {% endfor %}
+                                    <td id="row_add_6"></td>
+                                 </tr>
+                                 <tr>
+                                    <th>Total</th>
+                                    <th id='expenses_borrower'></th>
+                                    {% for j in co_borrower %}
+                                       {% for i in cw_expenses %}
+                                          {% if j.id == i.cw_id.id %}
+                                             <th id="co_borrower_total_{{ j.id }}"></th>
+                                          {% endif %}
+                                       {% endfor %}
+                                    {% endfor %}
+                                    <th></th>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+                  </div>
+               <!-- ./ -->                      
+               <!--  -->
+                  <div class="card-header">
+                     <span>
+                        <i class="fas fa-exclamation-circle mr-1"></i>
+                        Combined Monthly
+                     </span>
+                     <span></span>
+                  </div>
+                  <div class="p-2">
+                        <div class="table-style-three">
+                           <table>
+                              <thead>
+                                 <tr>
+                                    <th>Housing Expense</th>
+                                    <th>Present <input type="hidden" name='house_present_ids' value='{{ expense_present.id }}'></th>
+                                    <th>Proposed <input type="hidden" name='house_proposed_ids' value='{{ expense_proposed.id }}'></th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr>
+                                    <td>Rent</td>
+                                    {% if expense_present %}
+                                       <td><input type="text" name="rent_present" class="form-control" value="{{ expense_present.rent }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="rent_present" class="form-control" value=""></td>
+                                    {% endif %}
+                                    {% if expense_proposed %}
+                                       <td><input type="text" name="rent_proposed" class="form-control" value="{{ expense_proposed.rent|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="rent_proposed" class="form-control" value=""></td>
+                                    {% endif %}
+                                 </tr>
+                                 <tr>
+                                    <td>First Mortgage (P&I)</td>
+                                    
+                                    {% if expense_present %}
+                                       <td><input type="text" name="first_mortgage_present" class="form-control" value="{{ expense_present.first_mortgage|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="first_mortgage_present" class="form-control" value=""></td>
+                                    {% endif %}
+                                    {% if expense_proposed %}
+                                       <td><input type="text" name="first_mortgage_proposed" class="form-control" value="{{ expense_proposed.first_mortgage|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="first_mortgage_proposed" class="form-control" value=""></td>
+                                    {% endif %}
+                                 </tr>
+                                 <tr>
+                                    <td>Other Financing (P&I)</td>
+                                    {% if expense_present %}
+                                       <td><input type="text" name="other_financing_present" class="form-control" value="{{ expense_present.other_financing|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="other_financing_present" class="form-control" value=""></td>
+                                    {% endif %}
+                                    {% if expense_proposed %}
+                                       <td><input type="text" name="other_financing_proposed" class="form-control" value="{{ expense_proposed.other_financing|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="other_financing_proposed" class="form-control" value=""></td>
+                                    {% endif %}
+                                 </tr>
+                                 <tr>
+                                    <td>Hazard Insurance</td>
+                                    {% if expense_present %}
+                                       <td><input type="text" name="hazard_insurance_present" class="form-control" value="{{ expense_present.hazard_insurance|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="hazard_insurance_present" class="form-control" value=""></td>
+                                    {% endif %}
+                                    {% if expense_proposed %}
+                                       <td><input type="text" name="hazard_insurance_proposed" class="form-control" value="{{ expense_proposed.hazard_insurance|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="hazard_insurance_proposed" class="form-control" value=""></td>
+                                    {% endif %}
+                                 </tr>
+                                 <tr>
+                                    <td>Real Estate Taxes</td>
+                                    {% if expense_present %}
+                                       <td><input type="text" name="real_estate_taxes_present" class="form-control" value="{{ expense_present.real_estate_taxes|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="real_estate_taxes_present" class="form-control" value=""></td>
+                                    {% endif %}
+                                    {% if expense_proposed %}
+                                       <td><input type="text" name="real_estate_taxes_proposed" class="form-control" value="{{ expense_proposed.real_estate_taxes|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="real_estate_taxes_proposed" class="form-control" value=""></td>
+                                    {% endif %}
+                                 </tr>
+                                 <tr>
+                                    <td>Mortgage Insurance</td>
+                                    {% if expense_present %}
+                                       <td><input type="text" name="mortgage_insurance_present" class="form-control" value="{{ expense_present.mortgage_insurance|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="mortgage_insurance_present" class="form-control" value=""></td>
+                                    {% endif %}
+                                    {% if expense_proposed %}
+                                       <td><input type="text" name="mortgage_insurance_proposed" class="form-control" value="{{ expense_proposed.mortgage_insurance|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="mortgage_insurance_proposed" class="form-control" value=""></td>
+                                    {% endif %}
+                                 </tr>
+                                 <tr>
+                                    <td>Other</td>
+                                    {% if expense_present %}
+                                       <td><input type="text" name="other_present" class="form-control" value="{{ expense_present.other|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="other_present" class="form-control" value=""></td>
+                                    {% endif %}
+                                    {% if expense_proposed %}
+                                       <td><input type="text" name="other_proposed" class="form-control" value="{{ expense_proposed.other|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="other_proposed" class="form-control" value=""></td>
+                                    {% endif %}
+                                 </tr>
+                                 <tr>
+                                    <td>Homeowner Assn. Dues</td>
+                                    {% if expense_present %}
+                                       <td><input type="text" name="homeowner_assn_dues_present" class="form-control" value="{{ expense_present.homeowner_assn_dues|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="homeowner_assn_dues_present" class="form-control" value=""></td>
+                                    {% endif %}
+                                    {% if expense_proposed %}
+                                       <td><input type="text" name="homeowner_assn_dues_proposed" class="form-control" value="{{ expense_proposed.homeowner_assn_dues|check_none_values }}"></td>
+                                    {% else %}
+                                       <td><input type="text" name="homeowner_assn_dues_proposed" class="form-control" value=""></td>
+                                    {% endif %}
+                                 </tr>
+                                 <tr>
+                                    <th>Total</th>
+                                    <th></th>
+                                    <th></th>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+                  </div>
+               <!-- ./ -->                      
+
+         </div>
+      </div>
+      <div class="row mt-3">
+         <div class="col-md-12">
+            <div class="text-center">
+               <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+               <button type="submit" class="btn btn-success btn-sm" id="id_submit_mortage"><i class="far fa-check-circle mr-2"></i>Save</button>
+            </div>
+         </div>
+      </div>
+   </form>
+    <!-- ./Tabs Section Body -->                  
+ </div>
+ <!-- ./Employment Information -->
+
+ <script>
+   var token = '{{csrf_token}}';
+   $("#id_expenses_form").on('submit', function (e) {
+      e.preventDefault();
+      $.ajax({
+         headers: { "X-CSRFToken": token },
+         type: "POST",
+         url: "{% url 'monthly_expenses_details' file_master.id %}",
+         data: $('#id_expenses_form').serialize(),
+         success: function (response) {
+            window.location.href=window.location.href;
+         }
+      });
+   });
+</script>
+<script>
+   $(document).ready(function(){
+      expense_sum($(".expense_add"),"#expenses_borrower", 'html');
+      expense_sum($(".base_expense"),"#row_add", 'html');
+      expense_sum($(".base_expense_1"),"#row_add_1", 'html');
+      expense_sum($(".base_expense_2"),"#row_add_2", 'html');
+      expense_sum($(".base_expense_3"),"#row_add_3", 'html');
+      expense_sum($(".base_expense_4"),"#row_add_4", 'html');
+      expense_sum($(".base_expense_5"),"#row_add_5", 'html');
+      expense_sum($(".base_expense_6"),"#row_add_6", 'html');
+   });
+
+   $(document).on("change", ".expense_add", function() {
+      expense_sum($(".expense_add"),"#expenses_borrower", 'html');
+   });
+   $(document).on("change", ".base_expense", function() {
+      expense_sum($(".base_expense"),"#row_add", 'html');
+   });
+   $(document).on("change", ".base_expense_1", function() {
+      expense_sum($(".base_expense_1"),"#row_add_1", 'html');
+   });
+   $(document).on("change", ".base_expense_2", function() {
+      expense_sum($(".base_expense_2"),"#row_add_2", 'html');
+   });
+   $(document).on("change", ".base_expense_3", function() {
+      expense_sum($(".base_expense_3"),"#row_add_3", 'html');
+   });
+   $(document).on("change", ".base_expense_4", function() {
+      expense_sum($(".base_expense_4"),"#row_add_4", 'html');
+   });
+   $(document).on("change", ".base_expense_5", function() {
+      expense_sum($(".base_expense_5"),"#row_add_5", 'html');
+   });
+   $(document).on("change", ".base_expense_6", function() {
+      expense_sum($(".base_expense_6"),"#row_add_6", 'html');
+   });
+
+</script>
+<script>
+   {% for i in co_borrower %}
+      $(document).ready(function(){
+         expense_sum($(".co_borrower_{{ i.id}}"),"#co_borrower_total_{{ i.id }}", 'html');
+      });
+      $(document).on("change", ".co_borrower_{{ i.id}}", function() {
+         expense_sum($(".co_borrower_{{ i.id}}"),"#co_borrower_total_{{ i.id }}", 'html');
+      });
+   {% endfor %}
+</script>

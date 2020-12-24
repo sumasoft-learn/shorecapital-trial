@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+   <head>
+    {% block head %}
+          {% include "head.html" %}
+        {% endblock %}
+        
+      <!-- Data table Style -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" type="text/css">
+   </head>        
+   <body class="bg-light">
+{% block nav %}
+  {% include "nav.html" %}
+{% endblock %}
+      
+      <div class="d-block">
+{% block sidebar %}
+  {% include "sidebar.html" %}
+{% endblock %}
+
+
+         <!-- Main Section -->
+         <main>
+
+            <!-- Section Menu -->
+            <div class="row m-0"> 
+
+               <!-- Content -->
+               <div class="col-12 p-0">
+                  <div class="tab-content" id="nav-tabContent">
+                     <!-- Loan Details -->
+                     <div class="tab-pane fade show active" id="loan-details" role="tabpanel" aria-labelledby="loan-details-list">
+
+                        <!-- Section Header -->
+                        <div class="d-flex justify-content-between section-header">
+                           <span class="section-title">Dashboard</span>
+                           <span>
+                              <a class="btn btn-sm btn-primary" href="/file/create/"><i class="fas fa-plus mr-2"></i>Create File</a>
+                           </span>
+                        </div>
+                        <!-- ./Section Header -->
+                     
+                        <!-- Tabs Section Body -->
+                        <div class="card mt-2">
+
+                           <div class="card-header no-border" style="background:rgba(242, 242, 242, 0.4) !important;">
+                              <!-- Nav tabs -->
+                              <ul class="nav nav-tabs scroller-tabs" id="tabs_nav" role="tablist">
+                                
+                                 {% for status_row in status_obj %}
+                                 {% if forloop.first %}
+                                 <li class="nav-item">
+                                        <a class="nav-link active" id="{{status_row.id}}-status_tab" data-toggle="tab" href="#{{status_row.id}}_status_div" role="tab" aria-controls="{{status_row.id}}_status_div" aria-selected="true">{{status_row.status_name}}</a>
+                                        </li>
+                                    {% else %}
+                                    <li class="nav-item">
+                                            <a class="nav-link " id="{{status_row.id}}-status_tab" data-toggle="tab" href="#{{status_row.id}}_status_div" role="tab" aria-controls="{{status_row.id}}_status_div" aria-selected="true">{{status_row.status_name}}</a>
+                                            </li>
+                                    {% endif %}
+                                 {% endfor %} 
+                                 <li class="nav-item">
+                                    <a class="nav-link " id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="true">All</a>
+                                    </li>         
+                              </ul>
+                              <!-- ./Nav tabs -->
+                              
+                           </div>
+                           <div class="card-body">
+                              
+                              <!-- Tab panes -->
+                              <div class="tab-content">                                
+                                 
+                                 <!-- All Details -->
+                                 <div class="tab-pane" id="all" role="tabpanel" aria-labelledby="all-tab">                                    
+                                    <div class="card-body p-0"> 
+                                       <table id="table_all" class="display">
+                                           <thead>
+                                              <tr>
+                                                    <th>#</th>
+                                                    <th>File</th>
+                                                    <th>Rec.Dt</th>
+                                                    <th>LE</th>
+                                                    <th>TT</th>
+                                                    <th>LO</th>
+                                                    <th>Lender</th>
+                                                    <th>Status</th>
+                                                    <th>Sub Status</th>
+                                                    <th>Notes</th>
+                                                    <th>CD</th>
+                                                    <th>Appr Ord</th>
+                                                    <th>Escrow Dt</th>
+                                                    <th>Escrow Co</th>
+                                                    <th>PayOff Exp</th>
+                                              </tr>
+                                           </thead>
+                                           <tbody>
+                                              {% for all_file in all_file_master %}
+                                              <tr>
+
+                                                    <td class="non-show">
+                                                           
+                                                        <a href="{% url 'view_file' file_id=all_file.id %}" class="btn btn-sm btn-outline-info "  target="_blank" style="font-size:10px">V</a>
+                                                          </td>
+                                                    <td>
+                                                            <span class="file_name">
+                                                                  {% if all_file.file_id|length == 0   %}
+                                                                  {{all_file.borrower_middle_name}}    
+                                                              {% else %}
+                                                                  {{all_file.file_id}}    
+                                                              {% endif %}
+                                                            </span>
+                                                               
+            
+                                                          </td>
+                                                              <td>{{all_file.recieved_date|date:"m.d"}}
+                                                                    <input type="hidden" class="rd_date_value" value='{{ all_file.recieved_date |date:"d-M-Y"}}'>
+                                                                
+                                                              </td>
+                                                              <td>
+                                                                {% if all_file.lock_expiration_date != None and  all_file.lock_expiration_date != '' %}  
+                                                                {{all_file.lock_expiration_date|date:"m.d"}}
+                                                                {% else %}
+                                                                Not Locked
+                                                                {% endif %}
+                                                                  <input type="hidden" class="lock_expiration_date_value" value='{{all_file.lock_expiration_date|date:"d-M-Y"}}'>
+                                                                 
+                                                              </td>
+                                                      <td>{{all_file.tax_transcript.tt_value}}
+                                                            <span class="date tt_date">{{all_file.tax_transcript_date|date:"m.d"}}</span>
+                                                            <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                            <input type="hidden" class="tt_date_value" value="{{ all_file.tax_transcript_date|date:'d-M-Y' }}">
+                                                  </td>
+                                                  <td>{{all_file.loan_officer_id.user_name}}
+                                                      <br/>
+                                                        {{all_file.ae_company_id}}
+                                                        <input type="hidden" class="user_name_value" value="{{ all_file.loan_officer_id.user_name }}">
+                                                        <input type="hidden" class="company_value" value="{{ all_file.ae_company_id }}">
+                                                    </td>
+                                                  <td>{{all_file.lender}}
+                                                        <input type="hidden" class="lender_value" value="{{ all_file.lender }}">
+                                                </td>
+                                                  <td>{{all_file.status_id.status_name}}
+
+                                                        <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                  </td>
+                                                  <td>{{all_file.sub_status_id.sub_status_name}}
+                                                        <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                  </td>
+                                                  <td class="d-flex justify-content-between non-show">
+                                                        <!-- <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="{{ all_file.note }}"> -->
+                                                        <span class="ellipsis" id="element">
+                                                               {{ all_file.note|truncatechars:25 }}
+                                                       </span>
+                                                        <span class="btn btn-sm btn-outline-info history" style="font-size: 11px;" >+H</span>
+                                                     </td>
+                                                <td>
+                                                   <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                            
+                                                   </span><span class="date cd_date">{{all_file.closing_disclosure_date|date:"m.d"}}</span>
+                                                   <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                   <input type="hidden" class="cd_date_value" value="{{ all_file.closing_disclosure_date|date:'d-M-Y' }}">
+                                          </td>												 
+                                                <td><span class="text">{{all_file.appraisal_ordered.ad_value}}</span>
+                                                  <span class="date ao_date">{{all_file.appraisal_ordered_date|date:"m.d"}}</span>
+                                                  <input type="hidden" class="ao_date_value" value="{{ all_file.appraisal_ordered_date|date:'d-M-Y' }}">
+                                                  <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                           </td>
+                                                <td>{{all_file.escrow_opened_date|date:"m.d"}}
+                                                    <input type="hidden" class="escrow_opened_date_value" value="{{ all_file.escrow_opened_date|date:'d-M-Y' }}">
+                                                </td>
+                                                <td>{{all_file.escrow_company}}
+                                                        <input type="hidden" class="escrow_company_value" value="{{ all_file.escrow_company }}">
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                <span class="payoff">{{all_file.payoff_exp|date:"m.d"}}</span>
+                                                <input type="hidden" class="payoff_date_value" value="{{ all_file.payoff_exp|date:'d-M-Y' }}">
+                                               </td>
+                                                 
+                                              </tr>
+                                             {% endfor %}                                              
+                                                                                            
+                                                                                             
+                                                                                           
+                                          </tbody>                                               
+                                       </table>      
+                                    </div>          
+                                 </div>          
+                                 <!-- ./All Details -->
+                                 {% for status_row in status_obj %}
+                                 <!-- Docs Details -->
+                                 {% if forloop.first %}
+                                 <div class="tab-pane  active show" id="{{status_row.id}}_status_div" role="tabpanel" aria-labelledby="{{status_row.id}}-tab_status">                                    
+                                 {% else %}   
+                                 <div class="tab-pane " id="{{status_row.id}}_status_div" role="tabpanel" aria-labelledby="{{status_row.id}}-tab_status">                                    
+                                 {% endif %} 
+                                    <div class="d-flex justify-content-between">
+                                       <!-- Nav tabs -->
+                                       <ul class="nav nav-tabs btn-style" role="tablist">
+                                    {% for substatus_row in status_row.substatus %}
+                                        {% if substatus_row.status_id.id == status_row.id %}
+                                        {% if forloop.first %}
+                                                <li class="nav-item">
+                                                            <a class="nav-link active" id="{{substatus_row.id}}-tab_substatus" data-toggle="tab" href="#{{substatus_row.id}}_substatus" role="tab" aria-controls="{{substatus_row.id}}_substatus" aria-selected="true">{{substatus_row.sub_status_name}}</a>
+                                                </li>
+                                            {% else %}
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="{{substatus_row.id}}-tab_substatus" data-toggle="tab" href="#{{substatus_row.id}}_substatus" role="tab" aria-controls="{{substatus_row.id}}_substatus" aria-selected="true">{{substatus_row.sub_status_name}}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}                
+                                       </ul>
+                                       <!-- ./Nav tabs -->  
+                                       <div class="">
+                                          <i class="fas fa-search"></i>
+                                       </div>                                   
+                                    </div>
+                                    <div class="card-body p-0"> 
+
+                                       <!-- Tab panes -->
+                                       <div class="tab-content">  
+
+                                  
+                                          <!-- Docs Out Details -->
+                                          {% for substatus_row in status_row.substatus %}
+                                            {% if substatus_row.status_id.id == status_row.id %}
+                                            {% if forloop.first %}
+                                            <div class="tab-pane active show" id="{{substatus_row.id}}_substatus" role="tabpanel" aria-labelledby="{{substatus_row.id}}-tab_substatus">
+                                        {% else %}    
+                                            <div class="tab-pane " id="{{substatus_row.id}}_substatus" role="tabpanel" aria-labelledby="{{substatus_row.id}}-tab_substatus">
+                                        {% endif %}
+                                             <table id="table_{{substatus_row.id}}" class="display">
+                                                <thead>
+                                                        <tr>
+                                                                <th>#</th>
+                                                                <th>File</th>
+                                                                <th>Rec.Dt</th>
+                                                                <th>LE</th>
+                                                                <th>TT</th>
+                                                                <th>LO</th>
+                                                                <th>Lender</th>
+                                                              
+                                                                <th>Notes</th>
+                                                                <th>CD</th>
+                                                                <th>Appr Ord</th>
+                                                                <th>Escrow Dt</th>
+                                                                <th>Escrow Co</th>
+                                                                <th>PayOff Exp</th>
+                                                          </tr>
+                                                </thead>
+                                                <tbody>
+                                                        {% for all_file in all_file_master %}
+                                                        {% if all_file.status_id.id == substatus_row.status_id.id and all_file.sub_status_id.id == substatus_row.id %}
+                                                        <tr>
+
+                                                                <td class="non-show">
+                                                                       
+                                                                    <a href="{% url 'view_file' file_id=all_file.id %}" class="btn btn-sm btn-outline-info "  target="_blank" style="font-size:10px">V</a>
+                                                                            
+                                                                             
+                                                                     
+                                                                           
+                        
+                                                                      </td>
+                                                                <td>
+                                                                        <span class="file_name">
+                                                                              {% if all_file.file_id|length == 0   %}
+                                                                              {{all_file.borrower_middle_name}}    
+                                                                          {% else %}
+                                                                              {{all_file.file_id}}    
+                                                                          {% endif %}
+                                                                        </span>
+                                                                           
+                        
+                                                                      </td>
+                                                                          <td>{{all_file.recieved_date|date:"m.d"}}
+                                                                                <input type="hidden" class="rd_date_value" value='{{ all_file.recieved_date |date:"d-M-Y"}}'>
+                                                                            
+                                                                          </td>
+                                                                          <td> {% if all_file.lock_expiration_date != None and  all_file.lock_expiration_date != '' %}  
+                                                                                {{all_file.lock_expiration_date|date:"m.d"}}
+                                                                                {% else %}
+                                                                                Not Locked
+                                                                                {% endif %}
+                                                                              <input type="hidden" class="lock_expiration_date_value" value='{{all_file.lock_expiration_date|date:"d-M-Y"}}'>
+                                                                             
+                                                                          </td>
+                                                                  <td>{{all_file.tax_transcript.tt_value}}
+                                                                        <span class="date tt_date">{{all_file.tax_transcript_date|date:"m.d"}}</span>
+                                                                        <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                                        <input type="hidden" class="tt_date_value" value="{{ all_file.tax_transcript_date|date:'d-M-Y' }}">
+                                                              </td>
+                                                              <td>{{all_file.loan_officer_id.user_name}}
+                                                                  <br/>
+                                                                    {{all_file.ae_company_id}}
+                                                                    <input type="hidden" class="user_name_value" value="{{ all_file.loan_officer_id.user_name }}">
+                                                                    <input type="hidden" class="company_value" value="{{ all_file.ae_company_id }}">
+                                                                </td>
+                                                              <td>{{all_file.lender}}
+                                                                    <input type="hidden" class="lender_value" value="{{ all_file.lender }}">
+                                                                     <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                                    <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">                                               
+                                                           </td>
+                                                              
+                                                              <td class="d-flex justify-content-between non-show">
+                                                                    <!-- <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="{{ all_file.note }}"> -->
+                                                                    <span class="ellipsis" id="element">
+                                                                           {{ all_file.note|truncatechars:25 }}
+                                                                   </span>
+                                                                    <span class="btn btn-sm btn-outline-info history" style="font-size: 11px;" >+H</span>
+                                                                 </td>
+                                                            <td>
+                                                               <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                        
+                                                               </span><span class="date cd_date">{{all_file.closing_disclosure_date|date:"m.d"}}</span>
+                                                               <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                               <input type="hidden" class="cd_date_value" value="{{ all_file.closing_disclosure_date|date:'d-M-Y' }}">
+                                                      </td>												 
+                                                            <td><span class="text">{{all_file.appraisal_ordered.ad_value}}</span>
+                                                              <span class="date ao_date">{{all_file.appraisal_ordered_date|date:"m.d"}}</span>
+                                                              <input type="hidden" class="ao_date_value" value="{{ all_file.appraisal_ordered_date|date:'d-M-Y' }}">
+                                                              <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                       </td>
+                                                            <td>{{all_file.escrow_opened_date|date:"m.d"}}
+                                                                    <input type="hidden" class="escrow_opened_date_value" value="{{ all_file.escrow_opened_date|date:'d-M-Y' }}">
+                                                            </td>
+                                                            <td>{{all_file.escrow_company}}
+                                                                    <input type="hidden" class="escrow_company_value" value="{{ all_file.escrow_company }}">
+                                                            </td>
+                                                            <td>
+                                                                <input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                            <span class="payoff">{{all_file.payoff_exp|date:"m.d"}}</span>
+                                                            <input type="hidden" class="payoff_date_value" value="{{ all_file.payoff_exp|date:'d-M-Y' }}">
+                                                           </td>
+                                                             
+                                                          </tr>
+                                                        {% endif %}
+                                                   {% endfor %}
+                                                    </tbody>
+                                                </table>
+ 
+                                          </div>
+                                          {% endif %}
+                                          {% endfor %}
+                                          <!-- ./Docs Out Details -->
+                    
+                                       </div>          
+                                    </div>          
+                                 </div>          
+                                 <!-- ./Docs Details -->
+                                 {% endfor %}
+                              </div>
+                              <!-- ./Tab panes -->
+                           </div>
+                        </div>
+                        <!-- ./Tabs Section Body -->
+                        
+                     </div>
+                     <!-- ./Loan Details -->
+                  </div>
+               </div>
+               <!-- ./Content -->
+
+            </div>
+            <!-- ./Section Menu -->
+            
+            <!-- Row Select Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+               <div class="modal-dialog">
+                  <form method="POST">
+                  {% csrf_token %}
+                     <!-- Modal content-->
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <div class="modal-title">Edit File Details</div>
+                        </div>
+                        <div class="modal-body">
+                         <div class="row">
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>File Name</label>
+                                 {{form.file_id}}
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Receive Date</label>
+                                 <input class="form-control ReceiveDate" readonly>
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Lock Expiration</label>
+                                 <input class="form-control LockExpiration" readonly name="lock_expiration_date">
+                                 <label class="d-flex align-items-center">
+                                    <input type="checkbox" class="form-control unlocked" name="le_date_checkbox">
+                                    <span class="ml-1">Not Locked</span> 
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Tax Transcripts</label>
+                                 {{form.tax_transcript}}
+                                 <input class="form-control " name="tt_date" type="date" id="tt_date_value">               
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Loan Officer</label>
+                                 <input class="form-control LoanOfficer" readonly>   
+                                 <input class="form-control FileId" type="hidden" name="id">                     
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Lender</label>
+                                 {{form.lender}}                       
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Status</label>
+                                 {{form.status_id}}                 
+                              </div>
+                  </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Sub Status</label>
+
+                                 {{form.sub_status_id}}                           
+               </div>
+            </div>
+
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Notes</label>
+                                 <textarea class="form-control Notes" rows="3" name="note"></textarea>                       
+                              </div>
+      </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Closing Disclosure</label>
+                                 {{form.closing_disclosure}}
+
+                                 <input class="form-control " name="cd_date" type="date" id="cd_date">
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Appraisal Ordered</label>
+                                 {{form.appraisal_ordered}}
+                                 <input class="form-control " name="ad_date" type="date" id="ad_date">
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Escrow Opened</label>
+                                 <input class="form-control EscrowOpened " name="escrow_opened" type="date">                 
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Escrow Company</label>
+                                {{form.escrow_company}}             
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>PayOff Exp</label>
+                                 <input class="form-control PayOffExp" name="payoff_date" type="date">                 
+                              </div>
+                           </div>
+                         </div>
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="far fa-times-circle mr-1"></i>Close</button>
+                           <button type="submit" class="btn btn-outline-success btn-sm" ><i class="far fa-check-circle mr-1"></i>Update</button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+            <!-- ./Row Select Modal -->
+            
+            <!-- History Modal -->
+            <div class="modal fade" id="historyModal" role="dialog">
+               <div class="modal-dialog">
+                     <!-- Modal content-->
+                     <div class="modal-content">
+                        <div class="modal-body">
+                           <div class="card">
+                              <div class="card-header">
+                                 <div class="section-title">
+                                    <i class="fas fa-user-edit mr-2"></i>Add Note
+                                 </div>
+                              </div>
+                              <div class="card-body">
+                                    {% if '13' in role_feature %}   
+                                 <form method="POST" action="/editNote/">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                         <div class="input-group">
+                                            <textarea class="form-control" name="note" required></textarea>
+                                            <input type="hidden" id="edit_note_file_id" class="form-control" name="edit_note_file_id">
+                                         </div>
+                                      </div>
+                                     
+                                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-2 text-right">
+                                         <div class="">
+                                            <button type="button" class="btn btn-outline-danger btn-sm mr-2" data-dismiss="modal"><i class="far fa-times-circle mr-1"></i>Close</button>
+                                            <button type="submit" class="btn btn-outline-success btn-sm" ><i class="far fa-check-circle mr-1"></i>Submit</button>
+                                         </div>
+                                      </div>
+                                    </div>        
+                                 </form>
+                                 {% endif %}
+                              </div>
+                           </div>
+                           
+                           <div class="card mt-2">
+                              <div class="card-header">
+                                 <div class="section-title"><i class="fas fas fa-info-circle mr-2"></i>History</div>
+                              </div>
+                              <div class="card-body">
+                                 <div class="row my-2">
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                       <div class="section-title">Note</div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3">
+                                       <div class="section-title">Date & Time</div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3">
+                                       <div class="section-title">By Whom</div>
+                                    </div>
+                                 </div>
+                                 <div class="mh-250 edit_note_history">
+                                    
+                                   
+                                 </div>
+                                 
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+               </div>
+            </div>
+            <!-- ./History Modal -->
+
+      {% block footer %}
+         {% include "footer.html" %}
+      {% endblock %}
+      
+      <!-- Data Table Bootstrap JS -->
+      <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js "></script>  
+      
+      <!-- Custom Script -->
+      <script>
+               $(document).ready(function(){
+                  var trIndex = null;
+                  
+                 
+                  $('#table_all').DataTable({
+                     searching: true,
+                     responsive: true,
+                     "autoWidth": true,
+                  });
+                  {% for status_row in status_obj %}
+                      {% for substatus_row in status_row.substatus %}
+                          {% if substatus_row.status_id.id == status_row.id %}
+                              $("#table_{{substatus_row.id}}").DataTable({
+                              searching: true,
+                              responsive: true,
+                              "autoWidth": true,
+                              });
+                          {% endif %}
+                      {% endfor %}
+                  {% endfor %}
+                  $(".unlocked").click(function(){
+                     $('.LockExpiration').attr('readonly', false); 
+                     $('.LockExpiration').attr('type', 'date'); 
+                  });
+                  $(".AppraisalOrderedText").change(function(){
+                       var value = $(this).val();
+                       if(value==5 || value==7){
+                          $("#ad_date").attr('required', 'required'); 
+                          $("#ad_date").show();
+                       }else{
+                          $("#ad_date").hide();
+                          $("#ad_date").removeAttr('required'); 
+                       }
+                          
+                  });
+                  $("#id_tax_transcript").change(function(){
+                      var value = $(this).val();
+                       if(value==3 || value==4){
+                          $("#tt_date_value").attr('required', 'required'); 
+                          $("#tt_date_value").show();
+                       }else{
+                          $("#tt_date_value").hide();
+                          $("#tt_date_value").removeAttr('required'); 
+                       }
+                  });
+                  {% if '12' in role_feature %}   
+                  var table = $('#table_all').DataTable();
+                              $('#table_all tbody').on('click', 'td:not(.non-show)', function () {
+                              $(".modal-body input").text("");
+                              $(".modal-body textarea").text("");
+                              var user_name = $(this).parent().find('.user_name_value').val();
+                              var company_name = $(this).parent().find('.company_value').val();
+                              if(company_name.length>0){
+                                var user_col = user_name+"<br>"+compnay_name;
+                              }else{
+                                var user_col = user_name;
+                              }
+                              var rd_date_value = new Date($(this).parent().find('.rd_date_value').val());
+                                yr      = rd_date_value.getFullYear(),
+                                month   = rd_date_value.getMonth(),
+                                day     = rd_date_value.getDate(),
+                                new_rd_date_value= yr + '-' + month + '-' + day;
+                              $("input.FileName").val($(this).parent().find('.file_name').text().trim());
+                              $("input.ReceiveDate").val(rd_date_value);
+                              $("input.LockExpiration").val($(this).parent().find('.lock_expiration_date_value').val());
+                              $("select.TaxTranscripts").val($(this).parent().find('.tt_value').val());
+                              $("input.LoanOfficer").val(user_col);
+                              
+                              $("input.Lender").val($(this).parent().find('.lender_value').val());
+                              $("#id_status_id").val($(this).parent().find('.status_value').val());
+                              $("select.SubStatus").val($(this).parent().find('.sub_status_value').val());
+                              $("textarea.Notes").val();
+                              $("select.ClosingDisclosureText").val($(this).parent().find('.cd_value').val());
+                              $("select.AppraisalOrderedText").val($(this).parent().find('.ao_value').val());
+                              $("input.EscrowCompany").val("aditay");
+                              $("input.FileId").val($(this).parent().find('.file_id').val());
+                              var value = $(this).parent().find('.ao_value').val();
+                              if(value==5 || value==7){
+                                  $("#ad_date").attr('required', 'required'); 
+                                  $("#ad_date").show();
+                              }else{
+                                  $("#ad_date").hide();
+                                  $("#ad_date").removeAttr('required'); 
+                              }
+
+                               var value = $(this).parent().find('.tt_value').val();
+                              if(value==3 || value==4){
+                                  $("#tt_date_value").attr('required', 'required'); 
+                                  $("#tt_date_value").show();
+                              }else{
+                                  $("#tt_date_value").hide();
+                                  $("#tt_date_value").removeAttr('required'); 
+                              }
+                              if($(this).parent().find('.lock_expiration_date_value').val() != 'None'){
+                                  if($(this).parent().find('.lock_expiration_date_value').val().length>0){
+                                  var le_date    = new Date($(this).parent().find('.lock_expiration_date_value').val());
+                                  
+                                  yr      = le_date.getFullYear(),
+                                  month   = le_date.getMonth(),
+                                  day     = le_date.getDate(),
+                                  new_le_date = yr + '-' + month + '-' + day;
+                              $('.unlocked').prop('checked', true);
+                              $('.LockExpiration').attr('readonly', false); 
+                              $('.LockExpiration').attr('type', 'date'); 
+                              $(".LockExpiration").val(new_le_date);
+                              }
+                              
+                              }
+
+                                var escrow_opened_date_value = new Date($(this).parent().find('.escrow_opened_date_value').val());
+                                yr      = escrow_opened_date_value.getFullYear(),
+                                month   = escrow_opened_date_value.getMonth(),
+                                day     = escrow_opened_date_value.getDate(),
+                                new_escrow_opened_date= yr + '-' + month + '-' + day;
+                                var cd_date    = new Date($(this).parent().find('.cd_date_value').val());
+                                yr      = cd_date.getFullYear(),
+                                month   = cd_date.getMonth(),
+                                day     = cd_date.getDate(),
+                                new_cd_date = yr + '-' + month + '-' + day;
+                                var ao_date    = new Date($(this).parent().find('.ao_date_value').val());
+                                yr      = ao_date.getFullYear(),
+                                month   = ao_date.getMonth(),
+                                day     = ao_date.getDate(),
+                                new_ao_date = yr + '-' + month + '-' + day;
+                              $("#cd_date").val(new_cd_date);
+                              $("#ad_date").val(new_ao_date);
+                              console.log(new_escrow_opened_date);
+                              $('.EscrowOpened').val(new_escrow_opened_date);
+                              var payoff    = new Date($(this).parent().find('.payoff_date_value').val());
+                                  yr      = payoff.getFullYear(),
+                                  month   = payoff.getMonth(),
+                                  day     = payoff.getDate(),
+                                  new_payoff = yr + '-' + month + '-' + day;
+                                  $(".PayOffExp").val(new_payoff);
+                              var tt_date    = new Date($(this).parent().find('.tt_date_value').val());
+                                  yr      = tt_date.getFullYear(),
+                                  month   = tt_date.getMonth(),
+                                  day     = tt_date.getDate(),
+                                  new_tt_date = yr + '-' + month + '-' + day;  
+                                  
+                              $("#tt_date_value").val(new_tt_date);
+                              $("#myModal").modal("show");
+                              
+                              });
+                  {% for status_row in status_obj %}
+                      {% for substatus_row in status_row.substatus %}
+                          {% if substatus_row.status_id.id == status_row.id %} 
+                              var table = $('#table_{{substatus_row.id}}').DataTable();
+                              
+                             
+                              $('#table_{{substatus_row.id}} tbody').on('click', 'td:not(.non-show)', function () {
+                              $(".modal-body input").text("");
+                              $(".modal-body textarea").text("");
+                              var escrow_opened_date_value = new Date($(this).parent().find('.escrow_opened_date_value').val());
+                                yr      = escrow_opened_date_value.getFullYear(),
+                                month   = escrow_opened_date_value.getMonth(),
+                                day     = escrow_opened_date_value.getDate(),
+                                new_escrow_opened_date= yr + '-' + month + '-' + day;
+
+
+                                var rd_date_value = new Date($(this).parent().find('.rd_date_value').val());
+                                yr      = rd_date_value.getFullYear(),
+                                month   = rd_date_value.getMonth(),
+                                day     = rd_date_value.getDate(),
+                                new_rd_date_value= yr + '-' + month + '-' + day;
+                              var user_name = $(this).parent().find('.user_name_value').val();
+                              var company_name = $(this).parent().find('.company_value').val();
+                              if(company_name.length>0){
+                                var user_col = user_name+"<br>"+compnay_name;
+                              }else{
+                                var user_col = user_name;
+                              }
+                              $("input.FileName").val($(this).parent().find('.file_name').text().trim());
+                              $("input.ReceiveDate").val(new_rd_date_value);
+                              $("input.LockExpiration").val($(this).parent().find('.lock_expiration_date_value').val());
+                              $("select.TaxTranscripts").val($(this).parent().find('.tt_value').val());
+                              $("input.LoanOfficer").val(user_col);
+                              
+                              $("input.Lender").val($(this).parent().find('.lender_value').val());
+                              $("#id_status_id").val($(this).parent().find('.status_value').val());
+                              $("select.SubStatus").val($(this).parent().find('.sub_status_value').val());
+                              $("textarea.Notes").val();
+                              $("select.ClosingDisclosureText").val($(this).parent().find('.cd_value').val());
+                              $("select.AppraisalOrderedText").val($(this).parent().find('.ao_value').val());
+                              $("input.EscrowOpened").val(new_escrow_opened_date);
+                              $("input.EscrowCompany").val("aditay");
+                              $("input.FileId").val($(this).parent().find('.file_id').val());
+                              var value = $(this).parent().find('.ao_value').val();
+                              if(value==5 || value==7){
+                                  $("#ad_date").attr('required', 'required'); 
+                                  $("#ad_date").show();
+                              }else{
+                                  $("#ad_date").hide();
+                                  $("#ad_date").removeAttr('required'); 
+                              }
+
+                               var value = $(this).parent().find('.tt_value').val();
+                              if(value==3 || value==4){
+                                  $("#tt_date_value").attr('required', 'required'); 
+                                  $("#tt_date_value").show();
+                              }else{
+                                  $("#tt_date_value").hide();
+                                  $("#tt_date_value").removeAttr('required'); 
+                              }
+                              if($(this).parent().find('.lock_expiration_date_value').val() != 'None'){
+                                if($(this).parent().find('.lock_expiration_date_value').val().length>0){
+                                  var le_date    = new Date($(this).parent().find('.lock_expiration_date_value').val());
+                                  
+                                  yr      = le_date.getFullYear();
+                                  month   = le_date.getMonth();
+                                  day     = le_date.getDate();
+                                  if(month.length==1){
+                                      month = "0"+month;
+                                  }
+                                  if(day.length==1){
+                                    day = "0"+day;
+                                  }
+                                  new_le_date = yr + '-' + month + '-' + day;
+                              $('.unlocked').prop('checked', true);
+                              $('.LockExpiration').attr('readonly', false); 
+                              $('.LockExpiration').attr('type', 'date'); 
+                              $(".LockExpiration").val(new_le_date);
+                              
+                                }
+                              }
+                                  var cd_date    = new Date($(this).parent().find('.cd_date_value').val());
+                                  yr      = cd_date.getFullYear();
+                                  month   = cd_date.getMonth();
+                                  day     = cd_date.getDate();
+                                
+                                  if(day.length==1){
+                                      day = "0"+day;
+                                  }
+                                  if(month.length==1){
+                                      month = "0"+month;
+                                  }
+                                  new_cd_date = yr + '-' + month + '-' + day;
+                                  var ao_date    = new Date($(this).parent().find('.ao_date_value').val());
+                                  yr      = ao_date.getFullYear();
+                                  month   = ao_date.getMonth();
+                                  day     = ao_date.getDate();
+                                  if(day.length==1){
+                                      day = "0"+day;
+                                  }
+                                  if(month.length==1){
+                                      month = "0"+month;
+                                  }
+                                  new_ao_date = yr + '-' + month + '-' + day;
+                              $("#cd_date").val(new_cd_date);
+                              $("#ad_date").val(new_ao_date);
+                              var payoff    = new Date($(this).parent().find('.payoff_date_value').val());
+                                  yr      = payoff.getFullYear();
+                                  month   = payoff.getMonth();
+                                  day     = payoff.getDate();
+                                  if(day.length==1){
+                                      day = "0"+day;
+                                  }
+                                  if(month.length==1){
+                                      month = "0"+month;
+                                  }
+                                  new_payoff = yr + '-' + month + '-' + day;
+                                  
+                                  $(".PayOffExp").val(new_payoff);
+                              var tt_date    = new Date($(this).parent().find('.tt_date_value').val());
+                                  yr      = tt_date.getFullYear();
+                                  month   = tt_date.getMonth();
+                                  day     = tt_date.getDate();
+                                  if(day.length==1){
+                                      day = "0"+day;
+                                  }
+                                  if(month.length==1){
+                                      month = "0"+month;
+                                  }
+                                  new_tt_date = yr + '-' + month + '-' + day;  
+                                  
+                              $("#tt_date_value").val(new_tt_date);
+                              $("#myModal").modal("show");
+                              
+                              });
+                          {% endif %}
+                      {% endfor %}
+                  {% endfor %}    
+                  {% endif %}        
+               
+               });
+               
+               $('.btn.history').on('click', function (event) {
+                event.preventDefault();
+                var tr_obj =  $(this).closest('tr');
+                var file_id = $(tr_obj).find('.file_id').val();
+                $("#edit_note_file_id").val(file_id);
+                $.post("notehistory/",{file_id:file_id}, function( data ) {
+                    $(".edit_note_history").html(data);
+                });
+                $("#historyModal").modal("show");
+                
+               });
+      </script>
+       
+   </body>
+</html>

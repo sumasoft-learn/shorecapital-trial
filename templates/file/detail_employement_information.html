@@ -1,0 +1,168 @@
+{% load currency %}
+<!-- Employment Information -->
+{% if div_id == 'employment_information-details' %}
+<div class="tab-pane fade active show" id="employment_information-details" role="tabpanel" aria-labelledby="employment_information_list">
+{% else %}
+<div class="tab-pane fade" id="employment_information-details" role="tabpanel" aria-labelledby="employment_information_list">
+{% endif %}
+<!-- Section Header -->
+	<div class="d-flex justify-content-between section-header">
+      <span class="section-title">Employment Information</span>
+	</div>
+	<!-- ./Section Header -->
+   <!-- Tabs Section Body -->
+   <form method="POST" action="" id="id_employment_form">
+      <div class="card mt-2">
+         <div class="card-body tab-overflow">
+
+               <div class="card-header"> 
+                  <span>
+                     <i class="fas fa-exclamation-circle mr-1"></i>
+                        Borrower - {{ borrower_employment_detail.file_id.borrower_name}}
+                  </span>
+                  <span></span>
+               </div>
+               <div class="p-2">
+                  <div class="row">
+                     <div class="col-4">
+                        <div class="form-group">
+                           <label class="label">Employer Name</label>
+                           <input type="text" class="form-control" name="borrower_employer_name" value="{{borrower_employment_detail.employer_name|check_none_values}}">
+                        </div>
+                     </div>
+                     <div class="col-4">
+                        <div class="form-group">
+                           <label class="label">Employer Address</label>
+                           <textarea class="form-control" name="borrower_employer_address" rows="25">{{borrower_employment_detail.employer_street_address|check_none_values}}</textarea>
+                        </div>
+                     </div>
+                     <div class="col-4">
+                        <div class="form-group">
+                           {% if borrower_employment_detail.self_employed == '0' %}
+                              <input type="checkbox" name="borrower_self_employed" class="form-control">
+                           {% else %}
+                              <input type="checkbox" name="borrower_self_employed" class="form-control" checked>
+                           {% endif %}
+                           <label>Self Employed</label>
+                        </div>
+                     </div>
+                     <div class="col-4">
+                        <div class="form-group">
+                           <label class="label">Years on this job</label>
+                           <input type="number" name="borrower_years_on_this_job" class="form-control" value="{{borrower_employment_detail.no_of_years_in_this_job}}">
+                        </div>
+                     </div>
+                     <div class="col-4">
+                        <div class="form-group">
+                           <label class="label">Yrs Employed in this
+                              <br/>line of work profession</label>
+                           <input type="number" class="form-control" name="borrower_years_employee_profession" value="{{borrower_employment_detail.yrs_employed_in_this_line_of_work_profession|check_none_values}}">
+                        </div>
+                     </div>
+                     <div class="col-4">
+                        <div class="form-group">
+                           <label class="label">Position</label>
+                           <input type="text" class="form-control" name="borrower_position" value="{{borrower_employment_detail.position_title_type_of_business|check_none_values}}">
+                        </div>
+                     </div>
+                     <div class="col-4">
+                        <div class="form-group">
+                           <label class="label">Business Phone</label>
+                           <input type="number" class="form-control" name="borrower_business_phone" value="{{ borrower_employment_detail.business_phone}}">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            <!-- ./Borrower -->
+            {% for co_borrower_employment_row in co_borrower_employment_detail %}
+            <!-- Co-Borrower -->
+            <div class="card-header"> 
+               <span>
+                  <i class="fas fa-exclamation-circle mr-1"></i>
+                     Co-Borrower - {{ co_borrower_employment_row.cw_id.co_borrower_name}} <input type="hidden" name="co_borrower_employment_ids" value="{{ co_borrower_employment_row.id}}">
+               </span>
+               <span></span>
+            </div>
+            <div class="p-2">
+               <div class="row">
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Name</label>
+                        <input type="text" class="form-control" name="co_borrower_employer_name" value="{{ co_borrower_employment_row.employer_name}}">
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Employer Address</label>
+                        <textarea class="form-control" name="co_borrower_employer_address">{{ co_borrower_employment_row.employer_street_address}}</textarea>
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        {% if co_borrower_employment_row.self_employed == '0' %}
+                           <input type="checkbox" name="co_borrower_self_employed_{{co_borrower_employment_row.id}}" class="form-control">
+                        {% else %}
+                           <input type="checkbox" name="co_borrower_self_employed_{{co_borrower_employment_row.id}}" class="form-control" checked>
+                        {% endif %}
+                        <label>Self Employed</label>
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Years on this job</label>
+                        <input type="number" name="co_borrower_years_on_this_job" class="form-control" value="{{ co_borrower_employment_row.no_of_years_in_this_job}}">
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Yrs Employed In This
+                           <br>Line Of Work Profession</label>
+                        <input type="text" class="form-control" name="co_borrower_years_employee_profession" value="{{ co_borrower_employment_row.yrs_employed_in_this_line_of_work_profession}}">
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Position</label>
+                        <input type="text" class="form-control" name="co_borrower_position" value="{{ co_borrower_employment_row.position_title_type_of_business}}">
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div class="form-group">
+                        <label class="label">Business Phone</label>
+                        <input type="number" class="form-control" name="co_borrower_business_phone" value="{{ co_borrower_employment_row.business_phone}}">
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- ./-CoBorrower -->
+            {% endfor %}
+         </div>
+      </div>
+      <div class="row mt-3">
+         <div class="col-md-12">
+            <div class="text-center">
+               <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+               <button type="submit" class="btn btn-success btn-sm" id="id_submit_employe"><i class="far fa-check-circle mr-2"></i>Save</button>
+            </div>
+         </div>
+      </div>
+   </form>
+	<!-- ./Tabs Section Body -->
+</div>
+<!-- ./Employment Information -->
+
+ <script>
+   var token = '{{csrf_token}}';
+   $("#id_employment_form").on('submit', function (e) {
+      e.preventDefault();
+      $.ajax({
+         headers: { "X-CSRFToken": token },
+         type: "POST",
+         url: "{% url 'employment_information' file_master.id %}",
+         data: $('#id_employment_form').serialize(),
+         success: function (response) {
+            window.location.href=window.location.href;
+         }
+      });
+   });
+</script>

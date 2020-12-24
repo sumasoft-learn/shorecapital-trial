@@ -1,0 +1,28 @@
+<!-- Sidebar Menus -->
+<section class="sidebar">
+    <div class="sidebar-content">
+        <ul class="list-group list-group-flush mt-2">
+                {% if request.path == '/dashboard/' %}
+           <li class="list-group-item active">
+                {% else %}
+                <li class="list-group-item">
+                {% endif %}
+                <a href="/superadmin/dashboard/" class="nav-link dark">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span> 
+                </a>
+            </li>
+            {% if request.path == '/company/create/' %}
+            <li class="list-group-item bg-success active ">
+                    {% else %}
+                    <li class="list-group-item bg-success">
+                    {% endif %}
+               <a href="/company/create/" class="nav-link dark">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>New Company</span>                     
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+<!-- ./Sidebar -->

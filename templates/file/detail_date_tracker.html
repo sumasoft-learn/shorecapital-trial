@@ -1,0 +1,412 @@
+
+   <form method="POST" action="{% url 'date_tracker_update' file_master.id %}">
+    <!-- Section Header -->
+    <div class="d-flex justify-content-between section-header">
+        <span class="section-title">Data Tracking</span>
+        <span>
+                <button type="submit" name="save_date_tracker" class="btn btn-success btn-sm" ><i class="fas fa-cloud-save-alt mr-1"></i>Save</button>
+        </span>
+     </div>
+     <!-- ./Section Header -->
+    <div>
+            {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <fieldset>
+                    <legend class="subLegend">Document Date</legend>
+                </fieldset>
+                <table class="table table-sm table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="custom_td">
+                                <label for="AppraiselDeliverDate">Appraisal Delivery Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_appraisal_delivery_date"  name="appraisal_delivery_date" value="{{ file_master.appraisal_delivery_date|date:"Y-m-d"}}" max="2500-12-31">
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="ApprovalExpiration">Approval Expiration :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_approval_expiration"  name="approval_expiration" value="{{ file_master.approval_expiration|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="AssetExpirationDate">Asset Expiration Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_asset_expiration_date"  name="asset_expiration_date" value="{{ file_master.asset_expiration_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="BrokerLastUpload">Broker Last Upload :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_broker_last_upload"  name="broker_last_upload" value="{{ file_master.broker_last_upload|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="CplExpirationDate">CPL Expiration Date :</label>
+                            </td>
+                            <td class="">
+                                <input type="date" class="form-control" id="id_cpl_expiration_date"  name="cpl_expiration_date" value="{{ file_master.cpl_expiration_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="CreditExpirationDate">Credit Expiration Date :</label>
+                            </td>
+                            <td class="">
+                                <input type="date" class="form-control" id="id_credit_expiration_date"  name="credit_expiration_date" value="{{ file_master.credit_expiration_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="DisclosureDate">Disclosure Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_disclosure_date"  name="disclosure_date" value="{{ file_master.disclosure_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="HOIEffectiveDate">HOI Effective Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_hoi_effective_date"  name="hoi_effective_date" value="{{ file_master.hoi_effective_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="IncomeExpirationDate">Income Expiration Date :</label>
+                            </td>
+                            <td class="">
+                                <input type="date" class="form-control" id="id_income_expiration_date"  name="income_expiration_date" value="{{ file_master.income_expiration_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="OldestDocumentExpired">Oldest Document Expired :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_oldest_document_expired"  name="oldest_document_expired" value="{{ file_master.oldest_document_expired|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="PayoffExpiration">Payoff Expiration :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_payoff_exp"  name="payoff_exp" value="{{ file_master.payoff_exp|date:"Y-m-d"}}" max="2500-12-31">
+                                
+                            </td>
+                            <td class="">
+                                   
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="ShortSaleExpirationDate">Short Sale Expiration Date :</label>
+                            </td>
+                            <td class="">
+                                    <input type="date" class="form-control" id="id_short_sale_expiration_date"  name="short_sale_expiration_date" value="{{ file_master.short_sale_expiration_date|date:"Y-m-d"}}" max="2500-12-31">
+                    
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="TitleExpirationDate">Title Expiration Date :</label>
+                            </td>
+                            <td class="">
+                                <input type="date" class="form-control" id="id_title_expiration_date"  name="title_expiration_date"  value="{{ file_master.title_expiration_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <fieldset>
+                    <legend class="subLegend">Verbal Verification Date</legend>
+                </fieldset>
+                <table class="table table-sm table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="custom_td" >
+                                <label for="VvoeOrderedDate">VVOE Ordered Date :</label>
+                            </td>
+                            <td>
+                                    <input type="date" class="form-control" id="id_vvoe_ordered_date"  name="vvoe_ordered_date" value="{{ file_master.vvoe_ordered_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
+                                <label for="VvoeReceiveDate">VVOE Receive Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_vvoe_receive_date"  name="vvoe_receive_date" value="{{ file_master.vvoe_receive_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="VvoeExpirationDate">VVOE Expiration Date :</label>
+                            </td>
+                            <td>
+                                    <input type="date" class="form-control" id="id_vvoe_expiration_date"  name="vvoe_expiration_date" value="{{ file_master.vvoe_expiration_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <fieldset>
+                    <legend class="subLegend">Tax Transcript Date</legend>
+                </fieldset>
+                <table class="table table-sm table-striped table-bordered">
+                    <tbody>
+                        <tr class="tax-transcript-name">
+                            <td colspan="2">
+                                <div class="card-header" style="padding-left: 0px;border-bottom:0px;">
+                                    <span>
+                                       <i class="fas fa-exclamation-circle mr-1"></i>
+                                       Borrower - {{file_master.borrower_name}} <input type="hidden" name="borrower_ids" value="{{ file_master.id }}">
+                                    </span>
+                                    <span></span>
+                                 </div>
+                            </td>
+                        </tr>
+                        <tr class="tax-transcript-ordered-date">
+                            <td class="ordered-date">
+                                <label for="customerTaxTranscriptOrderDateData_OrderCreatedDateText">Tax Transcript Ordered Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_tax_transcript_ordered_date"  name="tax_transcript_ordered_date" value="{{ file_master.tax_transcript_ordered_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+
+                        </tr>
+                        <tr class="tax-transcript-received-date">
+                            <td>
+                                <label for="customerTaxTranscriptOrderDateData_OrderCompletedDateText">Tax Transcript Received Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_tax_transcript_received_date"  name="tax_transcript_received_date" value="{{ file_master.tax_transcript_received_date|date:"Y-m-d"}}" max="2500-12-31">
+                            </td>
+
+                        </tr>
+                        {% for file_co_borrower in co_borrower %}
+                            <tr class="tax-transcript-name">
+                                <td colspan="2">
+                                    <div class="card-header" style="padding-left: 0px;border-bottom:0px;">
+                                        <span>
+                                           <i class="fas fa-exclamation-circle mr-1"></i>
+                                           Co-Borrower - {{file_co_borrower.co_borrower_name}} <input type="hidden" name="co_borrower_date_ids" value="{{ file_co_borrower.id }}">
+                                        </span>
+                                        <span></span>
+                                     </div>
+                                   
+                                </td>
+                            </tr>
+                            <tr class="tax-transcript-ordered-date">
+                                <td class="custom_td" >
+                                    <label for="customerTaxTranscriptOrderDateData_OrderCreatedDateText">Tax Transcript Ordered Date :</label>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="id_co_borrower_tax_transcript_ordered_date"  name="co_borrower_tax_transcript_ordered_date" value="{{ file_co_borrower.co_borrower_tax_transcript_ordered_date|date:"Y-m-d"}}">
+                                </td>
+
+                            </tr>
+                            <tr class="tax-transcript-received-date">
+                                <td class="custom_td" >
+                                    <label for="customerTaxTranscriptOrderDateData_OrderCompletedDateText">Tax Transcript Received Date :</label>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" id="id_co_borrower_tax_transcript_received_date"  name="co_borrower_tax_transcript_received_date" value="{{ file_co_borrower.co_borrower_tax_transcript_received_date|date:"Y-m-d"}}">
+                                </td>
+    
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <fieldset>
+                    <legend class="subLegend">Application Date</legend>
+                </fieldset>
+                <table class="table table-sm table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="custom_td">
+                                <label for="ApplicationGeneratedDate">1003 Generated Date :</label>
+                            </td>
+                            <td>
+                                    <input type="date" class="form-control" id="id_generated_date"  name="generated_date"  value="{{ file_master.generated_date|date:"Y-m-d"}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="ApplicationSignatureDate">1003 Signature Date :</label>
+                            </td>
+                            <td>
+                                    <input type="date" class="form-control" id="id_signature_date"  name="signature_date" value="{{ file_master.signature_date|date:"Y-m-d"}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="SubmittedToUW">Submitted to UW :</label>
+                            </td>
+                            <td>
+                                    <input type="date" class="form-control" id="id_submitted_to_uw"  name="submitted_to_uw" value="{{ file_master.submitted_to_uw|date:"Y-m-d"}}">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <fieldset>
+                    <legend class="subLegend">Lock Date</legend>
+                </fieldset>
+                <table class="table table-sm table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="custom_td">
+                                <label for="LockDate">Lock Date :</label>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="LockExpiration">Lock Expiration :</label>
+                            </td>
+                            <td class="datetracking-expiration-notification">
+                                <input type="date" class="form-control" id="id_lock_expiration_date" placeholder="1234" name="lock_expiration_date" value="{{ lock_expiration_date   }}">
+                                
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <fieldset>
+                    <legend class="subLegend">TRID Document Date</legend>
+                </fieldset>
+                    <table class="table table-sm table-striped table-bordered">
+                        <tbody>
+                            <tr>
+                                <td class="custom_td">
+                                    <label for="InitialLoanEstimate">Initial Loan Estimate :</label>
+                                </td>
+                                <td>
+                                        <input type="date" class="form-control" id="id_initial_loan_estimate"  name="initial_loan_estimate" value="{{ file_master.initial_loan_estimate|date:"Y-m-d"}}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="MostRecentLoanEstimate">Most Recent Loan Estimate :</label>
+                                </td>
+                                <td>
+                                        <input type="date" class="form-control" id="id_most_recent_loan_estimate"  name="most_recent_loan_estimate" value="{{ file_master.most_recent_loan_estimate|date:"Y-m-d"}}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="InitialClosingDisclosure">Initial Closing Disclosure :</label>
+                                </td>
+                                <td>
+                                        <input type="date" class="form-control" id="id_initial_closing_disclosure"  name="initial_closing_disclosure" value="{{ file_master.initial_closing_disclosure|date:"Y-m-d"}}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="MostRecentClosingDisclosure">Most Recent Closing Disclosure :</label>
+                                </td>
+                                <td>
+                                        <input type="date" class="form-control" id="id_most_recent_closing_disclosure"  name="most_recent_closing_disclosure" value="{{ file_master.most_recent_closing_disclosure|date:"Y-m-d"}}">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <fieldset>
+                    <legend class="subLegend">Closing Date</legend>
+                </fieldset>
+                <table class="table table-sm table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="custom_td">
+                                <label for="ClearedToCloseDate">Cleared to Close :</label>
+                            </td>
+                            <td>
+                                    <input type="date" class="form-control" id="id_cleared_to_close"  name="cleared_to_close" value="{{ file_master.cleared_to_close|date:'Y-m-d'}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="EstimatedClosingDate">Est. Closing Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_estimate_close_date" placeholder="1234" name="estimate_close_date" value="{{ file_master.est_closure_date}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="ClosingDateTime">Closing Date/Time :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_closing_datetime" placeholder="1234" name="closing_datetime" value="{{ file_master.closing_datetime|date:'Y-m-d'}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="WireOrderedDate">Wire Ordered Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_wire_ordered_date" placeholder="1234" name="wire_ordered_date" value="{{ file_master.wire_ordered_date|date:'Y-m-d'}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="Disbursement">Wire Disbursement :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_wire_disbursement" placeholder="1234" name="wire_disbursement" value="{{ file_master.wire_disbursement|date:'Y-m-d'}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="WireDate">Wire Date :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_wire_date" placeholder="1234" name="wire_date" value="{{ file_master.wire_date|date:'Y-m-d'}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="FirstPayment">First Payment :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_first_payment" placeholder="1234" name="first_payment" value="{{ file_master.first_payment|date:'Y-m-d'}}">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <fieldset>
+                    <legend class="subLegend">
+                        Early Payoff Date
+                        <i class="epo-popover-icon fa fa-info-circle clickable" tabindex="0" data-html="true" data-toggle="popover" data-trigger="focus" data-placement="right" data-container="body" data-content="Please refer to the EPO section of your executed UWM Agreement" data-original-title="" title=""></i>
+                    </legend>
+                </fieldset>
+                <table class="table table-sm table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="custom_td">
+                                <label for="EarlyPayoffDate">Date to Avoid EPO :</label>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" id="id_date_to_avoid_epo" placeholder="1234" name="date_to_avoid_epo" value="{{ file_master.date_to_avoid_epo|date:'Y-m-d'}}">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>  
+   
+    </div>
+</form> 

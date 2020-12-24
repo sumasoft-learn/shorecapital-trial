@@ -1,0 +1,54 @@
+<div class="sidebar">
+
+
+        <ul class="list-group list-group-flush mt-2">
+                {% if request.path == '/dashboard/' %}
+           <li class="list-group-item  active">
+                {% else %}
+                <li class="list-group-item  ">
+                {% endif %}
+                <a href="/dashboard/">
+               
+              
+               
+                    <i class="fa fa-dashboard  text-primary mr-2"></i>Dashboard 
+                </a>
+            </li>
+            {% if request.path == '/company/create/' %}
+            <li class="list-group-item  active ">
+                    {% else %}
+                    <li class="list-group-item new-file">
+                    {% endif %}
+               <a href="/company/create/">
+                    <i class="fa fa-link text-primary mr-2"></i>
+                    New Company 
+                </a>
+            </li>
+            {% if request.path == '/file/list/' %}
+            <li class="list-group-item  active">
+                    {% else %}
+                    <li class="list-group-item  ">
+                    {% endif %}
+                <a href="/file/list/">   
+            <i class="fa fa-bars text-primary mr-2"></i>Loans in Progress
+                    </a>
+        </li>
+           <li class="list-group-item"><i class="fa fa-copy text-primary mr-2"></i>Funded</li>
+           <li class="list-group-item"><i class="fa fa-warning  text-primary mr-2"></i>Sent For Audit Broker</li>
+           <li class="list-group-item"><i class="fa fa-lock text-primary mr-2"></i>Manage Passowrds</li>
+           <li class="list-group-item"><i class="fa fa-book text-primary mr-2"></i>Manage Contacts</li>
+           {% if request.path == '/user/list/' %}
+           <li class="list-group-item  active">
+                   {% else %}
+                   <li class="list-group-item  ">
+                   {% endif %}
+                <a href="/user/list">
+               <i class="fa fa-book text-primary mr-2"></i>Manage Users
+               </a>
+            </li>
+            
+  
+        </ul>
+  
+  
+     </div>

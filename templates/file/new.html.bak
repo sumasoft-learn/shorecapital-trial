@@ -1,0 +1,1458 @@
+{% load currency %}
+
+<!DOCTYPE html>
+<html>
+   	{% load static %}
+   	<head>
+      {% block head %}
+        {% include "head.html" %}
+	  {% endblock %}
+	
+	  <style>
+		  
+		.required_star:after {
+			content:" *";
+			color: black;
+		}
+	  </style>
+   	</head>        
+   	<body class="bg-light">
+      {% block nav %}
+        {% include "nav.html" %}
+      {% endblock %}
+      
+      <div class="d-block">
+         {% block sidebar %}
+           {% include "sidebar.html" %}
+         {% endblock %}
+         
+         
+         <!-- Main Section -->
+         <main class="">
+            
+            <!-- Section Menu -->
+            <div class="row m-0"> 
+               <!-- Content -->
+               <div class="col-12 px-3">
+				   
+					   <div class="d-flex justify-content-between section-header">
+						   <span class="section-title">Create New File</span>
+						   {% if '20' in role_feature %}
+						   <span>
+							   {% include 'file/import_file.html' %}
+						   </span>
+						   {% endif %}
+					   </div>
+					   <form action="{% url 'create_file' %}" method="POST" class="create-new-transaction">
+					   {% if form.errors %} 
+						   {% for field in form %} 
+							   {% for error in field.errors %}
+									  <div class="alert alert-danger"> 
+									  <strong>{{ error|escape }}</strong> 
+								   </div>
+							   {% endfor %} 
+						   {% endfor %} 
+					   {% for error in form.non_field_errors %}
+						  <div class="alert alert-danger"> 
+						   <strong>{{ error|escape }}</strong> 
+					   </div> 
+					   {% endfor %} {% endif %} {% csrf_token %}
+							
+					  
+					   	<div class="card  mb-3">
+						  	<div class="card-header">
+								<span>
+								   <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+								   Details
+								</span>
+							</div>
+							<div class="card-body px-3 py-2">
+								<div class="row">
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group no-btn">
+											<label for="inputmailh" class="required_star">Status</label>
+											{{ form.status }}
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group no-btn">
+										   <label>Sub Status</label>
+										   <select name="sub_status_id" class="form-control SubStatus" id="id_sub_status_id" tabindex="-98">
+
+											</select>
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											<div class="input-group no-btn">
+											   <label class="required_star">Assigned Processor</label>
+											   <select name="assigned_name" class="form-control" data-live-search="true" id="assigned_id" required="required">
+													<option value="" selected="">---------</option>
+													{% for i in assign_processor_list %}
+														<option value="{{ i.user_id.id }}" >{{ i.user_id.user_name }}</option>
+													{% endfor %}
+												</select>                 
+											</div>
+										</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+									<div class="input-group">
+										<label for="inputpasswordh" class="required_star"> Charge Processing Fee</label>
+										<div class="d-flex justify-content-between">
+												{% for choice in form.charge_processing_fee %}
+												<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+												{% endfor %} 
+										</div>
+									</div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+											<label for="inputmailh">Brokerage</label>
+											{{ form.brokerage }} 
+										</div>
+									</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+											<div class="input-group">
+												<label for="inputmailh">Est Close Date</label>
+													<input  class="form-control" name="est_closure_date" placeholder="Est close date" type="date">
+												</div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group no-btn">
+											<label for="inputmailh"> Loan officer</label>
+											<select name="lo_name" class="form-control" data-live-search="true" id="id_lo_name" tabindex="-98">
+												<option value="" selected="">---------</option>
+												{% for i in loan_officers_list %}
+													<option value="{{ i.id }}" >{{ i.user_name }}</option>
+												{% endfor %}
+											</select>
+										</div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+											<label for="inputmailh">L/O Direct#</label>
+											{{ form.lo_direct }} </div>									
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+										 <div class="input-group">
+											 <label for="inputpasswordh">L/O Email</label>
+											 {{ form.lo_email }} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for="inputmailh"> NMLS ID </label>
+													{{ form.nmls_id }} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for="inputmailh">L/O Fax </label>
+													{{ form.lo_fax }} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											<div class="input-group">
+											<label for=" ">A/E Name</label>
+											{{ form.ae_name }} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+										<div class="input-group">
+											<label for="inputmailh"> A/E Direct# </label>
+											{{ form.ae_direct }} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+										<div class="input-group">
+											<label for="inputmailh"> A/E Email</label>
+											{{ form.ae_email }} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											<div class="input-group">
+												<label for=" ">A/E Fax</label>
+												{{ form.ae_fax }} 
+											</div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+										<div class="input-group">
+											<label for="inputmailh">Company ID</label>
+											{{ form.ae_company_id }} </div>
+										</div>
+										
+										 
+										 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for="inputmailh">Lender</label>
+													{{ form.lender }} </div>
+										</div>
+										
+										 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+										 <div class="input-group">
+											 <label for="inputmailh">Program Code </label>
+											 {{ form.program_code }} </div>
+										 </div>
+										 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+										 <div class="input-group">
+											 <label for=" ">Customer ID</label>
+											 {{ form.customer_id }} </div>
+										 </div>
+										 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+										 <div class="input-group">
+											 <label for=" "> URL </label>
+											 {{ form.url }} </div>
+										 </div>
+									 </div>
+								<div class="row">
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group no-btn">
+										   <label>Tax Transcripts</label>
+										   {{form.tax_transcript}}
+										   <input class="form-control " name="tt_date" type="date" id="tt_date_value">               
+										</div>
+									 </div>
+									 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group no-btn">
+										   <label>Closing Disclosure</label>
+										   {{form.closing_disclosure}}
+		  
+										   <input class="form-control " name="cd_date" type="date" id="cd_date">
+										</div>
+									 </div>
+									 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group no-btn">
+										   <label>Appraisal Ordered</label>
+										   {{form.appraisal_ordered}}
+										   <input class="form-control " name="ad_date" type="date" id="ad_date">
+										</div>
+									 </div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+										   <label>Receive Date</label>
+										   <input class="form-control ReceiveDate" type="date" name="recieved_date" id="id_recieved_date">
+										</div>
+									 </div>
+									 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+										   <label>Notes</label>
+										   <textarea class="form-control Notes" rows="5" name="note" style="height: 45px;"></textarea>                       
+										</div>
+									</div>
+									
+								</div>
+								
+						</div>
+						 
+						<div class="card  mb-3">
+							<div class="card-header">
+								<span>
+								   <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+								   Loan Purpose
+								 </span>
+							 </div>
+							 <div class="card-body px-3 py-2">
+								 <div class="row">
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+							 
+										<div class="input-group no-btn">
+											<label for=" ">Loan Purpose</label>
+											{{ form.loan_purpose }} 
+										</div>
+									</div>
+									
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+									<div class="input-group">
+										<label for=" "> Loan Number</label>
+										{{ form.loan_number }} 
+									</div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+										<label for="inputpasswordh"> Float</label>
+											{% for choice in form.float %}
+											<div class="form-check-inline">
+												<label class="form-check-label"> {{ choice.tag }} {{ choice.choice_label }} </label>
+											</div> <span class="radio"></span> {% endfor %} 
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											<div class="input-group no-btn">
+												<label for=" "> Property Type</label>
+												{{ form.property_type}} 
+											</div>
+										</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 form_reverse_check">
+											<div class="input-group no-btn">
+												<label for=" ">Reverse Status</label>
+												{{ form.reverse_status }} </div>
+										</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 va_base_loan">
+											<div class="input-group">
+												<label for=""> VA BASE LOAN</label>
+												{{ form.va_base_loan }} 
+											</div>
+										</div>
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 va_base_loan">
+												<div class="input-group">
+													<label for=" "> VA BASE + FF</label>
+													{{ form.va_base_ff }} 
+												</div>
+											</div>
+											
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 fha_base_loan">
+											<div class="input-group">
+												<label for=" "> FHA BASE LOAN</label>
+												{{ form.fha_base_loan }} 
+											</div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 fha_base_loan">
+											<div class="input-group fha_base_loan">
+													<label for=" "> FHA BASE + MIP</label>
+													{{ form.fha_base_mip }} 
+											</div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group no-btn">
+													<label for=" "> Term</label>
+													{{ form.term}} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group no-btn">
+											<label for=" "> Occupancy</label>
+											{{ form.occupancy_master}} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											<div class="input-group no-btn">
+												<label for=" "> Impounds</label>
+												{{ form.impound}} 
+											</div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											<div class="input-group no-btn">
+												<label for=" "> Compensation<br/> Payer Type</label>
+												{{ form.compensation_payer_type}}
+											 </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group no-btn">
+													<label for=" "> Rate Type</label>
+													{{ form.rate_type}}
+												 </div>
+											</div>
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+													<div class="input-group">
+													<label for=""> Rate</label>
+													{{ form.rate }} 
+													</div>
+												</div>
+												
+												
+											
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+													<div class="input-group">
+														<label for=""> Lock Expiration Date</label>
+														<input class="form-control" id="lock_expiraton_date_id" placeholder=" " name="lock_expiraton_date" type="date"> </div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+															<div class="input-group">
+																<label for="inputpasswordh"> PIW</label>
+																<div class="d-flex justify-content-between"> 
+																 {% for choice in form.piw %}
+																	 <label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+																 {% endfor %}  </div>
+															  </div>
+																
+															</div>
+															<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+																	<div class="input-group">
+																<label for="inputpasswordh"> Subordination</label>
+																<div class="d-flex justify-content-between"> 
+																	{% for choice in form.subordination %}
+																		<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+																   {% endfor %}  </div>
+																 </div>
+															</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+											<label for=" ">Loan Amount</label>
+											<i class="fa fa-usd cost" aria-hidden="true"></i>
+											<input type="text" name="loan_amount" class="calculate_ltv form-control" placeholder="Enter value" value="{{ form.loan_amount.value|currency_form_converter|safe }}" maxlength="50" id="id_loan_amount" data-type="currency">
+										</div>
+									</div>
+										
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 2nd_loan_amount_div">
+											<div class="input-group">
+												<label for=" "> 2nd Loan Amount</label>
+												<i class="fa fa-usd cost2" aria-hidden="true"></i>
+												<input type="text" name="loan_amount_2" class="calculate_ltv form-control" placeholder="2nd Loan Amount" maxlength="50" id="id_loan_amount_2"  data-type="currency" value="0"> 
+											</div>
+										</div>
+										
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										
+										<div class="input-group">
+											<label for=" "> Appraised Value</label>
+											<input type="text" name="appraised_value" class="calculate_ltv form-control" placeholder="Enter value" value="{{ form.appraised_value.value|currency_form_converter|safe }} " maxlength="50" id="id_appraised_value" data-type="currency">
+											
+											</div>
+									</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+											<label for=" " > LTV:</label>
+											
+													{{ form.ltv }} 
+											</div>
+											
+										</div>
+											
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> CLTV (In %)</label>
+													{{ form.cltv}} </div>
+												</div>
+										
+										
+										
+										
+									
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+												<label for="inputmailh">Lender Pd. Comp</label>
+												{{ form.lender_pd_comp}} 
+											 </div>
+										</div>
+									
+										
+									
+										
+									
+									
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+											<label for=" "> Borrower YSP</label>
+											{{ form.borrower_ysp}} </div>
+										</div>
+										<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+											<label for=" "> Bwr. Pd. Comp</label>
+											{{ form.bwr_pd_comp}} </div>
+										</div>
+									</div>
+
+									</div>
+								</div>
+							
+						</div>
+						
+						<!--Property Address -->
+						<div class="card  mb-3">
+							 <div class="card-header">
+								 <span>
+										<i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+										Property Address
+								  </span>
+							  </div>
+							  <div class="card-body px-3 py-2">
+										<div class="row">
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" ">Loan Property Address</label>
+													{{ form.property_address }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" ">Loan City</label>
+													{{ form.property_city }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group no-btn">
+													<label for=" "> State </label>
+													{{ form.property_state }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> ZipCode</label>
+													{{ form.property_zipcode }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> Mailing Address
+														<input type="checkbox" class="d-flex justify-content-between" name="address_fill" id="address_fill" /> </label>
+													{{ form.mailing_address }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" ">Loan City</label>
+													{{ form.mailing_city }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group no-btn">
+													<label for=" "> State </label>
+													{{ form.mailing_state }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> ZipCode</label>
+													{{ form.mailing_zipcode }} </div>
+												</div>
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> Deliver Disclosures </label>
+													<div class="d-flex">
+															{% for choice in form.deliver_disclosures %}
+															<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+														{% endfor %}
+													</div>
+														<br/><div class="d-flex">
+														
+														 {% for choice in form.deliver_disclosures_type %}
+															<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+														{% endfor %}
+													</div> </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> Request Conditions<br/> and/or Stips From </label>
+													<div class="d-flex">
+													{% for choice in form.request_conditions_stips_from %}
+															<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+														{% endfor %} </div> </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> Charge Credit Report </label>
+													<div class="d-flex">
+													{% for choice in form.charge_credit_report %}
+															<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+														 {% endfor %} </div>
+												</div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> Charge Appraisal </label>
+													<div class="d-flex justify-content-between">
+													{% for choice in form.charge_appraisal %}
+															<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+														 {% endfor %} </div></div>
+												</div>
+											</div>
+										</div>
+						</div>
+						<!--Property Address-->
+						
+						<!--Borrower Address-->
+						<div class="card  mb-3">
+							<div class="card-header">
+								 <span>
+									<i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+									Borrower Details
+								</span>
+							</div>
+							<div class="card-body px-3 py-2">
+								<div class="row">
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+											<label for="inputmailh" class="required_star">Borrower Name</label>
+											{{ form.borrower_name}} 
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+											<label for="inputmailh" class="required_star">Borrower Phone</label>
+											{{form.borrower_phone}}
+										</div>
+									</div>
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="input-group">
+											<label for="inputmailh" class="required_star">Borrower Email</label>
+											{{form.borrower_email}} 
+										</div>
+									</div>
+								</div>			
+							</div>
+						</div>
+						<!--Borrower Address-->
+						
+						<!--Co Borrower-->
+						<div class="card  mb-3">
+							<div class="card-header">
+								 <span>
+									<i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+									Co Borrower Details
+								  </span>
+						  	</div>
+						  <div class="card-body px-3 py-2">
+								<div class="row">
+										   <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											   <div class="input-group">
+												   <label for="inputmailh">Co Borrower Name</label>
+												   
+													   <input type="text" class="form-control" placeholder="Co Borrower Name" maxlength="50" id="id_co_borrower_name"> </div>
+											   </div>
+										   <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											   <div class="input-group">
+												   <label for="inputmailh">Co Borrower Phone</label>
+												   
+													   <input type="text" class="form-control" placeholder="Co Borrower Phone" maxlength="50" id="id_co_borrower_phone"> </div>
+											   </div>
+										   <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+											   <div class="input-group">
+												   <label for="inputmailh">Co Borrower Email</label>
+												   
+													   <input type="email" class="form-control" placeholder="Co Borrower Email" maxlength="50" id="id_co_borrower_email"> </div>
+											   </div>
+											   
+										   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-right my-3">
+												 <a  href="#" class="btn btn-outline-primary btn-sm add_co_borrower"> <i class="fas fa-plus-circle "></i> Add </a>
+											
+										   </div>
+									   </div>
+									   <div class="row">
+										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+										   <table class="table table-striped">
+											   <thead>
+												   <tr>
+													   <th>#</th>
+													   <th>Co Borrower Name</th>
+													   <th>Co Borrower Phone</th>
+													   <th>Co Borrower Email</th>
+													   <th>Action</th>
+												   </tr>
+											   </thead>
+											   <tbody id="co_borrower_table"> {% if co_applicants %} {% for i in co_applicants %}
+												   <tr>
+													   <th scope="row">1</th>
+													   <td>
+														   <input type="text" class="form-control" name="co_borrower_name[]" value="{{ i.co_borrower_name }}" placeholder="Name"> </td>
+													   <td>
+														   <input type="number" class="form-control" name="co_borrower_phone[]" value="{{ i.co_borrower_phone }}" placeholder="Phone"> </td>
+													   <td>
+														   <input type="email" class="form-control" name="co_borrower_email[]" value="{{ i.co_borrower_email }}" placeholder="email"> </td>
+													   <td>
+														   <button type="button" class="remove_co_borrower btn btn-outline-danger btn-sm">
+															   <i class="fas fa-times-circle mr-2"></i>Remove</button>
+													   </td>
+												   </tr> {% endfor %} {% endif %} </tbody>
+										   </table>
+									   </div>
+									   </div>
+								   </div>
+						</div>
+						<!-- Co Borrower-->
+									
+						<!-- Escrow Master-->
+						<div class="card  mb-3">
+							 <div class="card-header">
+							  <span>
+								 <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+								 Escrow Details
+							   </span>
+							   </div>
+							   <div class="card-body px-3 py-2">
+							
+											<div class="row">
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+													<div class="input-group">
+														<label for=" "> Escrow Company </label>
+														{{ form.escrow_company }} </div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													<div class="input-group">
+														<label for=" ">Loan Number</label>
+														{{ form.escrow_number }} </div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													<div class="input-group">
+														<label for=" "> Escrow Officer</label>
+														{{ form.escrow_officer }} </div>
+													</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+													<div class="input-group">
+														<label for="inputpasswordh"> Officer Phone</label>
+														{{ form.escrow_phone }} </div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													<div class="input-group">
+														<label for=" "> Officer Email</label>
+														{{ form.escrow_email}} </div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													<div class="input-group">
+														<label for="inputmailh">Please Open</label>
+														<div class="d-flex justify-content-between">
+														{% for choice in form.please_open %}
+																<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+															 {% endfor %} </div></div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													<div class="input-group">
+														<label for=" "> Escrow Opened Date </label>
+														
+															<input class="form-control " id="escrow_open_date" name="escrow_open_date" type="date"> </div>
+													</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+													<div class="input-group">
+														<label for=" "> Escrow Assistant </label>
+														{{ form.escrow_assistant}} </div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													<div class="input-group">
+														<label for=" "> Assistant Phone </label>
+														{{ form.assistant_phone}} </div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													<div class="input-group">
+														<label for=" "> Assistant Email </label>
+														{{ form.assistant_email}} </div>
+													</div>
+													<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													<div class="input-group">
+														<label for="inputpasswordh"> Has Loan Officer Requested Escrow Fees</label>
+														<div class="d-flex justify-content-between">
+															{% for choice in form.requested_escrow_fees %}
+																<label class="d-flex ml-5"> {{ choice.tag }} {{ choice.choice_label }} </label>
+															 {% endfor %} </div>
+													</div>
+												</div>
+								</div>
+							</div>
+						</div>
+						<!-- Escrow Master-->
+									
+						<!-- Title/HOA Master-->
+						<div class="card  mb-3">
+			 
+						   <div class="card-body px-3 py-2">
+						
+			 
+										<div class="row">
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> Title </label>
+													{{ form.title }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" ">Title Order</label>
+													{{ form.title_order }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" "> Title Rep</label>
+													{{ form.title_rep }} </div>
+												</div>
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for="inputpasswordh"> Title Rep Phone</label>
+													{{ form.title_rep_phone }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" "> Title Rep Email</label>
+													{{ form.title_rep_email}} </div>
+												</div>
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> HOA </label>
+													{{ form.hoa}} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" "> HOA Phone </label>
+													{{ form.hoa_phone}} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" "> HOA Email </label>
+													{{ form.hoa_email}} </div>
+												</div>
+								</div>
+						   </div>
+						</div>
+						<!-- Title/HOA Master-->
+
+						<!--Listing Office -->
+						<div class="card  mb-3">
+	  
+								<div class="card-body px-3 py-2">
+										<div class="row">
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> Listing Office </label>
+													{{ form.listing_office }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" ">Listing Agent</label>
+													{{ form.listing_agent }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" "> L/Agent Phone</label>
+													{{ form.listing_agent_phone }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for="inputpasswordh"> L/Agent Email</label>
+													{{ form.listing_agent_email }} </div>
+												</div>
+											<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+												<div class="input-group">
+													<label for=" "> Buyers RE Office </label>
+													{{ form.buyer_office }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" "> Buyers Agent  </label>
+													{{ form.buyer_agent }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for=" "> B/Agent Phone</label>
+													{{ form.buyer_agent_phone }} </div>
+												</div>
+												<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+												<div class="input-group">
+													<label for="inputpasswordh"> B/Agent Email</label>
+													{{ form.buyer_agent_email }} </div>
+												</div>
+								</div>
+							</div>
+						</div>
+						<!--Listing Office-->
+								  
+							   
+							   
+							   
+							   
+							   
+							   <div class="card  mb-3">
+									<div class="card-header">
+									 <span>
+										<i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+										Manage Password
+									  </span>
+								  	</div>
+								  <div class="card-body px-3 py-2">
+											   <div class="row">
+												   <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+													   <div class="input-group">
+														   <label for="inputmailh">Password Name</label>
+														   {{ form.password_name}} </div>
+													   </div>
+													   <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													   <div class="input-group">
+														   <label for="inputmailh">User Name </label>
+														   {{ form.user_name}} </div>
+													   </div>
+													   <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													   <div class="input-group">
+														   <label for="inputmailh">Url </label>
+														   {{ form.user_password_url}} </div>
+													   </div>												   
+													   <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+													   <div class="input-group no-btn">
+														   <label for="inputmailh">Password Type</label>
+														   {{form.password_type}} </div>
+													   </div>
+													   <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+
+													   <div class="input-group">
+														   <label for="inputmailh">Password</label>
+														   {{form.user_password}} </div>
+													   </div>
+													   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-right  my-3">
+														   <a href="#" class="btn btn-outline-primary btn-sm add_password"><i class="fas fa-plus-circle "></i>
+															Add</a>
+												   </div>
+											   </div>
+											   <div class="row">
+												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+												   <table class="table table-striped ">
+													   <thead>
+														   <tr>
+															   <th>#</th>
+															   <th>Password Name</th>
+															   <th>Password Type</th>
+															   <th>User Name</th>
+															   <th>Password</th>
+															   <th>URL</th>
+															   <th>Action</th>
+														   </tr>
+													   </thead>
+													   <tbody id="password_table"> </tbody>
+												   </table>
+											   </div>
+										   </div>
+									
+								   </div>
+							   </div>
+							   <div class="card  mb-3">
+								<div class="card-header">
+								 <span>
+									<i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
+									Document Upload
+								  </span>
+								  </div>
+								  <div class="card-body px-3 py-2" style="width: 50%; margin-left: 25%;">
+									   <input type="file" class="pond" name="filepond"/>
+									</div>
+								</div>
+							   <div class="row mt-3">
+								   <div class="col-md-12">
+									   <div class="text-center">
+										   <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+										   <button type="submit" class="btn btn-success btn-sm"><i class="far fa-check-circle mr-2"></i>Submit</button>
+									   </div>
+								   </div>
+							   </div>
+					</form>                             
+               </div>
+               <!-- ./Content -->
+            </div>
+            
+         {% block footer %}
+            {% include "footer.html" %}
+         {% endblock %}
+          
+         <!-- Custom Script -->
+		 <!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>  
+	
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		<!-- include FilePond library and jQuery adapter -->
+		<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+		<script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+		<!-- Configure and initialise Filepond -->
+		<script>
+			var uploaded = {};
+			var uploadIdFilenames = {}; 
+			var uploaded_error = {};
+			
+		$(function(){	
+			$('.pond').filepond();
+			$('.pond').filepond('allowMultiple', true);
+			$('.pond').filepond.setOptions({
+			chunkUploads: true,
+				chunkSize: 50000,
+			server: {
+			url: "/fp",
+			process: '/process/',
+			patch: '/patch/',
+			revert: '/revert/',
+			fetch: '/fetch/?target=',
+			load: '/load/?target='
+			},
+			onaddfile: function(error, file) {
+			console.log('File added: [' + error + ']   file: [' + file.id + ']');
+			uploaded[file.id] = file.filename
+			},
+			onprocessfile: function(error, file) {
+			if(error === null) updateButton(true);
+			},
+			onremovefile: function(error, file) {
+			console.log('File removed: [' + error + ']   file: [' + file.id + ']');
+			if(file.id in uploaded) delete uploaded[file.id];
+			updateButton(false);
+			},
+			onerror: function(error, file, status) {
+			console.log('File error: [' + error + ']   file: [' + file.id + '], status [' + status + ']');
+			if(file.id in uploaded) {
+				delete uploaded[file.id];
+			}
+			uploaded_error[file.id] = true;	    		
+			}
+			
+			});
+		
+			$('body').on('click', '.del-upload-btn', function(e) {
+			var delUploadId = $(e.currentTarget).data('id');
+			$.ajax({
+			type: 'DELETE',
+			url: '/submitForm/?' + $.param({'id': delUploadId}),
+			success: function(response) {
+				if('status' in response && response.status == 'OK') {
+					$('table.uploads tr[data-upload="' + delUploadId + '"]').remove();
+					if($('table.uploads tr[data-upload]').length == 0) {
+					// Reset the stored uploads table
+					loadStoredUploads(false);
+					}
+				}
+				else {
+					alert('An error has occurred deleting the stored upload');
+				}
+			},
+			error: function(jqXHR, status, error) {
+				alert('Error deleting stored upload: ' + error);
+			}
+			});
+			});
+			
+			function updateButton(state) {
+			// If we've been asked to enable the button but there's nothing
+			// in the list of uploaded objects, don't enable it.
+			if(state && Object.keys(uploaded).length == 0) {
+			$('#uploads-submit').attr('disabled','');
+			}
+			else {
+			if(state) $('#uploads-submit').removeAttr('disabled');
+			else $('#uploads-submit').attr('disabled','');
+			}
+			}
+			
+			function loadStoredUploads(upload_ids) {
+			if(!upload_ids) {
+			var noUploadsHTML = '<div class="alert alert-primary no-uploads" role="alert" style="width: 100%">' +
+				'<b>No stored uploads.</b> There are currently no stored uploads to display.</div>';
+			$('#upload-row').html(noUploadsHTML);
+			return;
+			}
+			var tableHeader = '<table class="table table-dark uploads"><thead><tr>' +
+			'<th scope="col">Preview</th><th scope="col">Name</th>' +
+			'<th scope="col">ID</th><th scope="col"></th>' +
+			'</tr></thead><tbody class="upload-rows">';
+			
+			var tableRows = '';
+			var tableFooter = '</tbody></table>';
+			
+			for(var i = 0; i < upload_ids.length; i++) {
+			var filename = uploadIdFilenames[upload_ids[i]];
+			var img = 'Preview not available';
+			if(filename.endsWith('.jpg') || filename.endsWith('.png')) {
+				img = '<img src="/fp/load?id=' + upload_ids[i] + '" style="maxWidth: 120px;"/>'
+			}
+			tableRows += '<tr data-upload="' + upload_ids[i] + '"><td>' + img + '</td><td>' + filename + '</td>' +
+				'<td>' + upload_ids[i] + '</td><td><button class="btn btn-sm btn-outline-danger del-upload-btn" data-id="' +
+				upload_ids[i] + '">Delete stored upload</button></td></tr>'; 
+			}
+			
+			// Populate the content
+			if($('.no-uploads').length == 1) {
+			$('.no-uploads').remove()
+			$('#upload-row').html(tableHeader+tableRows+tableFooter);
+			}
+			else {
+			$('.upload-rows').append(tableRows);
+			}
+			}
+			loadStoredUploads(false);
+			
+		});
+		</script>
+         <script>
+			$(document).ready(function() {
+				$(function() {
+					$('select').selectpicker();
+				});
+				var d = new Date();
+
+                var month = d.getMonth()+1;
+                var day = d.getDate();
+
+                var output = d.getFullYear() + '-' +
+                    (month<10 ? '0' : '') + month + '-' +
+                    (day<10 ? '0' : '') + day;
+                document.getElementById("id_recieved_date").defaultValue = output;
+
+				
+				// Currency converter on Change
+				$("input[data-type='currency']").on({
+					keyup: function() {
+					formatCurrency($(this));
+					},
+					blur: function() { 
+					formatCurrency($(this), "blur");
+					}
+				});
+
+
+				function formatNumber(n) {
+				// format number 1000000 to 1,234,567
+				return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+				}
+
+
+				function formatCurrency(input, blur) {
+				// appends $ to value, validates decimal side
+				// and puts cursor back in right position.
+				
+				// get input value
+				var input_val = input.val();
+				
+				// don't validate empty input
+				if (input_val === "") { return; }
+				
+				// original length
+				var original_len = input_val.length;
+
+				// initial caret position 
+				var caret_pos = input.prop("selectionStart");
+					
+				// check for decimal
+				if (input_val.indexOf(".") >= 0) {
+
+					// get position of first decimal
+					// this prevents multiple decimals from
+					// being entered
+					var decimal_pos = input_val.indexOf(".");
+
+					// split number by decimal point
+					var left_side = input_val.substring(0, decimal_pos);
+					var right_side = input_val.substring(decimal_pos);
+
+					// add commas to left side of number
+					left_side = formatNumber(left_side);
+
+					// validate right side
+					right_side = formatNumber(right_side);
+					
+					// On blur make sure 2 numbers after decimal
+					if (blur === "blur") {
+					right_side += "00";
+					}
+					
+					// Limit decimal to only 2 digits
+					right_side = right_side.substring(0, 2);
+
+					// join number by .
+					input_val = left_side + "." + right_side;
+
+				} else {
+					// no decimal entered
+					// add commas to number
+					// remove all non-digits
+					input_val = formatNumber(input_val);
+					input_val = input_val;
+					
+					// final formatting
+					if (blur === "blur") {
+					input_val += ".00";
+					}
+				}
+				
+				// send updated string to input
+				input.val(input_val);
+
+				// put caret back in the right position
+				var updated_len = input_val.length;
+				caret_pos = updated_len - original_len + caret_pos;
+				input[0].setSelectionRange(caret_pos, caret_pos);
+				}
+
+				$("#id_borrower_phone").attr('type','tel');
+				$("#id_borrower_phone").attr('pattern','.{10}');
+				$('#id_borrower_email').attr('type', 'email');
+				$('.2nd_loan_amount_div').hide();
+				$("#tt_date_value").hide();
+				$("#ad_date").hide();
+				$('.form_reverse_check').hide();
+				$(".listing_office_div").hide();
+				$('#address_fill').change(function() {
+					var ischecked = $(this).is(':checked');
+					console.log('a--', ischecked)
+					if(ischecked) {
+						var property_address = $('#id_property_address').val();
+						var property_city = $('#id_property_city').val();
+						var property_zipcode = $('#id_property_zipcode').val();
+						var property_state = $('#id_property_state').val();
+						$('#id_mailing_address').val(property_address);
+						$('#id_mailing_city').val(property_city);
+						$('#id_mailing_state').val(property_state).trigger('change');
+						$('#id_mailing_zipcode').val(property_zipcode);
+					}
+				});
+				$('.subordination').change(function() {
+					var value = $(this).val();
+					if(value == 'Y') {
+						$('.2nd_loan_amount_div').show();
+					} else {
+						$('.2nd_loan_amount_div').hide();
+						$('#id_loan_amount_2').val(0);
+					}
+				});
+
+				$("#id_status").change(function () {
+					var status = $(this).val();
+					$.ajax({
+						url: "{% url 'status_filter' %}",
+						data: {
+						'status_id': status
+						},
+						success: function (response) {
+							$('#id_sub_status_id').html(response);
+							$('#id_sub_status_id').selectpicker('refresh');
+						}
+					});
+				});
+				$("#id_lo_name").change(function () {
+					var loan_officer_id = $(this).val();
+					$.ajax({
+						url: "{% url 'loan_officer_filter' %}",
+						data: {
+						'user_id': loan_officer_id
+						},
+						dataType: 'json',
+						success: function (data) {
+							if (data.email){
+								$('input[name="lo_email"]').val(data.email);
+								$('input[name="lo_fax"]').val(data.fax);
+								$('input[name="nmls_id"]').val(data.nmls_id);
+								$('input[name="lo_direct"]').val(data.lo_direct);
+							}
+						}
+					});
+				});
+
+				$('.calculate_ltv').change(function() {
+					var first_loan_amount = $('#id_loan_amount').val();
+					var first_loan_amount = first_loan_amount.replace(',', '')
+					var second_loan_amount = 0;
+					var subordination = $('.subordination').val();
+					if(subordination == 'Y') {
+						var second_loan_amount = $('#id_loan_amount_2').val();
+						var second_loan_amount = second_loan_amount.replace(',', '')
+					} else {
+						var second_loan_amount = 0;
+					}
+					var appraised = $('#id_appraised_value').val();
+					var appraised = appraised.replace(',', '')
+					var first_loan_amount = parseFloat(first_loan_amount);
+					var second_loan_amount = parseFloat(second_loan_amount);
+					var ltv = first_loan_amount / appraised * 100;
+					var cltv = (first_loan_amount + second_loan_amount) / appraised * 100;
+					// round to 2 decimal places
+					ltv = Math.round(ltv * 100) / 100;
+					cltv = Math.round(cltv * 100) / 100;
+					console.log(ltv, cltv)
+					$('#id_cltv').val(cltv);
+					$('#id_ltv').val(ltv);
+				});
+				$('.add_co_borrower').click(function() {
+					var rowCount = $('#co_borrower_table tr').length + 1;
+					var id_co_borrower_name = $("#id_co_borrower_name").val();
+					var id_co_borrower_phone = $("#id_co_borrower_phone").val();
+					var id_co_borrower_email = $("#id_co_borrower_email").val();
+					if(id_co_borrower_name.trim().length > 0 && id_co_borrower_phone.trim().length > 0 && id_co_borrower_email) {
+						var co_borrower_name = "<input type='text' class='form-control' name='co_borrower_name[]' required value='" + id_co_borrower_name + "'>";
+						var co_borrower_email = "<input type='email' class='form-control' name='co_borrower_email[]' required value='" + id_co_borrower_email + "'>";
+						var co_borrower_phone = "<input type='tel' pattern='.{10}' class='form-control' name='co_borrower_phone[]' required value='" + id_co_borrower_phone + "'>";
+						var remove_button = '<button type="button" class="remove_co_borrower btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>';
+						var row = "<tr>";
+						var row = row + "<th scope='row'>" + rowCount + "</th>";
+						var row = row + "<td>" + co_borrower_name + "</td>";
+						var row = row + "<td>" + co_borrower_phone + "</td>";
+						var row = row + "<td>" + co_borrower_email + "</td>";
+						var row = row + "<td>" + remove_button + "</td> ";
+						var row = row + "</tr>";
+						$('#co_borrower_table').append(row);
+						$("#id_co_borrower_name").val('');
+						$("#id_co_borrower_phone").val('');
+						$("#id_co_borrower_email").val('');
+					} else {
+						alert("Please enter All the Co Borrower Detail");
+					}
+				});
+				$('.add_password').click(function() {
+					var id_password_name = $("#id_password_name").val();
+					var id_password_type = $("#id_password_type").val();
+					var id_user_name = $("#id_user_name").val();
+					var id_user_password = $("#id_user_password").val();
+					var id_user_password_url = $("#id_user_password_url").val();
+					var rowCount = $('#password_table tr').length + 1;
+					var id_password_type_text = $("#id_password_type option:selected").text();
+					if(id_password_name.trim().length > 0 && id_password_type.trim().length > 0 && id_user_name.trim().length > 0 && id_user_password.trim().length > 0) {
+						var id_password_name = "<input type='text' class='form-control' name='user_password_name_array[]' required value='" + id_password_name + "'>";
+						var id_password_type = id_password_type_text + "<input type='hidden' class='form-control' name='user_password_type_array[]' required value='" + id_password_type + "'>";
+						var id_user_name = "<input type='text' class='form-control' name='user_name_array[]' required value='" + id_user_name + "'>";
+						var id_user_password = "<input type='text' class='form-control' name='user_password_array[]' required value='" + id_user_password + "'>";
+						var id_user_password_url = "<input type='text' class='form-control' name='user_password_url_array[]' required value='" + id_user_password_url + "'>";
+						var remove_button = '<button type="button" class="remove_co_borrower btn btn-outline-danger btn-sm"><i class="fas fa-times-circle mr-2"></i>Remove</button>';
+						var row = "<tr>";
+						var row = row + "<th scope='row'>" + rowCount + "</th>";
+						var row = row + "<td>" + id_password_name + "</td>";
+						var row = row + "<td>" + id_password_type + "</td>";
+						var row = row + "<td>" + id_user_name + "</td>";
+						var row = row + "<td>" + id_user_password + "</td>";
+						var row = row + "<td>" + id_user_password_url + "</td>";
+						var row = row + "<td>" + remove_button + "</td> ";
+						var row = row + "</tr>";
+						$('#password_table').append(row);
+						$("#id_password_name").val('');
+						$("#id_password_type").val('');
+						$("#id_user_name").val('');
+						$("#id_user_password").val('');
+					} else {
+						alert("Please enter All Password Detai");
+					}
+				});
+				$('.float_type').change(function() {
+					var float_type = $(this).val();
+					if(float_type == 'Y') {
+						document.getElementById("lock_expiraton_date_id").disabled = true;
+					} else {
+						$("#lock_expiraton_date_id").attr('disabled', false);
+					}
+				});
+				$('.please_open_check').change(function() {
+					var please_open = $(this).val();
+					if(please_open == 'Y') {
+						document.getElementById("escrow_open_date").disabled = true;
+					} else {
+						$("#escrow_open_date").attr('disabled', false);
+					}
+				});
+				
+				var loan_purpose_id = $('#id_loan_purpose').val();
+				if(loan_purpose_id == 9 || loan_purpose_id ==4){
+					$(".form_reverse_check").show();
+				}else{
+					$(".form_reverse_check").hide();
+				}
+			
+				$('#id_loan_purpose').change(function() {
+					var id = $(this).val();
+					if(id == 2 || id == 7) {
+						$('.va_base_loan').show();
+					} else {
+						$('.va_base_loan').hide();
+					}
+					if(id == 3 || id == 6) {
+						$('.fha_base_loan').show();
+					} else {
+						$('.fha_base_loan').hide();
+					}
+					if(id == 9 || id == 4) {
+						$('.form_reverse_check').show();
+					} else {
+						$('.form_reverse_check').hide();
+					}
+				});
+				$("#id_tax_transcript").change(function(){
+					var value = $(this).val();
+					if(value==3 || value==4){
+						$("#tt_date_value").attr('required', 'required'); 
+						$("#tt_date_value").show();
+					}else{
+						$("#tt_date_value").hide();
+						$("#tt_date_value").removeAttr('required'); 
+					}
+            	});
+				$(".AppraisalOrderedText").change(function(){
+					var value = $(this).val();
+					if(value==5 || value==7){
+						$("#ad_date").attr('required', 'required'); 
+						$("#ad_date").show();
+					}else{
+						$("#ad_date").hide();
+						$("#ad_date").removeAttr('required'); 
+					}
+						
+				});
+				var loan_purpose_id = $('#id_loan_purpose').val();
+				if(loan_purpose_id == 1 || loan_purpose_id ==2 || loan_purpose_id ==3 || loan_purpose_id == 4){
+					$(".listing_office_div").show();
+				}else{
+					$(".listing_office_div").hide();
+				}
+			
+				$('#id_loan_purpose').change(function(){
+					var id = $(this).val();
+					if(id==1 || id ==2 || id ==3 || id == 4){
+						
+						$(".listing_office_div").show();
+					}else{
+						
+						$(".listing_office_div").hide();
+					}
+				});
+				$(document).on('click', '.remove_co_borrower', function() {
+					$(this).closest("tr").remove();
+				});
+				var user_id = "{{ user_obj.id }}";
+				var nmls_id = "{{ user_obj.nmls_id }}";
+				var email = "{{ user_obj.email }}";
+				var fax = "{{ user_obj.fax }}";
+				var phone_number = "{{ user_obj.phone }}";
+				var office_company = "{{ user_obj.officer_company }}";
+				$('#id_lo_name').val(user_id);
+				$('#id_lo_direct').val(phone_number);
+				$('#id_ae_company_id').val(office_company);
+				$('#id_nmls_id').val(nmls_id);
+				$('#id_lo_fax').val(fax);
+				$('#id_lo_email').val(email);
+				$('.va_base_loan').hide();
+				$('.fha_base_loan').hide();
+				var first_loan_amount = $('#id_loan_amount').val();
+				var first_loan_amount = first_loan_amount.replace(',', '')
+				var second_loan_amount = 0;
+				var subordination = $('.subordination').val();
+				if(subordination == 'Y') {
+					var second_loan_amount = $('#id_loan_amount_2').val();
+				} else {
+					var second_loan_amount = 0;
+				}
+				var appraised = $('#id_appraised_value').val();
+				var appraised = appraised.replace(',', '')
+				var first_loan_amount = parseFloat(first_loan_amount);
+				var second_loan_amount = parseFloat(second_loan_amount);
+				var ltv = first_loan_amount / appraised * 100;
+				var cltv = (first_loan_amount + second_loan_amount) / appraised * 100;
+				// round to 2 decimal places
+				ltv = Math.round(ltv * 100) / 100;
+				cltv = Math.round(cltv * 100) / 100;
+				$('#id_cltv').val(cltv);
+				$('#id_ltv').val(ltv);
+
+				
+				var status = '3';
+				$('#id_status option[value="3"]').attr("selected",true);
+					$.ajax({
+						url: "{% url 'status_filter' %}",
+						data: {
+						'status_id': status
+						},
+						success: function (response) {
+							$('#id_sub_status_id').html(response);
+							
+							$(".SubStatus > .dropdown-toggle > .filter-option > .filter-option-inner > .filter-option-inner-inner").html($('.SubStatus option[value="8"]').text());
+							$('#id_sub_status_id option[value="8"]').attr("selected",true);
+						
+							
+						}
+					});
+			});
+         </script>    
+  	</body>
+</html>

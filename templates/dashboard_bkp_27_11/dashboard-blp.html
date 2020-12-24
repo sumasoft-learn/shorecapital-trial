@@ -1,0 +1,1290 @@
+
+<!DOCTYPE html>
+<html>
+    {% load static %}
+   <head>
+    {% block head %}
+          {% include "head.html" %}
+        {% endblock %}
+        
+      <!-- Data table Style -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" type="text/css">
+   </head>        
+   <body class="active bg-light">
+{% block nav %}
+  {% include "nav.html" %}
+{% endblock %}
+      
+      <div class="d-flex">
+{% block sidebar %}
+  {% include "sidebar.html" %}
+{% endblock %}
+
+
+         <!-- Main Section -->
+         <main class="">
+
+            <!-- Section Menu -->
+            <div class="row"> 
+
+               <!-- Content -->
+               <div class="col-12 p-2">
+                  <div class="tab-content" id="nav-tabContent">
+                     <!-- Loan Details -->
+                     <div class="tab-pane fade show active" id="loan-details" role="tabpanel" aria-labelledby="loan-details-list">
+
+                        <!-- Section Header -->
+                        <div class="d-flex justify-content-between section-header">
+                           <span class="section-title">Dashboard</span>
+                           <span>
+                              <a class="btn btn-sm btn-primary" href="/file/create/"><i class="fas fa-plus mr-2"></i>Create File</a>
+                           </span>
+                        </div>
+                        <!-- ./Section Header -->
+                     
+                        <!-- Tabs Section Body -->
+                        <div class="card mt-2">
+
+                           <div class="card-header no-border" style="background:rgba(242, 242, 242, 0.4) !important;">
+                              <!-- Nav tabs -->
+                              <ul class="nav nav-tabs" id="tabs_nav" role="tablist">
+                                 <li class="nav-item">
+                                 <a class="nav-link active" id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="true">All</a>
+                                 </li>
+                                 <li class="nav-item">
+                                 <a class="nav-link" id="docs-tab" data-toggle="tab" href="#docs" role="tab" aria-controls="docs" aria-selected="true">Docs</a>
+                                 </li>
+                                 <li class="nav-item">
+                                    <a class="nav-link" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="false">Approved</a>
+                                 </li>              
+                                 <li class="nav-item">
+                                    <a class="nav-link" id="submission-tab" data-toggle="tab" href="#submission" role="tab" aria-controls="submission" aria-selected="false">Submission</a>
+                                 </li>              
+                                 <li class="nav-item">
+                                    <a class="nav-link" id="hold-tab" data-toggle="tab" href="#hold" role="tab" aria-controls="hold" aria-selected="false">Hold</a>
+                                 </li>              
+                              </ul>
+                              <!-- ./Nav tabs -->
+                              
+                           </div>
+                           <div class="card-body">
+                              
+                              <!-- Tab panes -->
+                              <div class="tab-content">                                
+                                 
+                                 <!-- All Details -->
+                                 <div class="tab-pane active show" id="all" role="tabpanel" aria-labelledby="all-tab">                                    
+                                    <div class="card-body p-0"> 
+                                       <table id="all_table" class="display">
+                                           <thead>
+                                              <tr>
+                                                  <th>File 
+                                                     </th>
+                                                  <th>Rec.Dt</th>
+                                                  <th>LE</th>
+                                                  <th>TT</th>
+                                                  <th>LO</th>
+                                                  <th>Lender</th>
+                                                  <th>Status</th>
+                                                  <th>Sub Status</th>
+                                                  <th>Notes</th>
+                                                  <th>CD</th>
+                                                  <th>Appr Ord</th>
+                                                  <th>Escrow Dt</th>
+                                                  <th>Escrow Co</th>
+                                                  <th>PayOff Exp</th>
+                                              </tr>
+                                           </thead>
+                                           <tbody>
+                                              {% for all_file in all_file_master %}
+                                              <tr>
+                                                  <td>
+                                                    {% if all_file.file_id|length == 0   %}
+                                                        {{all_file.borrower_middle_name}}    
+                                                    {% else %}
+                                                        {{all_file.file_id}}    
+                                                    {% endif %}
+             
+                                                  </td>
+                                                  <td>12.02</td>
+                                                  <td>{{all_file.lock_expiration_date|date:"m.d"}}</td>
+                                                  <td>{{all_file.tax_transcript.tt_value}}
+                                                        <span class="date tt_date">{{all_file.tax_transcript_date|date:"m.d"}}</span>
+                                                    <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                  </td>
+                                                  <td>{{all_file.loan_officer_id.user_name}}</td>
+                                                  <td>{{all_file.lender}}</td>
+                                                  <td>{{all_file.status_id.status_name}}
+
+                                                        <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                  </td>
+                                                  <td>{{all_file.sub_status_id.sub_status_name}}
+                                                        <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                  </td>
+                                                  <td class="d-flex">
+                                                     <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="{{ all_file.note }}">
+                                                            {{ all_file.note|truncatechars:25 }}
+                                                    </span>
+                                                     <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                  </td>
+                                                 <td>
+                                                     <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                           
+                                                     </span><span class="date cd_date">{{all_file.closing_disclosure_date|date:"m.d"}}</span>
+                                                     <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                  </td>
+                                                  <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                    <span class="date ao_date">{{all_file.appraisal_ordered_date|date:"m.d"}}</span>
+                                                    <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                </td>
+                                                  <td>{{all_file.escrow_opened_date}}</td>
+                                                  <td>{{all_file.escrow_company}}</td>
+                                                  <td>
+                                                      <input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                      <span class="payoff">{{all_file.payoff_exp|date:"m.d"}}</span>
+                                                </td>
+                                                 
+                                              </tr>
+                                             {% endfor %}                                              
+                                                                                            
+                                                                                             
+                                                                                           
+                                          </tbody>                                               
+                                       </table>      
+                                    </div>          
+                                 </div>          
+                                 <!-- ./All Details -->
+                                 
+                                 <!-- Docs Details -->
+                                 <div class="tab-pane" id="docs" role="tabpanel" aria-labelledby="docs-tab">                                    
+                                    <div class="d-flex justify-content-between">
+                                       <!-- Nav tabs -->
+                                       <ul class="nav nav-tabs btn-style" role="tablist">
+                                        <li class="nav-item">
+                                                    <a class="nav-link active" id="all_docs_out-tab" data-toggle="tab" href="#all_docs_out" role="tab" aria-controls="all_docs_out" aria-selected="true">All</a>
+                                        </li>
+                                          <li class="nav-item">
+                                          <a class="nav-link " id="docs_out-tab" data-toggle="tab" href="#docs_out" role="tab" aria-controls="docs_out" aria-selected="true">Docs Out</a>
+                                          </li>
+                                          <li class="nav-item">
+                                             <a class="nav-link" id="docs_pending-tab" data-toggle="tab" href="#docs_pending" role="tab" aria-controls="docs_pending" aria-selected="false">Docs Pending</a>
+                                          </li>             
+                                       </ul>
+                                       <!-- ./Nav tabs -->  
+                                       <div class="">
+                                          <i class="fas fa-search"></i>
+                                       </div>                                   
+                                    </div>
+                                    <div class="card-body p-0"> 
+
+                                       <!-- Tab panes -->
+                                       <div class="tab-content">  
+                                          <!-- Docs Out Details -->
+                                          <div class="tab-pane active show" id="all_docs_out" role="tabpanel" aria-labelledby="all_docs_out-tab">
+                                                <table id="all_docsOut" class="display">
+                                                   <thead>
+                                                       <tr>
+                                                           <th>File Name</th>
+                                                           <th>Receive Date</th>
+                                                           <th>LE</th>
+                                                           <th>TT</th>
+                                                           <th>LO/LO Company</th>
+                                                           <th>Lender</th>
+                                                           <th>Notes</th>
+                                                           <th>CD</th>
+                                                           <th>Appr Ord</th>
+                                                           <th>Escrow Opened</th>
+                                                           <th>Escrow Company</th>
+                                                           <th>PayOff Exp</th>
+                                                       </tr>
+                                                   </thead>
+                                                   <tbody>
+                                                   {% for all_file in all_file_master %}
+                                                   {% if all_file.status_id.id == 1 %}
+                                                   <tr>
+                                                 <td>
+                                                         {% if all_file.file_id|length == 0   %}
+                                                             {{all_file.borrower_middle_name}}    
+                                                         {% else %}
+                                                             {{all_file.file_id}}    
+                                                         {% endif %}
+     
+												   </td>
+                                                       <td>02/12</td>
+                                                       <td>{{all_file.lock_expiration_date}}</td>
+                                                       <td>{{all_file.tax_transcript.tt_value}}
+
+                                                         <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                       </td>
+                                                       <td></td>
+                                                       <td>{{all_file.lender}}
+                                                            <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                            <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                       </td>
+												   
+                                                       <td class="d-flex">
+                                                          <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                          <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                       </td>
+                                                       <td>
+                                                          <span class="text">{{all_file.closing_disclosure.cd_value}}
+												   
+                                                          </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                          <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                 </td>												 
+                                                       <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                         <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                         <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                  </td>
+                                                       <td>{{all_file.escrow_opened_date}}</td>
+                                                       <td>{{all_file.escrow_company}}</td>
+                                                       <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                       <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                    </td>
+                                                      
+                                              </tr>
+                                                   {% endif %}
+                                              {% endfor %}
+                                           </tbody>
+                                        </table>
+                                     </div>
+                                             <!-- ./All Docs Out Details --> 
+                                          <!-- Docs Out Details -->
+                                          <div class="tab-pane " id="docs_out" role="tabpanel" aria-labelledby="docs_out-tab">
+                                             <table id="docsOut" class="display">
+                                                <thead>
+                                                    <tr>
+                                                        <th>File Name</th>
+                                                        <th>Receive Date</th>
+                                                        <th>LE</th>
+                                                        <th>TT</th>
+                                                        <th>LO/LO Company</th>
+                                                        <th>Lender</th>
+                                                        <th>Notes</th>
+                                                        <th>CD</th>
+                                                        <th>Appr Ord</th>
+                                                        <th>Escrow Opened</th>
+                                                        <th>Escrow Company</th>
+                                                        <th>PayOff Exp</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                        {% for all_file in all_file_master %}
+                                                        {% if all_file.status_id.id == 1 and all_file.sub_status_id.id == 4 %}
+                                                        <tr>
+                                                      <td>
+                                                              {% if all_file.file_id|length == 0   %}
+                                                                  {{all_file.borrower_middle_name}}    
+                                                              {% else %}
+                                                                  {{all_file.file_id}}    
+                                                              {% endif %}
+          
+                                                        </td>
+                                                            <td>02/12</td>
+                                                            <td>{{all_file.lock_expiration_date}}</td>
+                                                            <td>{{all_file.tax_transcript.tt_value}}
+     
+                                                              <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                            </td>
+                                                            <td></td>
+                                                            <td>{{all_file.lender}}
+                                                                 <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                 <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                            </td>
+                                                        
+                                                            <td class="d-flex">
+                                                               <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                               <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                            </td>
+                                                            <td>
+                                                               <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                        
+                                                               </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                               <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                      </td>												 
+                                                            <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                              <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                              <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                       </td>
+                                                            <td>{{all_file.escrow_opened_date}}</td>
+                                                            <td>{{all_file.escrow_company}}</td>
+                                                            <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                           
+                                                   </tr>
+                                                        {% endif %}
+                                                   {% endfor %}
+                                                    </tbody>
+                                                </table>
+ 
+                     </div>
+                                          <!-- ./Docs Out Details -->
+                    
+                                          <!-- Docs Pending Details -->
+                                          <div class="tab-pane" id="docs_pending" role="tabpanel" aria-labelledby="docs_pending-tab">
+                                             <table id="docsPending" class="display">
+                                                <thead>
+                                                    <tr>
+                                                        <th>File Name</th>
+                                                        <th>Receive Date</th>
+                                                        <th>LE</th>
+                                                        <th>TT</th>
+                                                        <th>LO/LO Company</th>
+                                                        <th>Lender</th>
+                                                        <th>Notes</th>
+                                                        <th>CD</th>
+                                                        <th>Appr Ord</th>
+                                                        <th>Escrow Opened</th>
+                                                        <th>Escrow Company</th>
+                                                        <th>PayOff Exp</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                        {% for all_file in all_file_master %}
+                                                        {% if all_file.status_id.id == 1 and all_file.sub_status_id.id == 5 %}
+                                                        <tr>
+                                                      <td>
+                                                              {% if all_file.file_id|length == 0   %}
+                                                                  {{all_file.borrower_middle_name}}    
+                                                              {% else %}
+                                                                  {{all_file.file_id}}    
+                                                              {% endif %}
+          
+                                                        </td>
+                                                            <td>02/12</td>
+                                                            <td>{{all_file.lock_expiration_date}}</td>
+                                                            <td>{{all_file.tax_transcript.tt_value}}
+     
+                                                              <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                            </td>
+                                                            <td></td>
+                                                            <td>{{all_file.lender}}
+                                                                 <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                 <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                            </td>
+                                                        
+                                                            <td class="d-flex">
+                                                               <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                               <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                            </td>
+                                                            <td>
+                                                               <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                        
+                                                               </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                               <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                      </td>												 
+                                                            <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                              <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                              <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                       </td>
+                                                            <td>{{all_file.escrow_opened_date}}</td>
+                                                            <td>{{all_file.escrow_company}}</td>
+                                                            <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                           
+                                                   </tr>
+                                                        {% endif %}
+                                                   {% endfor %}
+
+                                                </tbody>                                            
+                                            </table>
+                                          </div>          
+                                          <!-- ./Docs Pending Details -->
+                                       </div>          
+                                    </div>          
+                                 </div>          
+                                 <!-- ./Docs Details -->
+                                 
+                                 <!-- Approved Details -->
+                                 <div class="tab-pane" id="approved" role="tabpanel" aria-labelledby="approved-tab">                                    
+                                    <div class="d-flex justify-content-between">
+                                       <!-- Nav tabs -->
+                                       <ul class="nav nav-tabs btn-style" role="tablist">
+                                          <li class="nav-item">
+                                             <a class="nav-link active" id="in_process-tab" data-toggle="tab" href="#in_process" role="tab" aria-controls="in_process" aria-selected="true">In Process</a>
+                                          </li>
+                                          <li class="nav-item">
+                                             <a class="nav-link" id="clear_to_close-tab" data-toggle="tab" href="#clear_to_close" role="tab" aria-controls="clear_to_close" aria-selected="false">Clear to Close</a>
+                                          </li>             
+                                       </ul>
+                                       <!-- ./Nav tabs --> 
+                                       <div class="">
+                                          <i class="fas fa-search"></i>
+                                       </div>                                       
+                                    </div>
+                                    <div class="card-body">                                       
+                                       <!-- Tab panes -->
+                                       <div class="tab-content">    
+                                          <!-- in_process Details -->
+                                          <div class="tab-pane active show" id="in_process" role="tabpanel" aria-labelledby="in_process-tab">
+                                                <table id="approvedInProcessTable" class="display">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>File Name</th>
+                                                                <th>Receive Date</th>
+                                                                <th>LE</th>
+                                                                <th>TT</th>
+                                                                <th>LO/LO Company</th>
+                                                                <th>Lender</th>
+                                                                <th>Notes</th>
+                                                                <th>CD</th>
+                                                                <th>Appr Ord</th>
+                                                                <th>Escrow Opened</th>
+                                                                <th>Escrow Company</th>
+                                                                <th>PayOff Exp</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                {% for all_file in all_file_master %}
+                                                                {% if all_file.status_id.id == 2 and all_file.sub_status_id.id == 6 %}
+                                                                <tr>
+                                                              <td>
+                                                                      {% if all_file.file_id|length == 0   %}
+                                                                          {{all_file.borrower_middle_name}}    
+                                                                      {% else %}
+                                                                          {{all_file.file_id}}    
+                                                                      {% endif %}
+                  
+                                                                </td>
+                                                                    <td>02/12</td>
+                                                                    <td>{{all_file.lock_expiration_date}}</td>
+                                                                    <td>{{all_file.tax_transcript.tt_value}}
+             
+                                                                      <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>{{all_file.lender}}
+                                                                         <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                         <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                                    </td>
+                                                                
+                                                                    <td class="d-flex">
+                                                                       <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                                       <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                                    </td>
+                                                                    <td>
+                                                                       <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                                
+                                                                       </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                                       <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                              </td>												 
+                                                                    <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                                      <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                                      <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                               </td>
+                                                                    <td>{{all_file.escrow_opened_date}}</td>
+                                                                    <td>{{all_file.escrow_company}}</td>
+                                                                    <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                        <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                                   
+                                                           </tr>
+                                                                {% endif %}
+                                                           {% endfor %}
+        
+                                                        </tbody>                                            
+                                                    </table>
+                                          </div>          
+                                          <!-- ./in_process Details -->
+
+                                          <!-- clear_to_close Details -->
+                                          <div class="tab-pane" id="clear_to_close" role="tabpanel" aria-labelledby="clear_to_close-tab">
+                                                <table id="approvedInCloseTable" class="display">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>File Name</th>
+                                                                <th>Receive Date</th>
+                                                                <th>LE</th>
+                                                                <th>TT</th>
+                                                                <th>LO/LO Company</th>
+                                                                <th>Lender</th>
+                                                                <th>Notes</th>
+                                                                <th>CD</th>
+                                                                <th>Appr Ord</th>
+                                                                <th>Escrow Opened</th>
+                                                                <th>Escrow Company</th>
+                                                                <th>PayOff Exp</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                {% for all_file in all_file_master %}
+                                                                {% if all_file.status_id.id == 2 and all_file.sub_status_id.id == 7 %}
+                                                                <tr>
+                                                              <td>
+                                                                      {% if all_file.file_id|length == 0   %}
+                                                                          {{all_file.borrower_middle_name}}    
+                                                                      {% else %}
+                                                                          {{all_file.file_id}}    
+                                                                      {% endif %}
+                  
+                                                                </td>
+                                                                    <td>02/12</td>
+                                                                    <td>{{all_file.lock_expiration_date}}</td>
+                                                                    <td>{{all_file.tax_transcript.tt_value}}
+             
+                                                                      <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>{{all_file.lender}}
+                                                                         <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                         <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                                    </td>
+                                                                
+                                                                    <td class="d-flex">
+                                                                       <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                                       <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                                    </td>
+                                                                    <td>
+                                                                       <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                                
+                                                                       </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                                       <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                              </td>												 
+                                                                    <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                                      <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                                      <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                               </td>
+                                                                    <td>{{all_file.escrow_opened_date}}</td>
+                                                                    <td>{{all_file.escrow_company}}</td>
+                                                                    <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                        <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                                   
+                                                           </tr>
+                                                                {% endif %}
+                                                           {% endfor %}
+        
+                                                        </tbody>                                            
+                                                    </table>
+                                          </div>          
+                                          <!-- ./clear_to_close Details -->
+                                       </div>          
+                                    </div>          
+                                 </div>          
+                                 <!-- ./Approved Details -->                                 
+                                 
+                                 <!-- Submission Details -->
+                                 <div class="tab-pane" id="submission" role="tabpanel" aria-labelledby="submission-tab">                                    
+                                    <div class="d-flex justify-content-between">
+                                       <!-- Nav tabs -->
+                                       <ul class="nav nav-tabs btn-style" role="tablist">
+                                          <li class="nav-item">
+                                             <a class="nav-link active" id="need_to_disclose-tab" data-toggle="tab" href="#need_to_disclose" role="tab" aria-controls="need_to_disclose" aria-selected="true">Need to Disclose</a>
+                                          </li>
+                                          <li class="nav-item">
+                                             <a class="nav-link" id="disclosure_released-tab" data-toggle="tab" href="#disclosure_released" role="tab" aria-controls="disclosure_released" aria-selected="false">Disclosure Released</a>
+                                          </li>             
+                                          <li class="nav-item">
+                                             <a class="nav-link" id="ready_to_submit-tab" data-toggle="tab" href="#ready_to_submit" role="tab" aria-controls="ready_to_submit" aria-selected="false">Ready to Submit</a>
+                                          </li>             
+                                          <li class="nav-item">
+                                             <a class="nav-link" id="submitted-tab" data-toggle="tab" href="#submitted" role="tab" aria-controls="submitted" aria-selected="false">Submitted</a>
+                                          </li>             
+                                          <li class="nav-item">
+                                             <a class="nav-link" id="problems-tab" data-toggle="tab" href="#problems" role="tab" aria-controls="problems" aria-selected="false">Problems</a>
+                                          </li>             
+                                       </ul>
+                                       <!-- ./Nav tabs --> 
+                                       <div class="">
+                                          <i class="fas fa-search"></i>
+                                       </div>                                       
+                                    </div>
+                                    <div class="card-body">                                       
+                                       <!-- Tab panes -->
+                                       <div class="tab-content">   
+
+                                          <!-- Need to Disclose Details -->
+                                          <div class="tab-pane active show" id="need_to_disclose" role="tabpanel" aria-labelledby="need_to_disclose-tab">
+                                                <table id="need_to_disclose_table" class="display">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>File Name</th>
+                                                                <th>Receive Date</th>
+                                                                <th>LE</th>
+                                                                <th>TT</th>
+                                                                <th>LO/LO Company</th>
+                                                                <th>Lender</th>
+                                                                <th>Notes</th>
+                                                                <th>CD</th>
+                                                                <th>Appr Ord</th>
+                                                                <th>Escrow Opened</th>
+                                                                <th>Escrow Company</th>
+                                                                <th>PayOff Exp</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                {% for all_file in all_file_master %}
+                                                                {% if all_file.status_id.id == 3 and all_file.sub_status_id.id == 8 %}
+                                                                <tr>
+                                                              <td>
+                                                                      {% if all_file.file_id|length == 0   %}
+                                                                          {{all_file.borrower_middle_name}}    
+                                                                      {% else %}
+                                                                          {{all_file.file_id}}    
+                                                                      {% endif %}
+                  
+                                                                </td>
+                                                                    <td>02/12</td>
+                                                                    <td>{{all_file.lock_expiration_date}}</td>
+                                                                    <td>{{all_file.tax_transcript.tt_value}}
+             
+                                                                      <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>{{all_file.lender}}
+                                                                         <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                         <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                                    </td>
+                                                                
+                                                                    <td class="d-flex">
+                                                                       <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                                       <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                                    </td>
+                                                                    <td>
+                                                                       <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                                
+                                                                       </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                                       <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                              </td>												 
+                                                                    <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                                      <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                                      <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                               </td>
+                                                                    <td>{{all_file.escrow_opened_date}}</td>
+                                                                    <td>{{all_file.escrow_company}}</td>
+                                                                    <td><input type="text" class="file_id" value="{{all_file.id}}"></td>
+                                                                   
+                                                           </tr>
+                                                                {% endif %}
+                                                           {% endfor %}
+        
+                                                        </tbody>                                            
+                                                    </table>
+                                          </div>          
+                                          <!-- ./Need to Disclose Details -->
+
+                                          <!-- Disclosure Released Details -->
+                                          <div class="tab-pane" id="disclosure_released" role="tabpanel" aria-labelledby="disclosure_released-tab">
+                                                <table id="disclosure_related_detail_table" class="display">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>File Name</th>
+                                                                <th>Receive Date</th>
+                                                                <th>LE</th>
+                                                                <th>TT</th>
+                                                                <th>LO/LO Company</th>
+                                                                <th>Lender</th>
+                                                                <th>Notes</th>
+                                                                <th>CD</th>
+                                                                <th>Appr Ord</th>
+                                                                <th>Escrow Opened</th>
+                                                                <th>Escrow Company</th>
+                                                                <th>PayOff Exp</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                {% for all_file in all_file_master %}
+                                                                {% if all_file.status_id.id == 3 and all_file.sub_status_id.id == 9 %}
+                                                                <tr>
+                                                              <td>
+                                                                      {% if all_file.file_id|length == 0   %}
+                                                                          {{all_file.borrower_middle_name}}    
+                                                                      {% else %}
+                                                                          {{all_file.file_id}}    
+                                                                      {% endif %}
+                  
+                                                                </td>
+                                                                    <td>02/12</td>
+                                                                    <td>{{all_file.lock_expiration_date}}</td>
+                                                                    <td>{{all_file.tax_transcript.tt_value}}
+             
+                                                                      <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>{{all_file.lender}}
+                                                                         <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                         <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                                    </td>
+                                                                
+                                                                    <td class="d-flex">
+                                                                       <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                                       <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                                    </td>
+                                                                    <td>
+                                                                       <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                                
+                                                                       </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                                       <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                              </td>												 
+                                                                    <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                                      <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                                      <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                               </td>
+                                                                    <td>{{all_file.escrow_opened_date}}</td>
+                                                                    <td>{{all_file.escrow_company}}</td>
+                                                                    <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                        <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                                   
+                                                           </tr>
+                                                                {% endif %}
+                                                           {% endfor %}
+        
+                                                        </tbody>                                            
+                                                    </table>
+                                          </div>          
+                                          <!-- ./Disclosure Released Details -->
+
+                                          <!-- Ready to Submit  Details -->
+                                          <div class="tab-pane" id="ready_to_submit" role="tabpanel" aria-labelledby="ready_to_submit-tab">
+                                                <table id="ready_submitted_detail_table" class="display">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>File Name</th>
+                                                                <th>Receive Date</th>
+                                                                <th>LE</th>
+                                                                <th>TT</th>
+                                                                <th>LO/LO Company</th>
+                                                                <th>Lender</th>
+                                                                <th>Notes</th>
+                                                                <th>CD</th>
+                                                                <th>Appr Ord</th>
+                                                                <th>Escrow Opened</th>
+                                                                <th>Escrow Company</th>
+                                                                <th>PayOff Exp</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                {% for all_file in all_file_master %}
+                                                                {% if all_file.status_id.id == 3 and all_file.sub_status_id.id == 10 %}
+                                                                <tr>
+                                                              <td>
+                                                                      {% if all_file.file_id|length == 0   %}
+                                                                          {{all_file.borrower_middle_name}}    
+                                                                      {% else %}
+                                                                          {{all_file.file_id}}    
+                                                                      {% endif %}
+                  
+                                                                </td>
+                                                                    <td>02/12</td>
+                                                                    <td>{{all_file.lock_expiration_date}}</td>
+                                                                    <td>{{all_file.tax_transcript.tt_value}}
+             
+                                                                      <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>{{all_file.lender}}
+                                                                         <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                         <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                                    </td>
+                                                                
+                                                                    <td class="d-flex">
+                                                                       <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                                       <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                                    </td>
+                                                                    <td>
+                                                                       <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                                
+                                                                       </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                                       <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                              </td>												 
+                                                                    <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                                      <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                                      <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                               </td>
+                                                                    <td>{{all_file.escrow_opened_date}}</td>
+                                                                    <td>{{all_file.escrow_company}}</td>
+                                                                    <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                        <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                           </tr>
+                                                                {% endif %}
+                                                           {% endfor %}
+        
+                                                        </tbody>                                            
+                                                    </table>
+                                          </div>          
+                                          <!-- ./Ready to Submit  Details -->
+
+                                          <!-- Submitted Details -->
+                                          <div class="tab-pane" id="submitted" role="tabpanel" aria-labelledby="submitted-tab">
+                                                <table id="submitted_detail_table" class="display">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>File Name</th>
+                                                                <th>Receive Date</th>
+                                                                <th>LE</th>
+                                                                <th>TT</th>
+                                                                <th>LO/LO Company</th>
+                                                                <th>Lender</th>
+                                                                <th>Notes</th>
+                                                                <th>CD</th>
+                                                                <th>Appr Ord</th>
+                                                                <th>Escrow Opened</th>
+                                                                <th>Escrow Company</th>
+                                                                <th>PayOff Exp</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                {% for all_file in all_file_master %}
+                                                                {% if all_file.status_id.id == 3 and all_file.sub_status_id.id == 11 %}
+                                                                <tr>
+                                                              <td>
+                                                                      {% if all_file.file_id|length == 0   %}
+                                                                          {{all_file.borrower_middle_name}}    
+                                                                      {% else %}
+                                                                          {{all_file.file_id}}    
+                                                                      {% endif %}
+                  
+                                                                </td>
+                                                                    <td>02/12</td>
+                                                                    <td>{{all_file.lock_expiration_date}}</td>
+                                                                    <td>{{all_file.tax_transcript.tt_value}}
+             
+                                                                      <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>{{all_file.lender}}
+                                                                         <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                         <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                                    </td>
+                                                                
+                                                                    <td class="d-flex">
+                                                                       <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                                       <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                                    </td>
+                                                                    <td>
+                                                                       <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                                
+                                                                       </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                                       <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                              </td>												 
+                                                                    <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                                      <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                                      <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                               </td>
+                                                                    <td>{{all_file.escrow_opened_date}}</td>
+                                                                    <td>{{all_file.escrow_company}}</td>
+                                                                    <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                        <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                           </tr>
+                                                                {% endif %}
+                                                           {% endfor %}
+        
+                                                        </tbody>                                            
+                                                    </table>
+                                          </div>          
+                                          <!-- ./Submitted Details -->
+
+                                          <!-- Problems Details -->
+                                          <div class="tab-pane" id="problems" role="tabpanel" aria-labelledby="problems-tab">
+                                                <table id="problems_detail_table" class="display">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>File Name</th>
+                                                                <th>Receive Date</th>
+                                                                <th>LE</th>
+                                                                <th>TT</th>
+                                                                <th>LO/LO Company</th>
+                                                                <th>Lender</th>
+                                                                <th>Notes</th>
+                                                                <th>CD</th>
+                                                                <th>Appr Ord</th>
+                                                                <th>Escrow Opened</th>
+                                                                <th>Escrow Company</th>
+                                                                <th>PayOff Exp</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                {% for all_file in all_file_master %}
+                                                                {% if all_file.status_id.id == 3 and all_file.sub_status_id.id == 12 %}
+                                                                <tr>
+                                                              <td>
+                                                                      {% if all_file.file_id|length == 0   %}
+                                                                          {{all_file.borrower_middle_name}}    
+                                                                      {% else %}
+                                                                          {{all_file.file_id}}    
+                                                                      {% endif %}
+                  
+                                                                </td>
+                                                                    <td>02/12</td>
+                                                                    <td>{{all_file.lock_expiration_date}}</td>
+                                                                    <td>{{all_file.tax_transcript.tt_value}}
+             
+                                                                      <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                                    </td>
+                                                                    <td></td>
+                                                                    <td>{{all_file.lender}}
+                                                                         <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                         <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                                    </td>
+                                                                
+                                                                    <td class="d-flex">
+                                                                       <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                                       <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                                    </td>
+                                                                    <td>
+                                                                       <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                                
+                                                                       </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                                       <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                              </td>												 
+                                                                    <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                                      <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                                      <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                               </td>
+                                                                    <td>{{all_file.escrow_opened_date}}</td>
+                                                                    <td>{{all_file.escrow_company}}</td>
+                                                                    <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                        <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                           </tr>
+                                                                {% endif %}
+                                                           {% endfor %}
+        
+                                                        </tbody>                                            
+                                                    </table>
+                                          </div>          
+                                          <!-- ./Problems Details -->
+
+                                       </div>          
+                                    </div>          
+                                 </div>          
+                                 <!-- ./Submission Details -->
+
+                                 <!-- Approved Details -->
+                                 <div class="tab-pane" id="hold" role="tabpanel" aria-labelledby="hold-tab">                                    
+                                        <table id="hold_detail_table" class="display">
+                                                <thead>
+                                                    <tr>
+                                                        <th>File Name</th>
+                                                        <th>Receive Date</th>
+                                                        <th>LE</th>
+                                                        <th>TT</th>
+                                                        <th>LO/LO Company</th>
+                                                        <th>Lender</th>
+                                                        <th>Notes</th>
+                                                        <th>CD</th>
+                                                        <th>Appr Ord</th>
+                                                        <th>Escrow Opened</th>
+                                                        <th>Escrow Company</th>
+                                                        <th>PayOff Exp</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                        {% for all_file in all_file_master %}
+                                                        {% if all_file.status_id.id == 4 and all_file.sub_status_id.id == 13 %}
+                                                        <tr>
+                                                      <td>
+                                                              {% if all_file.file_id|length == 0   %}
+                                                                  {{all_file.borrower_middle_name}}    
+                                                              {% else %}
+                                                                  {{all_file.file_id}}    
+                                                              {% endif %}
+          
+                                                        </td>
+                                                            <td>02/12</td>
+                                                            <td>{{all_file.lock_expiration_date}}</td>
+                                                            <td>{{all_file.tax_transcript.tt_value}}
+     
+                                                              <input type="hidden" class="tt_value" value="{{ all_file.tax_transcript.id }}">
+                                                            </td>
+                                                            <td></td>
+                                                            <td>{{all_file.lender}}
+                                                                 <input type="hidden" class="status_value" value="{{ all_file.status_id.id }}">
+                                                                 <input type="hidden" class="sub_status_value" value="{{ all_file.sub_status_id.id }}">
+                                                            </td>
+                                                        
+                                                            <td class="d-flex">
+                                                               <span class="ellipsis" id="element" data-toggle="tooltip" data-placement="top" title="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt quod, delectus ad doloribus architecto amet. Quos dicta eligendi unde quibusdam ipsam, cupiditate, adipisci culpa earum optio quasi, perferendis libero!</span>
+                                                               <span class="text-info history"><i class="fas fa-history"></i></span>
+                                                            </td>
+                                                            <td>
+                                                               <span class="text">{{all_file.closing_disclosure.cd_value}}
+                                                        
+                                                               </span><span class="date cd_date">{{all_file.closing_disclosure_date}}</span>
+                                                               <input type="hidden" class="cd_value" value="{{ all_file.closing_disclosure.id }}">
+                                                      </td>												 
+                                                            <td><span class="text">{{all_file.appraisal_ordered.ao_value}}</span>
+                                                              <span class="date ao_date">{{all_file.appraisal_ordered_date}}</span>
+                                                              <input type="hidden" class="ao_value" value="{{ all_file.appraisal_ordered.id }}">
+                                                       </td>
+                                                            <td>{{all_file.escrow_opened_date}}</td>
+                                                            <td>{{all_file.escrow_company}}</td>
+                                                            <td><input type="hidden" class="file_id" value="{{all_file.id}}">
+                                                                <span class="payoff">{{all_file.payoff_exp}}</span>
+                                                   </tr>
+                                                        {% endif %}
+                                                   {% endfor %}
+
+                                                </tbody>                                            
+                                            </table>
+                                 </div>          
+                                 <!-- ./Approved Details -->
+
+                              </div>
+                              <!-- ./Tab panes -->
+                           </div>
+                        </div>
+                        <!-- ./Tabs Section Body -->
+                        
+                     </div>
+                     <!-- ./Loan Details -->
+                  </div>
+               </div>
+               <!-- ./Content -->
+
+            </div>
+            <!-- ./Section Menu -->
+            
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+               <div class="modal-dialog">
+                  <form method="POST"><
+                  {% csrf_token %}>
+                     <!-- Modal content-->
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <div class="modal-title">User Details</div>
+                        </div>
+                        <div class="modal-body">
+                         <div class="row">
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>File Name</label>
+                                 {{form.file_id}}
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Receive Date</label>
+                                 <input class="form-control ReceiveDate" readonly>
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Lock Expiration</label>
+                                 <input class="form-control LockExpiration" readonly name="lock_expiration_date">
+                                 <label class="d-flex align-items-center">
+                                    <input type="checkbox" class="form-control unlocked" name="le_date_checkbox">
+                                    <span class="ml-1">Not Locked</span> 
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Tax Transcripts</label>
+                                 {{form.tax_transcript}}
+                                 <input class="form-control " name="tt_date" type="date">               
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Loan Officer</label>
+                                 <input class="form-control LoanOfficer" readonly>   
+                                 <input class="form-control FileId" type="hidden" name="id">                     
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Lender</label>
+                                 {{form.lender}}                       
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Status</label>
+                                 {{form.status_id}}                 
+                              </div>
+                  </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Sub Status</label>
+
+                                 {{form.sub_status_id}}                           
+               </div>
+            </div>
+
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Notes</label>
+                                 <textarea class="form-control Notes" rows="3" name="note"></textarea>                       
+                              </div>
+      </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Closing Disclosure</label>
+                                 {{form.closing_disclosure}}
+
+                                 <input class="form-control " name="cd_date" type="date" id="cd_date">
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Appraisal Ordered</label>
+                                 {{form.appraisal_ordered}}
+                                 <input class="form-control " name="ad_date" type="date" id="ad_date">
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Escrow Opened</label>
+                                 <input class="form-control EscrowOpened datepicker" name="escrow_opened">                 
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>Escrow Company</label>
+                                {{form.escrow_company}}             
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="input-group">
+                                 <label>PayOff Exp</label>
+                                 <input class="form-control PayOffExp" name="payoff_date" type="date">                 
+                              </div>
+                           </div>
+                         </div>
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="far fa-times-circle mr-1"></i>Close</button>
+                           <button type="submit" class="btn btn-outline-success btn-sm" ><i class="far fa-check-circle mr-1"></i>Update</button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+   </div>
+
+      {% block footer %}
+         {% include "footer.html" %}
+      {% endblock %}
+       
+      <!-- Data Table Bootstrap JS -->
+      <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js "></script>  
+      
+      <!-- Custom Script -->
+<script>
+         $(document).ready(function(){
+            var trIndex = null;
+            $('#docsPending').DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $('#docsOut').DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $('#all_docsOut').DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $('#all_table').DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $('#approvedInProcessTable').DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $("#approvedInCloseTable").DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $("#need_to_disclose_table").DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $("#disclosure_related_detail_table").DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $("#ready_submitted_detail_table").DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $("#submitted_detail_table").DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $("#problems_detail_table").DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $("#hold_detail_table").DataTable({
+               searching: true,
+               responsive: true,
+               "autoWidth": true,
+            });
+            $(".unlocked").click(function(){
+               $('.LockExpiration').attr('readonly', false); 
+               $('.LockExpiration').attr('type', 'date'); 
+            });
+         
+            var table = $('#all_table').DataTable();
+            $('#all_table tbody').on('click', 'td', function () {
+               $(".modal-body input").text("");
+               $(".modal-body textarea").text("");
+               
+               $("input.FileName").val(table.row(this).data()[0]);
+               $("input.ReceiveDate").val(table.row(this).data()[1]);
+               $("input.LockExpiration").val(table.row(this).data()[2]);
+               $("select.TaxTranscripts").val($(this).parent().find('.tt_value').val());
+               $("input.LoanOfficer").val(table.row(this).data()[4]);
+               $("input.Lender").val(table.row(this).data()[5]);
+               $("#id_status_id").val($(this).parent().find('.status_value').val());
+               $("select.SubStatus").val($(this).parent().find('.sub_status_value').val());
+               $("textarea.Notes").val();
+               $("select.ClosingDisclosureText").val($(this).parent().find('.cd_value').val());
+               $("select.AppraisalOrderedText").val($(this).parent().find('.ao_value').val());
+               $("input.EscrowOpened").val(table.row(this).data()[11]);
+               $("input.EscrowCompany").val(table.row(this).data()[12]);
+               $("input.FileId").val($(this).parent().find('.file_id').val());
+               if(table.row(this).data()[2] != 'None'){
+                var le_date    = new Date(table.row(this).data()[2]);
+                
+                yr      = le_date.getFullYear(),
+                month   = le_date.getMonth(),
+                day     = le_date.getDate(),
+                new_le_date = yr + '-' + month + '-' + day;
+               $('.unlocked').prop('checked', true);
+               $('.LockExpiration').attr('readonly', false); 
+               $('.LockExpiration').attr('type', 'date'); 
+               $(".LockExpiration").val(new_le_date);
+              
+               }
+                var cd_date    = new Date($(this).parent().find('.cd_date').text());
+                yr      = cd_date.getFullYear(),
+                month   = cd_date.getMonth(),
+                day     = cd_date.getDate(),
+                new_cd_date = yr + '-' + month + '-' + day;
+                var ao_date    = new Date($(this).parent().find('.ao_date').text());
+                yr      = ao_date.getFullYear(),
+                month   = ao_date.getMonth(),
+                day     = ao_date.getDate(),
+                new_ao_date = yr + '-' + month + '-' + day;
+               $("#cd_date").val(new_cd_date);
+               $("#ad_date").val(new_ao_date);
+               var payoff    = new Date($(this).parent().find('.payoff').text());
+                yr      = payoff.getFullYear(),
+                month   = payoff.getMonth(),
+                day     = payoff.getDate(),
+                new_payoff = yr + '-' + month + '-' + day;
+                $("#payoff_date").val(new_payoff);
+               $("#myModal").modal("show");
+               
+            });
+         
+           
+         
+         });
+</script>
+ 
+   </body>
+</html>

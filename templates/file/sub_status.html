@@ -1,0 +1,11 @@
+
+{% if sub_status|length > 1 %}
+<option value="" selected="">---------</option>
+{% endif %}
+{% for i in sub_status %}
+{% if sub_status|length == 1 %}
+<option value="{{ i.id }}" selected="" >{{ i.sub_status_name }}</option>
+{% else %}
+<option value="{{ i.id }}" >{{ i.sub_status_name }}</option>
+{% endif %}
+{% endfor %}

@@ -1,0 +1,547 @@
+{% load currency %}
+<style>
+        .file-name{
+           display: block;
+           font-size: 1rem;
+           line-height: 1.4;
+           width: 100%;
+           border: none;
+           border-bottom: 1px solid;
+           /* background: transparent; */
+           outline: none !important;
+        }
+        .file-name:read-only{
+           border-bottom-color:transparent;
+           background: transparent;
+        }
+        .file-name{
+           border-bottom-color: #743bc7;
+        }
+        .file-userId i, .file-date i{
+            font-size: .85em;      
+        }
+        .file-userId, .file-date {
+            font-size: .85em;
+            color: #666;
+            line-height: 1.3;       
+        }
+        .file-userId {
+            float: left;
+        }
+        .file-date {
+           float: right;
+        }
+      
+        .file-details{
+           width: 100%;
+           transition:width .2s;
+        }
+        .file-upload-list>div:nth-child(even){
+           background-color: #f9f9f9;
+        }
+        .file-download{
+           display: none;
+        }
+        .info-d{
+           cursor: pointer;
+        }
+        .info-d:hover .file-details,
+        .info-d:focus .file-details{
+           width: 75%;
+        }
+        .frame{
+           width:100%;
+           min-height: 100vh;
+           max-height: 100vh;
+          /* overflow-y: auto;*/
+        }
+        .info-d:hover,.info-d:focus,.info-d.active{
+           background:#52d26f4a !important;
+        }
+        .info-d:hover .file-userId,.info-d:focus .file-userId,.info-d.active .file-userId,
+        .info-d:hover .file-name,.info-d:focus .file-name,.info-d.active .file-name,
+        .info-d:hover .file-date,.info-d:focus .file-date,.info-d.active .file-date,
+        .info-d:hover .file-date,.info-d:focus .file-date,.info-d.active .file-date{
+           color:#1a6626  !important;
+        }
+     </style>
+
+
+
+<div class="tab-pane fade show " id="documents-tracking" role="tabpanel" aria-labelledby="documents-tracking"></div>
+   <!-- Section Header -->
+   <div class="d-flex justify-content-between section-header">
+      <span class="section-title">Upload Documents</span>
+      <span>
+
+         {% if document_details %}
+           
+            <button type="button" class="btn btn-success btn-sm" id='download_all'><i class="fas fa-cloud-download-alt mr-1"></i>Download All</button>
+           
+          {% endif %}
+         {% if '16' in role_feature %}
+         <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">
+            <i class="fas fa-plus mr-1"></i>Add Document
+         </button>
+         {% endif %}
+      </span>
+   </div>
+   <!-- ./Section Header -->
+   
+   <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-5 col-xs-12">
+           
+            {% if not document_details %}
+         <div class="card card-body p-0 file-upload-list" style="display: none">
+             {% else %}
+             <div class="card card-body p-0 file-upload-list" >
+                {% endif %}
+               {% if not document_details %}
+               <div class="p-4">
+                  <div class="text-center">
+                     <p class="text-light">No Data</p>
+                  </div>
+               </div>
+               {% endif %}
+               <div class="d-flex justify-content-between align-item-center px-2 py-1  ">
+                  <a class="sorting-icons double_click_aplhabetic" id="aplhabetic_order" href="#">
+                     <i class="fas fa-file mr-1"></i>
+                     <i class="fas fa-sort"></i>
+                     
+                  </a>
+                  <!-- <a class="sorting-icons" id="descending" href="#" data-value="descending">
+                     <i class="fas fa-file mr-1"></i>
+                     <i class="fas fa-sort-alpha-up-alt"></i>
+                  </a> -->
+                  <a class="sorting-icons date_double_click" id="date_wise" href="#">
+                     <i class="fas fa-calendar-alt mr-1"></i>
+                     <i class="fas fa-sort"></i>
+                  </a>
+               </div>
+               {% for i in document_details %}
+                  <div class="d-flex justify-content-between align-items-center info-d p-2 unsorted_remove" data-url='{{ MEDIA_URL }}{{ i.document_file_path}}' id="replace_url_{{ i.id }}">
+                     <div class="file-details">
+                        <input placeholder="{{ i.document_file_name }}" value="{{ i.document_file_name|file_extension_remove }}" class="file-name" readonly>
+                        <input type="hidden"  value="{{ i.id }}" class="edit_file_id" >
+                        <input type="hidden" value="{{i.file_extension}}" class="edit_file_extension">
+                        <div class="d-flex justify-content-between">
+                           <div class="file-userId"><i class="fas fa-user mr-1"></i>{{ i.created_by.user_id }}</div>
+                           <div class="file-date"><i class="fas fa-calendar-times mr-1"></i> {{ i.created_date|date:'m-d-Y' }}</div>
+                        </div>
+                     </div>
+                     <div class="file-download">
+                            <a class="text-success editFileName mr-2" title="Edit File Name">
+                                    <i class="fas fa-file-signature" aria-hidden="true"></i>
+                                  </a>
+                                 <a class="text-success fileNameRename mr-2" title="Update Name">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                  </a>
+                        <a href="{{ MEDIA_URL }}{{ i.document_file_path}}" class="text-success" title="Download File" id="media_path_{{ i.id }}" download>
+                           <i class="fas fa-cloud-download-alt" aria-hidden="true"></i>
+                         </a>
+                         <input type="hidden" class="file_type" value="{{i.file_type.0}}">
+                     </div>
+                  </div>
+               {% endfor %}
+
+               <div id='add_sorted'>
+
+               </div>
+
+
+                  <!-- <tr>
+                     <td id="file_id_get">
+                        {{ forloop.counter }}
+                     </td>
+                     <td>
+                     </td>
+                     <td>
+                        {{ i.created_by.user_id }}
+                     </td>
+                     <td>
+                        {{ i.created_date|date:'m-d-Y' }}
+                     </td>
+                     {% if i.extension_check == '.fnm' or i.extension_check == '.FNM' or i.extension_check == '.tif' %}
+                        <td>
+                           <i class="fa fa-eye" aria-hidden="true"></i>
+                        </td>
+                     {% else %}
+                     <td>
+                        <a href="{{ MEDIA_URL }}{{ i.document_file_path}}" target="_blank">
+                           <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                     </td>
+                     {% endif %}
+                     <td>
+                        <a href="{{ MEDIA_URL }}{{ i.document_file_path}}" download>
+                           <i class="fa fa-download" aria-hidden="true"></i>
+                         </a>
+                     </td>                     
+                  </tr> -->
+         </div>
+      </div>
+      <div class="col-lg-9 col-md-9 col-sm-7 col-xs-12 pl-sm-0">
+            {% if not document_details %}
+         <div class="card card-body" style="display:none">
+             {% else %}
+             <div class="card card-body">
+             {% endif %}
+            <div class="frame">
+               <object id="file_object" width="100%" style="height:100vh" type="image/png" >
+                  <embed id="file_embeded" width="100%" style="height:100vh" type="image/png" > </embed>
+                </object>
+             
+            </div>
+         </div>
+      </div> 
+   </div>
+</div>
+            
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">Upload File</h5>
+        </div>
+        <form id="filepond-form" method="POST" action="{% url 'upload_documents' file_id=file_master.id %}" enctype="multipart/form-data">
+           {% csrf_token %}
+           <div class="modal-body"> 
+              <input type="file" class="pond" name="filepond"/>
+           </div>
+           <div class="modal-footer">
+              <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fas fa-times-circle mr-2"></i>Close</button>
+              <button type="submit" class="btn btn-outline-success btn-sm" id='submit_form'> <i class="fas fa-check-circle mr-2"></i>Submit</button>
+           </div>
+        </form>
+     </div>
+  </div>
+</div>
+
+<!-- include FilePond library and jQuery adapter -->
+<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+<script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+
+<!-- Configure and initialise Filepond -->
+<script>
+
+ 
+   var uploaded = {};
+   var uploadIdFilenames = {}; 
+   var uploaded_error = {};
+   
+   document.addEventListener('DOMContentLoaded', function() {
+      const pond = FilePond.create(
+         document.querySelector('input[class="pond"]'),{
+            allowMultiple:true,
+            maxParallelUploads:20,
+            allowDrop:true,
+            dropOnPage:true,
+         }
+      );
+
+		pond.setOptions({
+         chunkUploads: true,
+         chunkSize: 50000,
+
+         server: {
+            url: '/fp',
+            process: '/process/',
+            patch: '/patch/',
+            revert: '/revert/',
+            fetch: '/fetch/?target=',
+            load: '/load/?target='
+         },
+         onaddfile: function(error, file) {
+            console.log('File added: [' + error + ']   file: [' + file.id + ']');
+            uploaded[file.id] = file.filename
+         },
+         onprocessfile: function(error, file) {
+            if(error === null) updateButton(true);
+         },
+         onremovefile: function(error, file) {
+         console.log('File removed: [' + error + ']   file: [' + file.id + ']');
+         if(file.id in uploaded) delete uploaded[file.id];
+         updateButton(false);
+         },
+         onerror: function(error, file, status) {
+         console.log('File error: [' + error + ']   file: [' + file.id + '], status [' + status + ']');
+         if(file.id in uploaded) {
+            delete uploaded[file.id];
+         }
+         uploaded_error[file.id] = true;	    		
+         }
+      
+   });
+   
+   $(".filepond--label-action").html("Click Here to Browse");
+   $('body').on('click', '.del-upload-btn', function(e) {
+      var delUploadId = $(e.currentTarget).data('id');
+      $.ajax({
+      type: 'DELETE',
+      url: '/submitForm/?' + $.param({'id': delUploadId}),
+      success: function(response) {
+         if('status' in response && response.status == 'OK') {
+            $('table.uploads tr[data-upload="' + delUploadId + '"]').remove();
+            if($('table.uploads tr[data-upload]').length == 0) {
+            // Reset the stored uploads table
+            loadStoredUploads(false);
+            }
+         }
+         else {
+            alert('An error has occurred deleting the stored upload');
+         }
+      },
+      error: function(jqXHR, status, error) {
+         alert('Error deleting stored upload: ' + error);
+      }
+      });
+   });
+   
+   function updateButton(state) {
+      // If we've been asked to enable the button but there's nothing
+      // in the list of uploaded objects, don't enable it.
+      if(state && Object.keys(uploaded).length == 0) {
+      $('#uploads-submit').attr('disabled','');
+      }
+      else {
+      if(state) $('#uploads-submit').removeAttr('disabled');
+      else $('#uploads-submit').attr('disabled','');
+      }
+   }
+   
+   function loadStoredUploads(upload_ids) {
+      if(!upload_ids) {
+      var noUploadsHTML = '<div class="alert alert-primary no-uploads" role="alert" style="width: 100%">' +
+         '<b>No stored uploads.</b> There are currently no stored uploads to display.</div>';
+      $('#upload-row').html(noUploadsHTML);
+      return;
+      }
+      var tableHeader = '<table class="table table-dark uploads"><thead><tr>' +
+      '<th scope="col">Preview</th><th scope="col">Name</th>' +
+      '<th scope="col">ID</th><th scope="col"></th>' +
+      '</tr></thead><tbody class="upload-rows">';
+      
+      var tableRows = '';
+      var tableFooter = '</tbody></table>';
+      
+      for(var i = 0; i < upload_ids.length; i++) {
+      var filename = uploadIdFilenames[upload_ids[i]];
+      var img = 'Preview not available';
+      if(filename.endsWith('.jpg') || filename.endsWith('.png')) {
+         img = '<img src="/fp/load?id=' + upload_ids[i] + '" style="maxWidth: 120px;"/>'
+      }
+      tableRows += '<tr data-upload="' + upload_ids[i] + '"><td>' + img + '</td><td>' + filename + '</td>' +
+         '<td>' + upload_ids[i] + '</td><td><button class="btn btn-sm btn-outline-danger del-upload-btn" data-id="' +
+         upload_ids[i] + '">Delete stored upload</button></td></tr>'; 
+      }
+      
+      // Populate the content
+      if($('.no-uploads').length == 1) {
+      $('.no-uploads').remove()
+      $('#upload-row').html(tableHeader+tableRows+tableFooter);
+      }
+      else {
+      $('.upload-rows').append(tableRows);
+      }
+   }
+   loadStoredUploads(false);
+   
+});
+</script>
+
+<script>
+   $(document).ready(function(){
+       $("#sort_document_list").change(function(){
+               
+             var sort_value =  $(this).val();
+             $.ajax({
+              // url: "{% url 'doc_file_rename' %}",
+               type: 'post',
+               data: {
+                  'sort_value': file_id_value,
+                  'new_file_name': new_file_name,
+                  'file_id': "{{ file_master.id}}"
+               },
+               success: function(data){
+                  if (data.is_updated == 'Success'){
+                     $(file_obj).attr('readonly','readonly');
+                     var file_rename_obj = $(parent_obj1).find('.editFileName');
+                     $(file_rename_obj).show();
+                     $(obj).hide();
+                     $('#media_path_'+file_id_value+'').attr('href','{{ MEDIA_URL }}'+ data.is_file_path);
+                     $('#replace_url_'+file_id_value+'').attr('data-url','{{ MEDIA_URL }}'+ data.is_file_path);
+                     alert("file name is updated");
+                  }else{
+                     alert(data.is_updated)
+                  }
+               }
+            });
+       });
+       $(".editFileName").click(function(){
+           
+       });
+    $('.fileNameRename').hide();
+    $("#ascending").addClass('active');
+         $(document).on('click', '.editFileName', function(){
+             var parent_obj1 = $(this).parent();
+             var file_parent = $(parent_obj1).prev();
+             var file_obj = $(file_parent).find('.file-name');
+            $(file_obj).removeAttr('readonly');
+            var file_rename_obj = $(parent_obj1).find('.fileNameRename');
+            $(file_rename_obj).show();
+            $(this).hide();
+         });
+
+         $(document).on('click', '.fileNameRename',function(){
+             var obj = $(this);
+             var parent_obj1 = $(this).parent();
+             var file_parent = $(parent_obj1).prev();
+             var file_obj = $(file_parent).find('.file-name');
+             var file_id_obj = $(file_parent).find(".edit_file_id");
+             var file_extension = $(file_parent).find(".edit_file_extension");
+             var new_file_name =  $(file_obj).val() + $(file_extension).val();
+             var file_id_value =  $(file_id_obj).val();
+             $.ajax({
+               url: "{% url 'doc_file_rename' %}",
+               type: 'post',
+               data: {
+                  'doc_file_id': file_id_value,
+                  'new_file_name': new_file_name,
+                  'file_id': "{{ file_master.id}}"
+               },
+               success: function(data){
+                  if (data.is_updated == 'Success'){
+                     $(file_obj).attr('readonly','readonly');
+                     var file_rename_obj = $(parent_obj1).find('.editFileName');
+                     $(file_rename_obj).show();
+                     $(obj).hide();
+                     $('#media_path_'+file_id_value+'').attr('href','{{ MEDIA_URL }}'+ data.is_file_path);
+                     $('#replace_url_'+file_id_value+'').attr('data-url','{{ MEDIA_URL }}'+ data.is_file_path);
+                     alert("file name is updated");
+                  }else{
+                     alert(data.is_updated)
+                  }
+               }
+            });
+                
+         });
+         $(document).on('mouseenter', '.info-d', function( event ) {
+            $('.file-download',this).show(200);
+         }).on('mouseleave', '.info-d', function( event ) {
+            $('.file-download',this).hide(200);
+         });
+         $(document).on('hover', '.info-d', function(){
+            $('.file-download',this).show(200)
+         },function(){
+            $('.file-download',this).hide(200)
+         });
+
+
+
+      $('.frame object').attr('data','');
+      $('.frame embed').attr('src','');
+      $(document).on('click', '.info-d', function() {
+        
+         var urlFile = $(this).attr('data-url');
+        
+        // document.getElementById("file_object").object.location.href = urlFile;
+        $('.info-d').removeClass("active");
+         $(this).addClass("active");
+        
+         var file_type = $(this).find(".file_type").val().toLowerCase();
+         if(file_type=="image/png" || file_type=="image/jpeg" || file_type=="image/jpg" || file_type=="image/png" || file_type=="image/gif" || file_type=="application/pdf"){
+         $('.frame object').attr('data', encodeURI(urlFile));
+         $('.frame embed').attr('src', encodeURI(urlFile) );
+         $("#file_embeded").attr("type",file_type);
+         
+         $("#file_object").attr("type",file_type);
+         document.getElementById("file_embeded").src=encodeURI(urlFile);
+         document.getElementById("file_object").src=encodeURI(urlFile);
+         }else{
+            document.getElementById("file_embeded").src=encodeURI(urlFile);
+            document.getElementById("file_object").src=encodeURI(urlFile);
+         }
+
+      });
+      $('#download_all').click(function(){
+         $.ajax({
+         url: "{% url 'download_files' %}",
+         type: 'post',
+         data: {
+            'file_id': "{{ file_master.id }}",
+         },
+         success: function(response){
+            var a = document.createElement("a");
+            a.href = "{{ MEDIA_URL }}" + response.zip_response;
+            document.body.appendChild(a);
+            a.click();
+         }
+         });
+      });
+      
+      $(document).on('click', '#aplhabetic_order',function(){
+         $.ajax({
+         url: "{% url 'document_sorting' %}",
+         type: 'post',
+         data: {
+            'file_id': "{{ file_master.id }}",
+            'sorting_type':'ascending'
+         },
+         success: function(response){
+            $('.double_click_aplhabetic').attr('id', 'aplhabetic_order_1')
+            $('.unsorted_remove').remove()
+            $('#add_sorted').html(response)
+         }
+         });
+      });
+      $(document).on('click', '#aplhabetic_order_1',function(){
+         $.ajax({
+         url: "{% url 'document_sorting' %}",
+         type: 'post',
+         data: {
+            'file_id': "{{ file_master.id }}",
+            'sorting_type':'descending'
+         },
+         success: function(response){
+            $('.double_click_aplhabetic').attr('id', 'aplhabetic_order')
+            $('.unsorted_remove').remove()
+            $('#add_sorted').html(response)
+         }
+         });
+      });
+      // Date wise order in ascending
+      $(document).on('click', '#date_wise',function(){
+         $.ajax({
+         url: "{% url 'document_sorting' %}",
+         type: 'post',
+         data: {
+            'file_id': "{{ file_master.id }}",
+            'sorting_type':'date_wise_ascending'
+         },
+         success: function(response){
+            $('.date_double_click').attr('id', 'date_wise_1')
+            $('.unsorted_remove').remove()
+            $('#add_sorted').html(response)
+         }
+         });
+      });
+      // Date wise order in descending
+      $(document).on('click', '#date_wise_1', function(){
+         $.ajax({
+         url: "{% url 'document_sorting' %}",
+         type: 'post',
+         data: {
+            'file_id': "{{ file_master.id }}",
+            'sorting_type':'date_wise_descending'
+         },
+         success: function(response){
+            $('.date_double_click').attr('id', 'date_wise')
+            $('.unsorted_remove').remove()
+            $('#add_sorted').html(response)
+         }
+         });
+      });
+   });
+</script>

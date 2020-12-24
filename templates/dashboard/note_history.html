@@ -1,0 +1,8 @@
+{% for file_history_row in file_history %}
+<div class="row py-2 bg-light" style="margin-right:0px">
+    
+    <div class="col-md-3 col-sm-3 col-xs-3">{{file_history_row.created_date|date:"M-d-Y H:i:s"}}</div>
+    <div class="col-md-5 col-sm-6 col-xs-6">{{file_history_row.note}}</div>
+    <div class="col-md-4 col-sm-3 col-xs-3">{{file_history_row.created_by.user_name}}</div>
+ </div>
+ {% endfor %}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+{% block head %}
+      {% include "head.html" %}
+    {% endblock %}
+
+<body class="login-bg">
+  
+  <section class="login-form p-2">
+    <div class="container">
+      <div class="row">
+        <div class="mx-auto mt-5 col-md-5 col-sm-8 col-xs-12">
+
+          <div class="card">
+            <div class="card-body p-5">
+              <div class="text-center mb-4">
+                <a class="navbar-brand dark">
+                  <i class="fas fa-line text-dark" aria-hidden="true"></i>
+                  <b>ELLIE</b>TRAC  
+               </a>
+              </div>
+                
+              
+        			{% block content %}
+                      <form method="POST">
+        				{% if form.errors %}
+        					{% for field in form %}
+        						{% for error in field.errors %}
+        							<div class="alert alert-danger">
+        								{{ error|escape }}
+        							</div>
+        						{% endfor %}
+        					{% endfor %}
+        					{% for error in form.non_field_errors %}
+        						<div class="alert alert-danger">
+        							{{ error|escape }}
+        						</div>
+        					{% endfor %}
+        				{% endif %}
+        			  {% csrf_token %}
+        			  
+                <div class="input-group mb-4 input-with-border">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fas fa-user"></i></span>
+                  </div>
+                  {{ form.user_name }}
+                </div>
+                <div class="input-group mb-5 input-with-border">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fas fa-unlock-alt"></i></span>
+                  </div>
+                  {{ form.password }}
+                </div>
+                <div class="form-group d-flex justify-content-between align-items-center mb-0">
+                  <a href="#" class=" "> <small>Forget Password?</small></a>
+
+                  <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-sign-in-alt mr-2"></i>Login</button>
+
+                </div>
+            </div>
+      {% endblock %}
+                
+                <!-- <div class="form-group">
+                  <div class="position-relative"> 
+                  </div>
+                </div>
+                <div class="form-group mb-3">
+                  <div class="position-relative"><i class="fa  fa-lock"></i> -->
+                    <!-- <span class="form-text text-muted text-right">
+                    <div class="small"> <a href="#"> Fergot Password?</a></div>
+                  </span> -->
+                  <!-- </div>
+                </div>
+                <div class="form-group ">
+                  <div class="custom-control custom-checkbox"> -->
+                    <!--<input class="custom-control-input" id="rememberPasswordCheck" type="checkbox">
+                    <label class="custom-control-label" for="rememberPasswordCheck" class=" ">Remember
+                      password</label> !-->
+                  <!-- </div>
+                </div> -->
+             <!--<div class="card-footer text-center">
+              <div class=" "><a href="#">Need an account? Sign up!</a></div>
+            </div>!-->
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+</body>
+
+</html>

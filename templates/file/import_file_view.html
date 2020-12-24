@@ -1,0 +1,116 @@
+<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#importfile">
+    <i class="fas fa-plus mr-2"></i>Import FNM File
+</button>
+
+<form method="post" enctype="multipart/form-data" action="{% url 'loan_information_update' file_master.id %}" id='my_form'>
+    <div class="modal fade" id="importfile" tabindex="-1" role="dialog" aria-labelledby="ImportFileModalLabel"
+        aria-hidden="true">
+        
+            {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title" id="ImportFileModalLabel">Please Select the File</div>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <input type="file" name="myfile" id='id_my_file'>
+
+                        
+                        {% if file_document_details %}
+                            <div class="table-style-three mt-4">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                        
+                                        <th colspan="2">Uploaded Files</th>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in file_document_details %}
+                                        <tr>
+                                            <td><input type="checkbox" value="{{ i.id }}" name="updating_file" class="form-control check_box_value"></td>
+                                            <td>
+                                                <a href="{{ MEDIA_URL }}{{ i.document_file_path}}" download>{{ i.document_file_name }}</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal" id="close_check"><i class="fas fa-times-circle mr-2"></i>Close</button>
+                        <button type="button" class="btn btn-outline-success btn-sm" id='button_click'><i class="fas fa-check-circle mr-2"></i>Upload</button>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+    <div class="modal fade small-modal" id="importfile_confirmation" tabindex="-1" role="dialog" aria-labelledby="ImportFileConfirmationModalLabel"
+        aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">                
+                    <div class="modal-body">
+                        <div class="p-3 text-center">
+                            <h4>Do you want to override the file?</h4>                 
+                        </div>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fas fa-times-circle mr-2"></i>No</button>
+                        <button type="submit" class="btn btn-outline-success btn-sm" id="model_click"><i class="fas fa-check-circle mr-2"></i>Yes</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('input[type="checkbox"]').on('change', function() {
+            $('input[type="checkbox"]').not(this).prop('checked', false);
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function() {
+
+        var file_name;
+        var check_value;
+        $("#id_my_file").prop('required',true);
+        $(".check_box_value").prop('required',true);
+
+        $('input[type="file"]').change(function(e) { 
+            file_name = e.target.files[0].name;
+            check_value = null;
+            $('input[type="checkbox"]').not(this).prop('checked', false);
+            $(".check_box_value").prop('required',false);
+        });
+        $('input[type="checkbox"]').on('change', function() {
+            check_value = $(this).val();
+            file_name = null;
+            $('input[type="file"]').val('')
+            $('input[type="file"]').prop('required',false);
+        });
+        $("#button_click" ).click(function() {
+            if (file_name || check_value) {
+                $('#importfile_confirmation').modal('show'); 
+            } else {
+                $("#id_my_file").prop('required',true);
+                $(".check_box_value").prop('required',true);
+            }
+        });
+        $("#close_check" ).click(function() {
+            $('input[type="file"]').val('');
+            $('input[type="checkbox"]').not(this).prop('checked', false);
+        });
+
+    });
+</script>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+   <head>
+      {% block head %}
+          {% include "superadmin/head.html" %}
+      {% endblock %}
+        
+      <!-- Data table Style -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" type="text/css">
+      
+   </head>        
+   <body class="active bg-light">
+      
+      {% block nav %}
+        {% include "superadmin/nav.html" %}
+      {% endblock %}
+            
+      <div class="d-flex">
+         {% block sidebar %}
+           {% include "superadmin/sidebar.html" %}
+         {% endblock %}
+         
+         <!-- Main Section -->
+         <main>
+
+            <!-- Section Menu -->
+            <div class="row"> 
+               
+               <!-- Content -->
+               <div class="col-12 p-2">
+                  <div class="tab-content">
+                     
+                     <!--  Details -->
+                     <div class="tab-pane show active">
+
+                        <!-- Section Header -->
+                        <div class="d-flex justify-content-between section-header">
+                           <span class="section-title">Company List Lists</span>
+                           <span>
+                              <a class="btn btn-sm btn-primary" href="/company/create/"><i class="fas fa-plus mr-2"></i>Create Company</a>
+                           </span>
+                        </div>
+                        <!-- ./Section Header -->
+                        
+                     </div>
+                     <!-- ./Details -->
+                     
+                     <!-- Tabs Section Body -->
+                     <div class="card mt-2 p-3">
+                        <table id="list_company" class="display">
+                           <thead>
+                              <tr>
+                                 <th>Sno.</th>
+                                 <th>Company Code </th>
+                                 <th>Company Name</th>
+                                 <th>Active</th>
+                                 <th> Created By</th>
+                                 <th>Created Date</th>
+                                 <th>Actions</th>
+                              </tr>
+                           </thead>
+                           <tbody>  
+                              {% for company in company_master%}
+                              <tr>
+                                <td>
+                                  {{ forloop.counter }}
+                                </td>
+                                <td>
+                                  {{company.company_code}}
+                                </td>
+                                <td>
+                                  {{company.company_name}}
+                                </td>
+                                <td>
+                                  {{company.is_active}}
+                                </td>
+                                <td>
+                                  {{company.created_by}}
+                                </td>
+                                <td>
+                                  {{company.created_date}}
+                                </td>
+                                
+                                  <td>
+                                    <a href="/user/edit/{{user.id}}" title="Edit">
+                                      <i class="fas fa-edit"></i>
+                                    </a>
+                                  </td>
+                                
+                              </tr>
+                              {% endfor %}                  
+                          </tbody>                                               
+                       </table>     
+                       
+                     </div>
+                     <!-- ./Tabs Section Body -->
+                     
+                  </div>
+               </div>
+               <!-- ./Content -->
+               
+            </div> 
+            <!-- ./Section Menu -->
+              
+         {% block footer %}
+            {% include "superadmin/footer.html" %}
+         {% endblock %}
+         
+        <!-- Data Table Bootstrap JS -->
+        <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js "></script>  
+        
+        <!-- Custom Script -->
+        <script>
+            $(document).ready(function(){
+                  var trIndex = null;
+                  $('#list_company').DataTable({
+                     searching: true,
+                     responsive: true,
+                     "autoWidth": true,
+                  });
+                  
+                  var table = $('#list_company').DataTable();
+                  $('#list_company tbody').on('click', 'td', function () {
+                     $(".modal-body input").text("");
+                     $(".modal-body textarea").text("");
+                     $("input.ReceiveDate").val("2020-11-22");
+                     $("#myModal").modal("show");
+                  }); 
+            }); 
+        </script>
+   </body>
+</html>

@@ -1,0 +1,723 @@
+<!-- DECLARATIONS  -->
+{% if div_id == "declarations-details" %}
+<div class="tab-pane fade active show" id="declarations-details" role="tabpanel" aria-labelledby="declarations_list">
+{% else %}
+<div class="tab-pane fade" id="declarations-details" role="tabpanel" aria-labelledby="declarations_list">
+{% endif %}   
+      <!-- Section Header -->
+   <div class="d-flex justify-content-between section-header">
+      <span class="section-title">Declarations</span>
+   </div>
+   <!-- ./Section Header -->
+
+   <!-- Tabs Section Body -->
+   <div class="card mt-2">
+      <div class="card-body tab-overflow">
+         <!--  -->
+         <div class="card-header">
+            <span>
+               <i class="fas fa-exclamation-circle mr-1"></i>
+               If you answer "Yes" to any questions a through i, please use continuation sheet for explanation
+            </span>
+            <span></span>
+         </div>
+         <div class="p-2">
+            <form method="POST" action="" id="id_declaration_form">
+               {% for i in co_borrower %}
+               <input type="hidden" class="form-control co_borrower_ids" name="co_borrower_ids" value="{{ i.id}}">
+               {% endfor %}
+               {% for k in borrower_declaration %}
+               <input type="hidden" class="form-control br_declaration_ids" name="br_declaration_ids" value="{{ k.id}}">
+               {% endfor %}
+               {% for j in co_borrower_declaration %}
+               <input type="hidden" class="form-control declaration_ids" name="declaration_ids" value="{{ j.id}}">
+               {% endfor %}
+               <div class="table-style-three">
+                  <table>
+                     <thead>
+                        <tr style="border-bottom:1px solid #999;">
+                           <th></th>
+                           <th colspan="2">Borrower</th>
+                           {% for i in co_borrower %}
+                           <th colspan="2">Co-Borrower {{ i.co_borrower_name}}</th>
+                           {% endfor %}
+                        </tr>
+                        <tr>
+                           <th style="background:rgba(0,0,0,.02)"></th>
+                           <th style="background:rgba(0,0,0,.02);padding:4px 22px;">Yes</th>
+                           <th style="background:rgba(0,0,0,.02);padding:4px 22px;">No</th>
+                           {% for i in co_borrower %}
+                           <th style="background:rgba(0,0,0,.02);padding:4px 22px;">Yes</th>
+                           <th style="background:rgba(0,0,0,.02);padding:4px 22px;">No</th>
+                           {% endfor %}
+                        </tr>
+                     </thead>
+                     <tbody>
+
+                        <tr>
+                           <td>Are there any outstanding judgments against you?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.0.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_a" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_a" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.0.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_a" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_a" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'a. Are there any outstanding judgments against you?' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control co_borrower_a" name="co_borrower_a_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control co_borrower_a" name="co_borrower_a_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_a_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_a_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                        <tr>
+                           <td>Have you been declared bankrupt within the past 7 years?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.1.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_b" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_b" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.1.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_b" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_b" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'b. Have you been declared bankrupt within the past 7 years?' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_b_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_b_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_b_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_b_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                        <tr>
+                           <td> Have you had property foreclosed upon or given title or deed in lieu thereofin the last
+                              7 years?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.2.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_c" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_c" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.2.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_c" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_c" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'c. Have you had property foreclosed upon or given title or deed in lieu thereof in the last 7 years?' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_c_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_c_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_c_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_c_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                        <tr>
+                           <td>Are you a party to a lawsuit?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.3.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_d" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_d" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.3.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_d" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_d" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'd. Are you a party to a lawsuit?' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_d_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_d_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_d_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_d_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                        <tr>
+                           <td>Have you directly or indirectly been obligated on any loan which resulted inforeclosure,
+                              transfer of title in lieu of foreclosure, or judgment?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.4.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_e" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_e" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.4.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_e" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_e" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'e. Have you directly or indirectly been obligated on any loan…' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_e_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_e_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_e_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_e_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+                        <tr>
+                           <td>Are you presently delinquent or in default on any Federal debt or any otherloan,
+                              mortgage, financial obligation, bond, or loan guarantee?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.5.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_f" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_f" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.5.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_f" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_f" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'f. Are you presently delinquent or in default on any Federal debt…' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_f_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_f_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_f_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_f_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+                        <tr>
+                           <td>Are you obligated to pay alimony, child support, or separate maintenance?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.6.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_g" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_g" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.6.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_g" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_g" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'g. Are you obligated to pay alimony child support or separate maintenance?' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_g_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_g_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_g_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_g_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                        <tr>
+                           <td>Is any part of the down payment borrowed?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.7.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_h" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_h" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.7.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_h" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_h" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'h. Is any part of the down payment borrowed?' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_h_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_h_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_h_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_h_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                        <tr>
+                           <td>Are you a co-maker or endorser on a note?</td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.8.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_i" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_i" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.8.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_i" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_i" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'i. Are you a co-maker or' %}
+                                    {% if i.id == j.cw_id.id %}  
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_i_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_i_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_i_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_i_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                        <tr>
+                           <td>j. Are you a U.S. citizen? k. Are you a permanent resident alien?</td>
+                           <td>
+                              <input type="text" class="form-control" name="borrower_j"
+                                 value="{{borrower_declaration.9.value}}">
+                           </td>
+                           <td>
+
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'j. Are you a U.S. citizen? k. Are you a permanent resident alien?' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             <input type="text" class="form-control" name="co_borrower_j_{{j.id}}"
+                                             value="{{j.value}}">
+                                          </span>
+                                       </td>
+                                       <td>
+                                          
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+
+
+                        <tr>
+                           <td><b>Do you intend to occupy the property as your primary residence?<br /><small>If "Yes,"
+                                    complete question m below.</small></b></td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.10.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_l" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_l" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.10.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_l" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_l" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'l. Do you intend to occupy…' %}
+                                    {% if i.id == j.cw_id.id %}    
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_l_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_l_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_l_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_l_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+                        <tr>
+                           <td>Have you had an ownership interest in a property in the last three years?</b></td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.11.value == 'Yes' %}
+                                 <input type="radio" class="form-control" name="borrower_m" checked value="Yes">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_m" value="Yes">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 {% if borrower_declaration.11.value == 'No' %}
+                                 <input type="radio" class="form-control" name="borrower_m" checked value="No">
+                                 {% else %}
+                                 <input type="radio" class="form-control" name="borrower_m" value="No">
+                                 {% endif %}
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'm. Have you had an ownership interest…' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'Yes' %}
+                                             <input type="radio" class="form-control" name="co_borrower_m_{{j.id}}" checked
+                                                value="Yes">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_m_{{j.id}}" value="Yes">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                       <td>
+                                          <span class="regular">
+                                             {% if j.value == 'No' %}
+                                             <input type="radio" class="form-control" name="co_borrower_m_{{j.id}}" checked value="No">
+                                             {% else %}
+                                             <input type="radio" class="form-control" name="co_borrower_m_{{j.id}}" value="No">
+                                             {% endif %}
+                                          </span>
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+                        <tr>
+                           <td>1. What type of property did you own-principal residence (PR),second home (SH), or
+                              investment property (IP)?</td>
+                           <td>
+                              <span class="regular">
+                                 <input type="text" class="form-control" name="borrower_n"
+                                    value="{{borrower_declaration.12.value}}">
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'm. (1) What type of property…' %}
+                                    {% if i.id == j.cw_id.id %}
+                                          <td>
+                                             <span class="regular">
+                                                <input type="text" class="form-control" name="co_borrower_n_{{j.id}}" value="{{j.value}}">
+                                             </span>
+                                          </td>
+                                          <td>
+
+                                          </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                        <tr>
+                           <td>2. How did you hold title to the home-solely by yourself (S),jointly with your spouse
+                              (SP), or jointly with another person (O)?</td>
+                           <td>
+                              <span class="regular">
+                                 <input type="text" class="form-control" name="borrower_o"
+                                    value="{{borrower_declaration.13.value}}">
+                              </span>
+                           </td>
+                           <td>
+                              <span class="regular">
+                                 <input type="text" class="form-control">
+                              </span>
+                           </td>
+                           {% for i in co_borrower %}
+                              {% for j in co_borrower_declaration %}
+                                 {% if j.declaration_description == 'm. (2) How did you hold title…' %}
+                                    {% if i.id == j.cw_id.id %}
+                                       <td>
+                                          <span class="regular">
+                                             <input type="text" class="form-control" name="co_borrower_o_{{j.id}}" value="{{j.value}}">
+                                          </span>
+                                       </td>
+                                       <td>
+
+                                       </td>
+                                    {% endif %}
+                                 {% endif %}
+                              {% endfor %}
+                           {% endfor %}
+                        </tr>
+
+                     </tbody>
+                  </table>
+               </div>
+               <div class="row mt-3">
+                  <div class="col-md-12">
+                     <div class="text-center">
+                        <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal ">Close</button> -->
+                        <button type="submit" class="btn btn-success btn-sm" id="id_submit_mortage"><i class="far fa-check-circle mr-2"></i>Save</button>
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+         <!-- ./ -->
+      </div>
+   </div>
+   <!-- ./Tabs Section Body -->
+</div>
+<!-- ./DECLARATIONS  -->
+<script>
+   var token = '{{csrf_token}}';
+   $("#id_declaration_form").on('submit', function (e) {
+      e.preventDefault();
+      $.ajax({
+         headers: { "X-CSRFToken": token },
+         type: "POST",
+         url: "{% url 'declaration_information' file_master.id %}",
+         data: $('#id_declaration_form').serialize(),
+         success: function (response) {
+            window.location.href=window.location.href;
+         }
+      });
+   });
+</script>

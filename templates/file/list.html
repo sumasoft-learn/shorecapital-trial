@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+   {% load static %}
+   <head>
+      {% block head %}
+        {% include "head.html" %}
+      {% endblock %}
+      
+      <!-- Data table Style -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" type="text/css">
+   </head>        
+   <body class="active bg-light">
+      {% block nav %}
+        {% include "nav.html" %}
+      {% endblock %}
+      
+      <div class="d-flex">
+         {% block sidebar %}
+           {% include "sidebar.html" %}
+         {% endblock %}
+         
+         
+         <!-- Main Section -->
+         <main class="">
+            
+            <!-- Section Menu -->
+            <div class="row"> 
+               <!-- Content -->
+               <div class="col-12 px-3 py-2">
+
+                        <!-- Section Header -->
+                        <div class="d-flex justify-content-between section-header">
+                           <span class="section-title">Loan in Progress</span>
+                           <span>
+                              <a class="btn btn-sm btn-primary" href="/file/create/"><i class="fas fa-plus mr-2"></i>Create File</a>
+                           </span>
+                        </div>
+                        <!-- ./Section Header -->
+
+                        <!-- Tabs Section Body -->
+                        <div class="card mt-2">
+                           <div class="card-body">
+                              <div class="p-2">
+                                 <table id="file_table" class="display">
+                                    <thead>
+                                       <tr>
+                                          <th>Stage</th>
+                                          <th>Loan Officer</th>
+                                          <th>Assigned Processor</th>
+                                          <th>Trac Type</th>
+                                          <th>Lock Exp Date</th>
+                                          <th>Property Type</th>
+                                          <th>Est Closing Date</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                     {% for file in file_master %} 
+                                     <tr  class='clickable-row' data-href="{% url 'view_file' file_id=file.id %}">                                     
+                                        <td> {{file.status_id.status_name}}</td>
+                                        <td>{{file.loan_officer_id.user_name}}</td>
+                                        <td>{{file.ae_name}}</td>
+                                        <td>{{file.loan_purpose_id.purpose_title}}</td>
+                                        <td>
+                                           {{ file.lock_expiration_date|date:"Y-m-d"|lower }} 
+                                        </td>
+                                        <td>{{file.property_type.property_type_title}}</td>
+                                        <td>
+                                           {{ file.est_closure_date }} 
+                                         
+                                         </td>
+                                     </tr>
+                                     {% endfor %}
+                                    </tbody>
+                                 </table>                 
+                              </div>
+                           </div>
+                        </div>
+                        <!-- ./Tabs Section Body -->                                 
+               </div>
+               <!-- ./Content -->
+            </div>
+            
+            <!-- <div class="d-flex pb-3 justify-content-between">
+               <span class="text-danger"> </span><span class=" ">
+                  <div class="form-check form-check-inline adv">
+                     <input class="form-check-input mr-3" type="checkbox" id=" " value="option1">
+                     <label class="form-check-label" for="inlineCheckbox1">Advanced Search</label>
+                  </div>
+                  <div class="form-check form-check-inline adv">
+                     <input class="form-check-input mr-3" type="checkbox" id="inlineCheckbox2"
+                        value="option2">
+                     <label class="form-check-label" for="inlineCheckbox2">Contact Search</label>
+                  </div>
+               </span>
+
+            </div> -->
+            
+         {% block footer %}
+            {% include "footer.html" %}
+         {% endblock %}
+          
+         <!-- Data Table Bootstrap JS -->
+         <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+         <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js "></script>  
+         
+         <!-- Custom Script -->
+         <script>
+            $(document).ready(function(){
+               var trIndex = null;
+               $('#file_table').DataTable({
+                  searching: true,
+                  responsive: true,
+                  "autoWidth": false,
+               });
+                $(".clickable-row").click(function() {
+                    window.location = $(this).data("href");
+                });
+            });
+         </script>
+    
+      </body>
+   </html>
